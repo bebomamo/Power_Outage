@@ -1,4 +1,9 @@
 #Ben Malone & Jack Jameson
+
+# note: This file will not be used in the final version of the game, but will be kept as a reference 
+#       until we know it is no longer needed. Fireplace, Bunker, FrontDoor, and Fear were all 
+#       deteled because they were essentially empty.
+
 import math
 import random
 import os
