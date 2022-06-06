@@ -1,9 +1,8 @@
 from pickle import TRUE
-import pygame
-import os
-import objects
+import pygame, os, sys, objects
 
 WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
 
 pygame.init() # start pygame
 
@@ -13,6 +12,14 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WIN.fill(WHITE) # set to white so we remember it exists, will almost certainly be changed later
 pygame.display.set_caption("Power Outage")
 
+# --------initialization--------
+view = "Home"
+FPS = 60
+# Objects and backgrounds
+# HomeDay = DaySelect() # - commented out for now
+HOME_image = pygame.image.load(os.path.join('Assets', 'PO_night1.PNG')) #adding image
+HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
+# ------------------------------
 
 # # note: I moved DaySelect from its own file to here because it is only one function. For organization's 
 # #       sake it's probably better to not create an entire file for a single function, as doing so would
@@ -39,6 +46,9 @@ pygame.display.set_caption("Power Outage")
 def draw_image():
     if(view == "Home"):
         WIN.blit(HOME, (0, 0)) #display home image
+    if(view == "Game"):
+        WIN.fill(BLUE) # temporary
+
     # elif(view == "Window"):
     #     WIN.blit(WINDOW, (Window.x, Window.y)) #display window image
     # elif(view == "Fireplace"):
@@ -50,35 +60,52 @@ def draw_image():
 
     pygame.display.update()
 
-# --------initialization--------
-view = "Home"
-FPS = 60
-# Objects and backgrounds
-# HomeDay = DaySelect() - commented out for now
-HOME_image = pygame.image.load(os.path.join('Assets', 'PO_night1.PNG')) #adding image
-HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
-# ------------------------------
 
 def main():
     # initialization nation
     Window = pygame.Rect(200, 50, 100, 300) #Widthpos, Heightpos, Width, Height
     clock = pygame.time.Clock()
-    run = True
     day = 1 # DaySelect()
-    
+    global view
+
+    clicking = False
+    right_clicking = False
+
     # stuff that happens while the game is running
-    while run:
+    while True:
         clock.tick(FPS)
 
+        mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
+        loc = [mx, my] # mouse location
+
+        in_start_range_x = loc[0] >= 378 and loc[0] <= 780
+        in_start_range_y = loc[1] >= 46 and loc[1] <= 460
+
+        if view == "Home" and clicking and in_start_range_x and in_start_range_y:
+            view = "Game"
+        elif view == "Game" and clicking:
+            view = "Home"
+
+        clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                run = False # exit while loop
-        
-        draw_image() # update image every every event has been iterated through
-        #print (pygame.mouse.get_pos()) #prints mouse position for object creation (comment out if not using)
+                pygame.quit()
+                sys.exit()
 
-    pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: # left clicking
+                    clicking = True
+                if event.button == 3: # right clicking
+                    right_clicking = True
+            
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    clicking = False
+                if event.button == 3:
+                    right_clicking = False
+            
+        draw_image() # update image every every event has been iterated through
 
 if __name__ == "__main__":
     main()
