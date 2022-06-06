@@ -65,7 +65,7 @@ def main():
     Window = pygame.Rect(200, 50, 100, 300) #Widthpos, Heightpos, Width, Height
     clock = pygame.time.Clock()
     run = True
-    day = 0
+    day = DaySelect()
     
     # stuff that happens while the game is running
     while run:
