@@ -14,32 +14,31 @@ WIN.fill(WHITE) # set to white so we remember it exists, will almost certainly b
 pygame.display.set_caption("Power Outage")
 
 
-# note: I moved DaySelect from its own file to here because it is only one function. For organization's 
-#       sake it's probably better to not create an entire file for a single function, as doing so would
-#       quickly crowd the repository and is not really convention in Python. 
-def DaySelect():
-    f = open("day.txt", mode = 'r')
-    day = f.read(1)
-    if(day == '0'): 
-        return 'PO_night1.PNG'
-    if(day == '1'):
-        return 'PO_night2.PNG'
-    if(day == '2'):
-        return 'PO_night3.PNG'
-    if(day == '3'):
-        return 'PO_night4.PNG'
-    if(day == '4'):
-        return 'PO_night5.PNG'
-    if(day == '5'):
-        return 'PO_night6.PNG'
-    if(day == '6'):
-        return 'PO_night7.PNG'
-    f.close
+# # note: I moved DaySelect from its own file to here because it is only one function. For organization's 
+# #       sake it's probably better to not create an entire file for a single function, as doing so would
+# #       quickly crowd the repository and is not really convention in Python. Commented out for now
+# def DaySelect():
+#     f = open("day.txt", mode = 'r')
+#     day = f.read(1)
+#     if(day == '1'): 
+#         return 'PO_night1.PNG'
+#     if(day == '2'):
+#         return 'PO_night2.PNG'
+#     if(day == '3'):
+#         return 'PO_night3.PNG'
+#     if(day == '4'):
+#         return 'PO_night4.PNG'
+#     if(day == '5'):
+#         return 'PO_night5.PNG'
+#     if(day == '6'):
+#         return 'PO_night6.PNG'
+#     if(day == '7'):
+#         return 'PO_night7.PNG'
+#     f.close
 
 def draw_image():
     if(view == "Home"):
         WIN.blit(HOME, (0, 0)) #display home image
-    
     # elif(view == "Window"):
     #     WIN.blit(WINDOW, (Window.x, Window.y)) #display window image
     # elif(view == "Fireplace"):
@@ -55,8 +54,8 @@ def draw_image():
 view = "Home"
 FPS = 60
 # Objects and backgrounds
-HomeDay = DaySelect()
-HOME_image = pygame.image.load(os.path.join('Assets', HomeDay)) #adding image
+# HomeDay = DaySelect() - commented out for now
+HOME_image = pygame.image.load(os.path.join('Assets', 'PO_night1.PNG')) #adding image
 HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
 # ------------------------------
 
@@ -65,7 +64,7 @@ def main():
     Window = pygame.Rect(200, 50, 100, 300) #Widthpos, Heightpos, Width, Height
     clock = pygame.time.Clock()
     run = True
-    day = DaySelect()
+    day = 1 # DaySelect()
     
     # stuff that happens while the game is running
     while run:
