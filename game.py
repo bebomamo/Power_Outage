@@ -77,7 +77,7 @@ def main():
                 run = False # exit while loop
         
         draw_image() # update image every every event has been iterated through
-
+        #print (pygame.mouse.get_pos()) #prints mouse position for object creation (comment out if not using)
 
     pygame.quit()
 
