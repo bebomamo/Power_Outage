@@ -5,6 +5,8 @@ import objects
 
 WHITE = (255, 255, 255)
 
+pygame.init() # start pygame
+
 # Window setup
 WIDTH, HEIGHT = 900, 500 #subject to change
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
