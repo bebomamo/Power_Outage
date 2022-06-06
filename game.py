@@ -17,7 +17,7 @@ view = "Home"
 FPS = 60
 # Objects and backgrounds
 # HomeDay = DaySelect() # - commented out for now
-HOME_image = pygame.image.load(os.path.join('Assets', 'PO_night1.PNG')) #adding image
+HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')) #adding image
 HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
 # ------------------------------
 
@@ -78,8 +78,13 @@ def main():
         mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
         loc = [mx, my] # mouse location
 
-        in_start_range_x = loc[0] >= 378 and loc[0] <= 780
-        in_start_range_y = loc[1] >= 46 and loc[1] <= 460
+        START_BUTTON_X_MIN = 378
+        START_BUTTON_X_MAX = 780
+        START_BUTTON_Y_MIN = 46
+        START_BUTTON_Y_MAX = 460
+
+        in_start_range_x = loc[0] >= START_BUTTON_X_MIN and loc[0] <= START_BUTTON_X_MAX
+        in_start_range_y = loc[1] >= START_BUTTON_Y_MIN and loc[1] <= START_BUTTON_Y_MAX
 
         if view == "Home" and clicking and in_start_range_x and in_start_range_y:
             view = "Game"
