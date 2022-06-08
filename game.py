@@ -81,12 +81,16 @@ def main():
     RoundStart = False
 
     SEC = 1000 # 1000 milliseconds
-    num_seconds = 0 # number of seconds passed since game view was entered
-    next_second = SEC # next upcoming second in game view
+    num_seconds = 0 # number of seconds passed since the current day started
+    next_second = SEC # next upcoming second in the day
 
     clicking = False
     right_clicking = False
 
+    START_BUTTON_X_MIN = 378
+    START_BUTTON_X_MAX = 780
+    START_BUTTON_Y_MIN = 46
+    START_BUTTON_Y_MAX = 460
 
     # stuff that happens while the game is running
     while True:
@@ -94,11 +98,6 @@ def main():
 
         mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
         loc = [mx, my] # mouse location
-
-        START_BUTTON_X_MIN = 378
-        START_BUTTON_X_MAX = 780
-        START_BUTTON_Y_MIN = 46
-        START_BUTTON_Y_MAX = 460
 
         in_start_range_x = loc[0] >= START_BUTTON_X_MIN and loc[0] <= START_BUTTON_X_MAX
         in_start_range_y = loc[1] >= START_BUTTON_Y_MIN and loc[1] <= START_BUTTON_Y_MAX
