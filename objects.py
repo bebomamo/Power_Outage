@@ -33,3 +33,39 @@ class Window:
 #          -> down tl (113, 435)
 #          -> down br (787, 483)
 #
+#WINDOW
+#          ->left left = 19
+#          ->left top = 27
+#          ->left width = 62
+#          ->left height = 460
+#
+#          ->lock left = 489
+#          ->lock top = 207
+#          ->lock width = 68
+#          ->lock height = 22
+#
+#DOOR
+#          ->door left = 166
+#          ->door top = 28
+#          ->door width = 352
+#          ->door height = 454
+#
+#          ->right left = 786
+#          ->right top = 28
+#          ->right width = 80
+#          ->right height = 458
+#
+#BUNKER
+#          ->bunker left = 112
+#          ->bunker top = 34
+#          ->bunker width = 642
+#          ->bunker height = 312
+#
+#          ->down left = 112
+#          ->down top = 422
+#          ->down width = 644
+#          ->down height = 43
+#
+#
+#
+

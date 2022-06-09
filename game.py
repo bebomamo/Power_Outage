@@ -131,43 +131,36 @@ def draw_image():
 
 def main():
     global view
-    # initialization nation
+    #Functional Control logic initialization
     clock = pygame.time.Clock()
     day = 1 # ****DaySelect() when code is adjusted for day control****
     RoundStart = False
-
     SEC = 1000 # 1000 milliseconds
     num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
-    fire = False
-    damper = False #False is open damper, True is closed
     clicking = False
     right_clicking = False
-
-    START_BUTTON_X_MIN = 378
-    START_BUTTON_X_MAX = 780
-    START_BUTTON_Y_MIN = 46
-    START_BUTTON_Y_MAX = 460
-    FP_LOG_X_MIN = 343
-    FP_LOG_X_MAX = 435
-    FP_LOG_Y_MIN = 157
-    FP_LOG_Y_MAX = 175
-    FP_DAMPER_X_MIN = 325
-    FP_DAMPER_X_MAX = 335
-    FP_DAMPER_Y_MIN = 125
-    FP_DAMPER_Y_MAX = 149
-    FP_RIGHT_X_MIN = 831
-    FP_RIGHT_X_MAX = 875
-    FP_RIGHT_Y_MIN = 33
-    FP_RIGHT_Y_MAX = 437
-    FP_LEFT_X_MIN = 17
-    FP_LEFT_X_MAX = 57
-    FP_LEFT_Y_MIN = 31
-    FP_LEFT_Y_MAX = 439
-    FP_DOWN_X_MIN = 113
-    FP_DOWN_X_MAX = 787
-    FP_DOWN_Y_MIN = 435
-    FP_DOWN_Y_MAX = 483
+    
+    #game control logic
+    fire = False
+    damper = False #False is open damper, True is closed
+    WindowPhase = 1
+    DoorPhase = 1
+    Holding = False
+    
+    #Rect object initialization
+    START_BUTTON = pygame.Rect((378, 46), (402, 414))
+    LOG = pygame.Rect((343, 157), (92, 18))
+    DAMPER = pygame.Rect((325, 125), (10, 24))
+    FP_RIGHT = pygame.Rect((831, 33), (44, 404))
+    FP_LEFT = pygame.Rect((17, 31), (40, 408))
+    FP_DOWN = pygame.Rect((113, 435), (674, 48))
+    WI_LEFT = pygame.Rect((19,27), (62,460))
+    WI_LOCK = pygame.Rect((489, 207), (68, 22))
+    DOOR = pygame.Rect((166, 28), (352, 454))
+    DO_RIGHT = pygame.Rect((786, 28), (80, 458))
+    BUNKER = pygame.Rect((112,34), (642, 312))
+    BU_DOWN = pygame.Rect((112,422), (644,43))
 
     # stuff that happens while the game is running
     while True:
@@ -176,18 +169,8 @@ def main():
         mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
         loc = [mx, my] # mouse location
 
-        #Click barrier control logic, only executes relevant range selection code based on what "view" player is in
-        if (view == "Home"):
-            in_start_range = loc[0] >= START_BUTTON_X_MIN and loc[0] <= START_BUTTON_X_MAX and loc[1] >= START_BUTTON_Y_MIN and loc[1] <= START_BUTTON_Y_MAX #cleaned to 1 line range
-        if (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed"):
-            in_damper_range = loc[0] >= FP_DAMPER_X_MIN and loc[0] <= FP_DAMPER_X_MAX and loc[1] >= FP_DAMPER_Y_MIN and loc[1] <= FP_DAMPER_Y_MAX
-            in_log_range = loc[0] >= FP_LOG_X_MIN and loc[0] <= FP_LOG_X_MAX and loc[1] >= FP_LOG_Y_MIN and loc[1] <= FP_LOG_Y_MAX
-            in_right_range = loc[0] >= FP_RIGHT_X_MIN and loc[0] <= FP_RIGHT_X_MAX and loc[1] >= FP_RIGHT_Y_MIN and loc[1] <= FP_RIGHT_Y_MAX
-            in_left_range = loc[0] >= FP_LEFT_X_MIN and loc[0] <= FP_LEFT_X_MAX and loc[1] >= FP_LEFT_Y_MIN and loc[1] <= FP_LEFT_Y_MAX
-            in_down_range = loc[0] >= FP_DOWN_X_MIN and loc[0] <= FP_DOWN_X_MAX and loc[1] >= FP_DOWN_Y_MIN and loc[1] <= FP_DOWN_Y_MAX
-
         #view + click control
-        if view == "Home" and clicking and in_start_range:
+        if view == "Home" and clicking and START_BUTTON.collidepoint(loc[0],loc[1]):
             view = "Game-load"
         elif view == "Game-load":
             pygame.time.wait(3000)
@@ -195,26 +178,70 @@ def main():
             start_time = pygame.time.get_ticks()
             RoundStart = True
         elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
-            if(in_log_range):
+            if(LOG.collidepoint(loc[0],loc[1])):
                 if(fire):
                     fire = False
                     view = "Fireplace-unlit-open"
                 elif(damper == False):  #must add message to let the player know the damper must be open to turn on fire
                     fire = True
                     view = "Fireplace-lit-open"
-            elif(in_damper_range):
+            elif(DAMPER.collidepoint(loc[0],loc[1])):
                 if(damper):
                     damper = False
                     view = "Fireplace-unlit-open"
                 elif(fire == False):
                     damper = True
                     view = "Fireplace-unlit-closed"
-            elif(in_right_range): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
+            elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                 view = "Window-locked1"
-            elif(in_left_range):
+            elif(FP_LEFT.collidepoint(loc[0], loc[1])):
                 view = "Door"
-            elif(in_down_range):
+            elif(FP_DOWN.collidepoint(loc[0], loc[1])):
                 view = "Bunker"
+        elif (view == "Window-locked1" or view == "Window-locked2" or view == "Window-locked3" or view == "Window-unlocked") and clicking:
+            if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                view = "Fireplace-unlit-open"
+            elif(WI_LOCK.collidepoint(loc[0], loc[1])):
+                if(WindowPhase == 1):
+                    view = "Window-locked1"
+                elif(WindowPhase == 2):
+                    view = "Window-locked1"
+                elif(WindowPhase == 3):
+                    view = "Window-locked2"
+                #elif(WindowPhase == 4) #unlocked
+                    #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+        elif (view == "Door") and clicking:
+            if(DOOR.collidepoint(loc[0], loc[1])):
+                if(DoorPhase == 1):
+                    view = "Door-locked1"
+                elif(DoorPhase == 2):
+                    view = "Door-locked2"
+                elif(DoorPhase == 3):
+                    view = "Door-locked3"
+                elif(DoorPhase == 4):
+                    view = "Door-locked4"
+                elif(DoorPhase == 5):
+                    view == "Door-unlocked"
+            elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
+                view = "Fireplace-unlit-open" #Again needs control logic based on what the fireplace state is
+        elif (view == "Door-locked1" or view == "Door-locked2" or view == "Door-locked3" or view == "Door-locked4" or view == "Door-unlocked") and (right_clicking or clicking):
+            if (right_clicking):
+                view = "Door"
+            elif(clicking and not(view == "Door-unlocked")): #can relock door fully with click unless fully unlocked
+                view = "Door-locked1"
+        elif (view == "Bunker" or view == "Bunker-held") and clicking:
+            if(BUNKER.collidepoint(loc[0], loc[1])):
+                if(Holding):
+                    Holding = False
+                    view = "Bunker"
+                else:
+                    Holding = True
+                    view = "Bunker-held"
+            elif(BU_DOWN.collidepoint(loc[0], loc[1])):
+                if(Holding):
+                    view = "Bunker-held"
+                else: #again control logic for phases and states of rooms is needed here
+                    view = "Fireplace-unlit-open"
 
 
         if RoundStart:
