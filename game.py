@@ -147,12 +147,12 @@ def main():
     #Functional Control logic initialization
     clock = pygame.time.Clock()
     day = '1' # ****DaySelect() when code is adjusted for day control****
-    RoundStart = False
+    round_start = False
 
     SEC = 1000 # 1000 milliseconds
     num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
-    jiggle_time = 0
+    jiggle_timer = 0
 
     window = Window(day)
 
@@ -162,9 +162,9 @@ def main():
     #game control logic
     fire = False
     damper = False #False is open damper, True is closed
-    WindowPhase = 1
-    DoorPhase = 1
-    Holding = False
+    window_phase = 1
+    door_phase = 1
+    holding = False
     
     #Rect object initialization
     START_BUTTON = pygame.Rect((378, 46), (402, 414))
@@ -196,10 +196,10 @@ def main():
 
             # instatiate Window, Door, Fireplace, and Bunker objects
             window = Window(day)
-            jiggle_time = window.jiggleTime
+            jiggle_timer = window.jiggle_time
 
             start_time = pygame.time.get_ticks()
-            RoundStart = True
+            round_start = True
         elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
             if(LOG.collidepoint(loc[0],loc[1])):
                 if(fire):
@@ -216,13 +216,13 @@ def main():
                     damper = True
                     view = "Fireplace-unlit-closed"
             elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                if WindowPhase == 1:
+                if window_phase == 1:
                     view = "Window-locked1"
-                elif WindowPhase == 2:
+                elif window_phase == 2:
                     view = "Window-locked2"
-                elif WindowPhase == 3:
+                elif window_phase == 3:
                     view = "Window-locked3"
-                elif WindowPhase == 4:
+                elif window_phase == 4:
                     view = "Window-unlocked"
             elif(FP_LEFT.collidepoint(loc[0], loc[1])):
                 view = "Door"
@@ -233,32 +233,32 @@ def main():
                 if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
                     view = "Fireplace-unlit-open"
                 elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                    if(WindowPhase == 2):
-                        WindowPhase = 1
-                    elif(WindowPhase == 3):
-                        WindowPhase = 2
-                    #elif(WindowPhase == 4) #unlocked
+                    if(window_phase == 2):
+                        window_phase = 1
+                    elif(window_phase == 3):
+                        window_phase = 2
+                    #elif(window_phase == 4) #unlocked
                         #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
             else:
-                if WindowPhase == 1:
+                if window_phase == 1:
                     view = "Window-locked1"
-                elif WindowPhase == 2:
+                elif window_phase == 2:
                     view = "Window-locked2"
-                elif WindowPhase == 3:
+                elif window_phase == 3:
                     view = "Window-locked3"
-                elif WindowPhase == 4:
+                elif window_phase == 4:
                     view = "Window-unlocked"
         elif (view == "Door") and clicking:
             if(DOOR.collidepoint(loc[0], loc[1])):
-                if(DoorPhase == 1):
+                if(door_phase == 1):
                     view = "Door-locked1"
-                elif(DoorPhase == 2):
+                elif(door_phase == 2):
                     view = "Door-locked2"
-                elif(DoorPhase == 3):
+                elif(door_phase == 3):
                     view = "Door-locked3"
-                elif(DoorPhase == 4):
+                elif(door_phase == 4):
                     view = "Door-locked4"
-                elif(DoorPhase == 5):
+                elif(door_phase == 5):
                     view == "Door-unlocked"
             elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
                 view = "Fireplace-unlit-open" #Again needs control logic based on what the fireplace state is
@@ -269,33 +269,33 @@ def main():
                 view = "Door-locked1"
         elif (view == "Bunker" or view == "Bunker-held") and clicking:
             if(BUNKER.collidepoint(loc[0], loc[1])):
-                if(Holding):
-                    Holding = False
+                if(holding):
+                    holding = False
                     view = "Bunker"
                 else:
-                    Holding = True
+                    holding = True
                     view = "Bunker-held"
             elif(BU_DOWN.collidepoint(loc[0], loc[1])):
-                if(Holding):
+                if(holding):
                     view = "Bunker-held"
                 else: #again control logic for phases and states of rooms is needed here
                     view = "Fireplace-unlit-open"
 
 
-        if RoundStart:
+        if round_start:
             ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
             if ticks - start_time > next_second:
-                # print(jiggle_time)
+                # print(jiggle_timer)
                 next_second += SEC
                 num_seconds += 1
                 # print(num_seconds) # **temp commented out to test for hitbox barriers**
 
-                jiggle_time -= 1
+                jiggle_timer -= 1
 
-                if(jiggle_time == 0):
-                    WindowPhase += 1
-                    jiggle_time = window.jiggleTime
+                if(jiggle_timer == 0):
+                    window_phase += 1
+                    jiggle_timer = window.jiggle_time
 
                   
 
