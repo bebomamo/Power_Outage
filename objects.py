@@ -2,13 +2,13 @@ import random
 
 class Window:
     def __init__(self, day):
-        if(day == 1): self.jiggleTime = random.sample(range(1,30),90) #attacked once but only once
-        elif(day == 2): self.jiggleTime = random.sample(range(1,30),70) #attacked once or twice but more likely once
-        elif(day == 3): self.jiggleTime = random.sample(range(1,20),55) #attacked twice but only twice
-        elif(day == 4): self.jiggleTime = random.sample(range(1,20),45) #attacked twice or 3 times but likely twice
-        elif(day == 5): self.jiggleTime = random.sample(range(1,10),35) #attacked three or four times
-        elif(day == 6): self.jiggleTime = random.sample(range(1,10),25) #attacked four or five times
-        elif(day == 7): self.jiggleTime = random.sample(range(1,5),15) #attacked seven to nine times
+        if(day == 1): self.jiggleTime = 90 + random.randrange(0,30,1) #attacked once but only once
+        elif(day == 2): self.jiggleTime = 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
+        elif(day == 3): self.jiggleTime = 55 + random.randrange(0,20,1) #attacked twice but only twice
+        elif(day == 4): self.jiggleTime = 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
+        elif(day == 5): self.jiggleTime = 35 + random.randrange(0,10,1) #attacked three or four times
+        elif(day == 6): self.jiggleTime = 25 + random.randrange(0,5,1) #attacked four or five times
+        elif(day == 7): self.jiggleTime = 15 + random.randrange(0,5,1) #attacked seven to nine times
 
 
 # note: FrontDoor, Bunker, and Fireplace (at least) will all be added once their attributes have been precisely defined
