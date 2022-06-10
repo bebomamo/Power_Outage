@@ -43,9 +43,12 @@ pygame.display.set_caption("Power Outage")
 #     f.truncate(0)
 #     f.write(newday)
 #     f.close()
+
 # --------initialization nation--------
+# Pygame stuff
 view = "Home"
 FPS = 60
+
 # Objects and backgrounds
 # HomeDay = DaySelect() # - commented out for now
 HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be DaySelect()****
@@ -84,6 +87,14 @@ WINDOW_locked3_image = pygame.image.load(os.path.join('assets', 'PO_window_locke
 WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #image resizing
 WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizing
+
+
+#game control logic
+fire = False
+damper = False #False is open damper, True is closed
+window_phase = 1
+door_phase = 1
+holding = False
 # ------------------------------
 
 # # note: I moved DaySelect from its own file to here because it is only one function. For organization's 
@@ -98,25 +109,55 @@ def draw_image():
     if(view == "Home"):
         WIN.blit(HOME, (0, 0)) #display home image
     elif(view == "Game-load"):
+        # here we add an if statement that checks what day we are loading into
         WIN.blit(LOAD, (0, 0)) # temporary
 
-         #for window screens
-    elif(view == "Window-locked1"):
-        WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
-    elif(view == "Window-locked2"):
-        WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
-    elif(view == "Window-locked3"):
-        WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
-    elif(view == "Window-unlocked"):
-        WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
+    elif view == "Fireplace":
+        # if statements that look at the fireplace's state and determine what image to show
+        if damper and not fire:
+            WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
+        elif not damper and not fire:
+            WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
+        else:
+            WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fireplace
+        
+    elif(view == "Window"):
+        # here we add if statements that looks at the window's state and determines what image to show
+        if window_phase == 1:
+            WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
+        elif window_phase == 2:
+            WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
+        elif window_phase == 3:
+            WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
+        elif window_phase == 4:
+            WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
 
-        #for fireplace screens
-    elif(view == "Fireplace-unlit-open"):
-        WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
-    elif(view == "Fireplace-lit-open"):
-        WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fierplace
-    elif(view == "Fireplace-unlit-closed"):
-        WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
+        print()
+    # elif(view == "Door"):
+    #     # here we add if statements that looks at the door's state and determines what image to show
+    #     print()
+    # elif(view == "Bunker"):
+    #     # here we add if statements that looks at the bunker's state and determines what image to show
+    #     print()
+
+    #     #for fireplace screens
+    # elif(view == "Fireplace-unlit-open"):
+    #     WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
+    # elif(view == "Fireplace-lit-open"):
+    #     WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fierplace
+    # elif(view == "Fireplace-unlit-closed"):
+    #     WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
+
+    #      #for window screens
+    # elif(view == "Window-locked1"):
+    #     WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
+    # elif(view == "Window-locked2"):
+    #     WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
+    # elif(view == "Window-locked3"):
+    #     WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
+    # elif(view == "Window-unlocked"):
+    #     WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
+
 
         #for door and door lock screens
     elif(view == "Door"):
@@ -137,13 +178,19 @@ def draw_image():
         WIN.blit(BUNKER, (0,0)) #display Bunker image
     elif(view == "Bunker-held"):
         WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
-
-
     pygame.display.update()
+
+
 
 
 def main():
     global view
+    global fire
+    global damper
+    global window_phase
+    global door_phase
+    global holding
+
     #Functional Control logic initialization
     clock = pygame.time.Clock()
     day = '1' # ****DaySelect() when code is adjusted for day control****
@@ -159,12 +206,6 @@ def main():
     clicking = False
     right_clicking = False
     
-    #game control logic
-    fire = False
-    damper = False #False is open damper, True is closed
-    window_phase = 1
-    door_phase = 1
-    holding = False
     
     #Rect object initialization
     START_BUTTON = pygame.Rect((378, 46), (402, 414))
@@ -192,7 +233,7 @@ def main():
             view = "Game-load"
         elif view == "Game-load":
             pygame.time.wait(3000)
-            view = 'Fireplace-unlit-open'
+            view = 'Fireplace'
 
             # instatiate Window, Door, Fireplace, and Bunker objects
             window = Window(day)
@@ -200,54 +241,36 @@ def main():
 
             start_time = pygame.time.get_ticks()
             round_start = True
-        elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
+        
+        elif (view == "Fireplace") and clicking:
             if(LOG.collidepoint(loc[0],loc[1])):
-                if(fire):
+                if fire:
                     fire = False
-                    view = "Fireplace-unlit-open"
-                elif(damper == False):  #must add message to let the player know the damper must be open to turn on fire
+                elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
                     fire = True
-                    view = "Fireplace-lit-open"
-            elif(DAMPER.collidepoint(loc[0],loc[1])):
-                if(damper):
-                    damper = False
-                    view = "Fireplace-unlit-open"
-                elif(fire == False):
-                    damper = True
-                    view = "Fireplace-unlit-closed"
+            elif (DAMPER.collidepoint(loc[0],loc[1])):
+                if not fire:
+                    if damper:
+                        damper = False
+                    else:
+                        damper = True
             elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                if window_phase == 1:
-                    view = "Window-locked1"
-                elif window_phase == 2:
-                    view = "Window-locked2"
-                elif window_phase == 3:
-                    view = "Window-locked3"
-                elif window_phase == 4:
-                    view = "Window-unlocked"
+                view = 'Window'
             elif(FP_LEFT.collidepoint(loc[0], loc[1])):
                 view = "Door"
             elif(FP_DOWN.collidepoint(loc[0], loc[1])):
                 view = "Bunker"
-        elif (view == "Window-locked1" or view == "Window-locked2" or view == "Window-locked3" or view == "Window-unlocked"):
-            if clicking:
-                if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
-                    view = "Fireplace-unlit-open"
-                elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                    if(window_phase == 2):
-                        window_phase = 1
-                    elif(window_phase == 3):
-                        window_phase = 2
-                    #elif(window_phase == 4) #unlocked
-                        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
-            else:
-                if window_phase == 1:
-                    view = "Window-locked1"
-                elif window_phase == 2:
-                    view = "Window-locked2"
-                elif window_phase == 3:
-                    view = "Window-locked3"
-                elif window_phase == 4:
-                    view = "Window-unlocked"
+        elif (view == "Window") and clicking:
+            if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                view = "Fireplace"
+            elif(WI_LOCK.collidepoint(loc[0], loc[1])):
+                if(window_phase == 2):
+                    window_phase = 1
+                elif(window_phase == 3):
+                    window_phase = 2
+                elif(window_phase == 4): #unlocked
+                    print('you\'re fucked, buddy')
+                    #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
         elif (view == "Door") and clicking:
             if(DOOR.collidepoint(loc[0], loc[1])):
                 if(door_phase == 1):
