@@ -1,6 +1,15 @@
+import random
+
 class Window:
-    def __init__(self, jiggletime):
-        self.jiggletime = jiggletime
+    def __init__(self, day):
+        if(day == 1): self.jiggleTime = random.sample(range(1,30),90) #attacked once but only once
+        elif(day == 2): self.jiggleTime = random.sample(range(1,30),70) #attacked once or twice but more likely once
+        elif(day == 3): self.jiggleTime = random.sample(range(1,20),55) #attacked twice but only twice
+        elif(day == 4): self.jiggleTime = random.sample(range(1,20),45) #attacked twice or 3 times but likely twice
+        elif(day == 5): self.jiggleTime = random.sample(range(1,10),35) #attacked three or four times
+        elif(day == 6): self.jiggleTime = random.sample(range(1,10),25) #attacked four or five times
+        elif(day == 7): self.jiggleTime = random.sample(range(1,5),15) #attacked seven to nine times
+
 
 # note: FrontDoor, Bunker, and Fireplace (at least) will all be added once their attributes have been precisely defined
 #       At this point, it seems like FrontDoor, Bunker, and Fireplace should all be classes and Fear should not,
@@ -68,4 +77,3 @@ class Window:
 #
 #
 #
-

@@ -1,4 +1,5 @@
-import pygame, os, sys, objects
+import pygame, os, sys
+from objects import *
 
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
@@ -175,6 +176,8 @@ def main():
         elif view == "Game-load":
             pygame.time.wait(3000)
             view = 'Fireplace-unlit-open'
+            window = Window(1)
+
             start_time = pygame.time.get_ticks()
             RoundStart = True
         elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
@@ -250,6 +253,7 @@ def main():
                 next_second += SEC
                 num_seconds += 1
                 # print(num_seconds) **temp commented out to test for hitbox barriers**
+            print(window.jiggleTime)
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
@@ -271,6 +275,7 @@ def main():
                     right_clicking = False
             
         draw_image() # update image every every event has been iterated through
-        print(pygame.mouse.get_pos())
+        #print(pygame.mouse.get_pos())
+
 if __name__ == "__main__":
     main()
