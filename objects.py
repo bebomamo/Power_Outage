@@ -10,7 +10,19 @@ class Window:
         elif(day == 6): self.jiggleTime = 25 + random.randrange(0,5,1) #attacked four or five times
         elif(day == 7): self.jiggleTime = 15 + random.randrange(0,5,1) #attacked seven to nine times
 
+class Fireplace:
+    def __init__(self, day):
+        if(day == 1): self.climbdown = 600 #ten minutes
+        elif(day == 2): self.climbdown = 267 + random.randrange(0,60,1) #50/50 attacked once or twice
+        elif(day == 3): self.climbdown = 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
+        elif(day == 4): self.climbdown = 182 + random.randrange(0,14,1) #attacked three times no matter what
+        elif(day == 5): self.climbdown = 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
+        elif(day == 6): self.climbdown = 117 #attacked 5 times no matter what
+        elif(day == 7): self.climbdown = 87 + random.randrange(0,20,1) #attacked 5 or 6 times
 
+class Door:
+    def __init__(self, day):
+        if()
 # note: FrontDoor, Bunker, and Fireplace (at least) will all be added once their attributes have been precisely defined
 #       At this point, it seems like FrontDoor, Bunker, and Fireplace should all be classes and Fear should not,
 #       although this may change.

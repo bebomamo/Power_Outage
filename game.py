@@ -12,7 +12,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WIN.fill(WHITE) # set to white so we remember it exists, will almost certainly be changed later
 pygame.display.set_caption("Power Outage")
 
-#---------Home Screen Startup control logic---------- Temporarily commented out
+#---------Home Screen Startup control logic and day passing logic---------- Temporarily commented out
 # def DaySelect():
 #     f = open("day.txt", mode = 'r')
 #     day = f.read(1)
@@ -30,7 +30,19 @@ pygame.display.set_caption("Power Outage")
 #         return 'PO_night6.PNG'
 #     if(day == '7'):
 #         return 'PO_night7.PNG'
-#     f.close
+#     f.close()
+#------------Day getter(as a char)----------------
+# def get_day():
+#     f = open("day.txt", mode = 'r')
+#     day = f.read(1)
+#     f.close()
+#     return day
+#------------Day setter(as a char)----------------
+# def set_day(newday):
+#     f = open("day.txt", mode = 'r+')
+#     f.truncate(0)
+#     f.write(newday)
+#     f.close()
 # --------initialization nation--------
 view = "Home"
 FPS = 60
@@ -177,7 +189,6 @@ def main():
             pygame.time.wait(3000)
             view = 'Fireplace-unlit-open'
             window = Window(1)
-
             start_time = pygame.time.get_ticks()
             RoundStart = True
         elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
