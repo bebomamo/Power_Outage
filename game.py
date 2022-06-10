@@ -146,11 +146,16 @@ def main():
     global view
     #Functional Control logic initialization
     clock = pygame.time.Clock()
-    day = 1 # ****DaySelect() when code is adjusted for day control****
+    day = '1' # ****DaySelect() when code is adjusted for day control****
     RoundStart = False
+
     SEC = 1000 # 1000 milliseconds
     num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
+    jiggle_time = 0
+
+    window = Window(day)
+
     clicking = False
     right_clicking = False
     
@@ -188,7 +193,11 @@ def main():
         elif view == "Game-load":
             pygame.time.wait(3000)
             view = 'Fireplace-unlit-open'
-            window = Window(1)
+
+            # instatiate Window, Door, Fireplace, and Bunker objects
+            window = Window(day)
+            jiggle_time = window.jiggleTime
+
             start_time = pygame.time.get_ticks()
             RoundStart = True
         elif (view == "Fireplace-unlit-open" or view == "Fireplace-lit-open" or view == "Fireplace-unlit-closed") and clicking:
@@ -207,23 +216,38 @@ def main():
                     damper = True
                     view = "Fireplace-unlit-closed"
             elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                view = "Window-locked1"
+                if WindowPhase == 1:
+                    view = "Window-locked1"
+                elif WindowPhase == 2:
+                    view = "Window-locked2"
+                elif WindowPhase == 3:
+                    view = "Window-locked3"
+                elif WindowPhase == 4:
+                    view = "Window-unlocked"
             elif(FP_LEFT.collidepoint(loc[0], loc[1])):
                 view = "Door"
             elif(FP_DOWN.collidepoint(loc[0], loc[1])):
                 view = "Bunker"
-        elif (view == "Window-locked1" or view == "Window-locked2" or view == "Window-locked3" or view == "Window-unlocked") and clicking:
-            if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
-                view = "Fireplace-unlit-open"
-            elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                if(WindowPhase == 1):
+        elif (view == "Window-locked1" or view == "Window-locked2" or view == "Window-locked3" or view == "Window-unlocked"):
+            if clicking:
+                if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                    view = "Fireplace-unlit-open"
+                elif(WI_LOCK.collidepoint(loc[0], loc[1])):
+                    if(WindowPhase == 2):
+                        WindowPhase = 1
+                    elif(WindowPhase == 3):
+                        WindowPhase = 2
+                    #elif(WindowPhase == 4) #unlocked
+                        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+            else:
+                if WindowPhase == 1:
                     view = "Window-locked1"
-                elif(WindowPhase == 2):
-                    view = "Window-locked1"
-                elif(WindowPhase == 3):
+                elif WindowPhase == 2:
                     view = "Window-locked2"
-                #elif(WindowPhase == 4) #unlocked
-                    #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+                elif WindowPhase == 3:
+                    view = "Window-locked3"
+                elif WindowPhase == 4:
+                    view = "Window-unlocked"
         elif (view == "Door") and clicking:
             if(DOOR.collidepoint(loc[0], loc[1])):
                 if(DoorPhase == 1):
@@ -260,11 +284,20 @@ def main():
 
         if RoundStart:
             ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
+
             if ticks - start_time > next_second:
+                # print(jiggle_time)
                 next_second += SEC
                 num_seconds += 1
-                # print(num_seconds) **temp commented out to test for hitbox barriers**
-            print(window.jiggleTime)
+                # print(num_seconds) # **temp commented out to test for hitbox barriers**
+
+                jiggle_time -= 1
+
+                if(jiggle_time == 0):
+                    WindowPhase += 1
+                    jiggle_time = window.jiggleTime
+
+                  
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
