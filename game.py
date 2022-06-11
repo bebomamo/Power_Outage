@@ -114,70 +114,30 @@ def draw_image():
 
     elif view == "Fireplace":
         # if statements that look at the fireplace's state and determine what image to show
-        if damper and not fire:
-            WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
-        elif not damper and not fire:
-            WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
-        else:
-            WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fireplace
+        if damper and not fire: WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
+        elif not damper and not fire: WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
+        else: WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fireplace
         
     elif(view == "Window"):
         # here we add if statements that looks at the window's state and determines what image to show
-        if window_phase == 1:
-            WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
-        elif window_phase == 2:
-            WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
-        elif window_phase == 3:
-            WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
-        elif window_phase == 4:
-            WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
+        if window_phase == 1: WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
+        elif window_phase == 2: WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
+        elif window_phase == 3: WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
+        elif window_phase == 4: WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
 
-        print()
-    # elif(view == "Door"):
-    #     # here we add if statements that looks at the door's state and determines what image to show
-    #     print()
-    # elif(view == "Bunker"):
-    #     # here we add if statements that looks at the bunker's state and determines what image to show
-    #     print()
+    elif view == "Door": WIN.blit(DOOR, (0,0)) #display Frontdoor image
 
-    #     #for fireplace screens
-    # elif(view == "Fireplace-unlit-open"):
-    #     WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
-    # elif(view == "Fireplace-lit-open"):
-    #     WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fierplace
-    # elif(view == "Fireplace-unlit-closed"):
-    #     WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
-
-    #      #for window screens
-    # elif(view == "Window-locked1"):
-    #     WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
-    # elif(view == "Window-locked2"):
-    #     WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
-    # elif(view == "Window-locked3"):
-    #     WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
-    # elif(view == "Window-unlocked"):
-    #     WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
-
-
-        #for door and door lock screens
-    elif(view == "Door"):
-        WIN.blit(DOOR, (0,0)) #display Frontdoor image
-    elif(view == "Door-locked1"):
-        WIN.blit(DOOR_locked1, (0,0)) #display fully locked door phase (phase = 1)
-    elif(view == "Door-locked2"):
-        WIN.blit(DOOR_locked2, (0,0)) #display second phase locked door (phase = 2)
-    elif(view == "Door-locked3"):
-        WIN.blit(DOOR_locked3, (0,0)) #display third phase locked door (phase = 3)
-    elif(view == "Door-locked4"):
-        WIN.blit(DOOR_locked4, (0,0)) #display Fourth phase locked door (phase = 4)
-    elif(view == "Door-unlocked"):
-        WIN.blit(DOOR_unlocked, (0,0)) #display unlocked door (phase = 5)
-
-        #for bunker screens
+    elif view == 'Door-lock': 
+        if door_phase == 1:  WIN.blit(DOOR_locked1, (0,0)) #display fully locked door phase (phase = 1)
+        elif door_phase == 2: WIN.blit(DOOR_locked2, (0,0)) #display second phase locked door (phase = 2)
+        elif door_phase == 3: WIN.blit(DOOR_locked3, (0,0)) #display third phase locked door (phase = 3)
+        elif door_phase == 4: WIN.blit(DOOR_locked4, (0,0)) #display Fourth phase locked door (phase = 4)
+        elif door_phase == 5: WIN.blit(DOOR_unlocked, (0,0)) #display unlocked door (phase = 5)
+    
     elif(view == "Bunker"):
-        WIN.blit(BUNKER, (0,0)) #display Bunker image
-    elif(view == "Bunker-held"):
-        WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
+        if not holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
+        else: WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
+
     pygame.display.update()
 
 
@@ -244,65 +204,40 @@ def main():
         
         elif (view == "Fireplace") and clicking:
             if(LOG.collidepoint(loc[0],loc[1])):
-                if fire:
-                    fire = False
+                if fire: fire = False
                 elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
                     fire = True
             elif (DAMPER.collidepoint(loc[0],loc[1])):
                 if not fire:
-                    if damper:
-                        damper = False
-                    else:
-                        damper = True
+                    if damper: damper = False
+                    else: damper = True
             elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                 view = 'Window'
-            elif(FP_LEFT.collidepoint(loc[0], loc[1])):
-                view = "Door"
-            elif(FP_DOWN.collidepoint(loc[0], loc[1])):
-                view = "Bunker"
+            elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
+            elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
         elif (view == "Window") and clicking:
             if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
                 view = "Fireplace"
             elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                if(window_phase == 2):
-                    window_phase = 1
-                elif(window_phase == 3):
-                    window_phase = 2
+                if(window_phase == 2): window_phase = 1
+                elif(window_phase == 3): window_phase = 2
                 elif(window_phase == 4): #unlocked
                     print('you\'re fucked, buddy')
                     #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
         elif (view == "Door") and clicking:
-            if(DOOR.collidepoint(loc[0], loc[1])):
-                if(door_phase == 1):
-                    view = "Door-locked1"
-                elif(door_phase == 2):
-                    view = "Door-locked2"
-                elif(door_phase == 3):
-                    view = "Door-locked3"
-                elif(door_phase == 4):
-                    view = "Door-locked4"
-                elif(door_phase == 5):
-                    view == "Door-unlocked"
+            if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
             elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
-                view = "Fireplace-unlit-open" #Again needs control logic based on what the fireplace state is
-        elif (view == "Door-locked1" or view == "Door-locked2" or view == "Door-locked3" or view == "Door-locked4" or view == "Door-unlocked") and (right_clicking or clicking):
-            if (right_clicking):
-                view = "Door"
-            elif(clicking and not(view == "Door-unlocked")): #can relock door fully with click unless fully unlocked
-                view = "Door-locked1"
-        elif (view == "Bunker" or view == "Bunker-held") and clicking:
+                view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+        elif view == "Door-lock":
+            if right_clicking: view = "Door"
+            elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
+                door_phase = 1
+        elif (view == "Bunker") and clicking:
             if(BUNKER.collidepoint(loc[0], loc[1])):
-                if(holding):
-                    holding = False
-                    view = "Bunker"
-                else:
-                    holding = True
-                    view = "Bunker-held"
+                if holding: holding = False
+                else: holding = True
             elif(BU_DOWN.collidepoint(loc[0], loc[1])):
-                if(holding):
-                    view = "Bunker-held"
-                else: #again control logic for phases and states of rooms is needed here
-                    view = "Fireplace-unlit-open"
+                if not holding: view = "Fireplace"
 
 
         if round_start:
