@@ -163,10 +163,7 @@ def main():
     clock = pygame.time.Clock()
     day = '1' # ****DaySelect() when code is adjusted for day control****
 
-    # timing initialization
-    sec_timer = pygame.USEREVENT + 0
-    pygame.time.set_timer(sec_timer, 1000)
-
+    # timing initialization (a lot of this might not be needed)
     SEC = 1000 # 1000 milliseconds
     # num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
@@ -212,7 +209,13 @@ def main():
             window = Window(day)
             jiggle_timer = window.jiggle_time
 
-            start_time = pygame.time.get_ticks()
+            # -----timing stuff-----
+            start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
+
+            sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+            pygame.time.set_timer(sec_timer, 1000)
+            # ----------------------
+
             playing = True
             view = 'Fireplace'
         
