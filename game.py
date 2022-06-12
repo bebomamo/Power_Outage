@@ -63,10 +63,12 @@ FIREPLACE_unlit_closed_image = pygame.image.load(os.path.join('assets', 'PO_Fire
 FIREPLACE_unlit_closed = pygame.transform.scale(FIREPLACE_unlit_closed_image, (WIDTH, HEIGHT)) #image resizing
 FIREPLACE_lit_open_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_lit_open_beta.PNG')).convert() #adding image
 FIREPLACE_lit_open = pygame.transform.scale(FIREPLACE_lit_open_image, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
+
 BUNKER_image = pygame.image.load(os.path.join('assets', 'PO_bunker_beta.PNG')).convert() #adding image
 BUNKER = pygame.transform.scale(BUNKER_image, (WIDTH, HEIGHT)) #image resizing
 BUNKER_held_image = pygame.image.load(os.path.join('assets', 'PO_bunker_held_beta.PNG')).convert() #adding image
 BUNKER_held = pygame.transform.scale(BUNKER_held_image, (WIDTH, HEIGHT)) #image resizing
+
 DOOR_image = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
 DOOR = pygame.transform.scale(DOOR_image, (WIDTH, HEIGHT)) #image resizing
 DOOR_locked1_image = pygame.image.load(os.path.join('assets', 'PO_door_locked1_beta.PNG')).convert() #adding image
@@ -79,6 +81,7 @@ DOOR_locked4_image = pygame.image.load(os.path.join('assets', 'PO_door_locked4_b
 DOOR_locked4 = pygame.transform.scale(DOOR_locked4_image, (WIDTH, HEIGHT)) #image resizing
 DOOR_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_door_unlocked_beta.PNG')).convert() #adding image
 DOOR_unlocked = pygame.transform.scale(DOOR_unlocked_image, (WIDTH, HEIGHT)) #image resizing
+
 WINDOW_locked1_image = pygame.image.load(os.path.join('assets', 'PO_window_locked1_beta.PNG')).convert() #adding image
 WINDOW_locked1 = pygame.transform.scale(WINDOW_locked1_image, (WIDTH, HEIGHT)) #image resizing
 WINDOW_locked2_image = pygame.image.load(os.path.join('assets', 'PO_window_locked2_beta.PNG')).convert() #adding image
@@ -87,7 +90,6 @@ WINDOW_locked3_image = pygame.image.load(os.path.join('assets', 'PO_window_locke
 WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #image resizing
 WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizing
-
 
 #game control logic
 fire = False
@@ -101,13 +103,11 @@ holding = False
 # #       sake it's probably better to not create an entire file for a single function, as doing so would
 # #       quickly crowd the repository and is not really convention in Python. Commented out for now
 
-
-
 #----------------Image Drawing/View control-----------------
-         #for home screens and game load, home select logic is located somewhere else
 def draw_image():
     if(view == "Home"):
         WIN.blit(HOME, (0, 0)) #display home image
+    
     elif(view == "Game-load"):
         # here we add an if statement that checks what day we are loading into
         WIN.blit(LOAD, (0, 0)) # temporary
@@ -141,8 +141,6 @@ def draw_image():
     pygame.display.update()
 
 
-
-
 def main():
     global view
     global fire
@@ -154,18 +152,21 @@ def main():
     #Functional Control logic initialization
     clock = pygame.time.Clock()
     day = '1' # ****DaySelect() when code is adjusted for day control****
-    round_start = False
+    playing = False
+    paused = False
 
+    # timing initialization
     SEC = 1000 # 1000 milliseconds
     num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
     jiggle_timer = 0
 
+    # Object initialization
     window = Window(day)
 
+    # clicking initialization
     clicking = False
     right_clicking = False
-    
     
     #Rect object initialization
     START_BUTTON = pygame.Rect((378, 46), (402, 414))
@@ -188,9 +189,10 @@ def main():
         mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
         loc = [mx, my] # mouse location
 
-        #view + click control
+        # ----------View/Click Controls------------
         if view == "Home" and clicking and START_BUTTON.collidepoint(loc[0],loc[1]):
             view = "Game-load"
+
         elif view == "Game-load":
             pygame.time.wait(3000)
             view = 'Fireplace'
@@ -200,7 +202,7 @@ def main():
             jiggle_timer = window.jiggle_time
 
             start_time = pygame.time.get_ticks()
-            round_start = True
+            playing = True
         
         elif (view == "Fireplace") and clicking:
             if(LOG.collidepoint(loc[0],loc[1])):
@@ -215,6 +217,7 @@ def main():
                 view = 'Window'
             elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
             elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
+
         elif (view == "Window") and clicking:
             if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
                 view = "Fireplace"
@@ -224,38 +227,46 @@ def main():
                 elif(window_phase == 4): #unlocked
                     print('you\'re fucked, buddy')
                     #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+        
         elif (view == "Door") and clicking:
             if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
             elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
                 view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+
         elif view == "Door-lock":
             if right_clicking: view = "Door"
             elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
                 door_phase = 1
+
         elif (view == "Bunker") and clicking:
             if(BUNKER.collidepoint(loc[0], loc[1])):
                 if holding: holding = False
                 else: holding = True
             elif(BU_DOWN.collidepoint(loc[0], loc[1])):
                 if not holding: view = "Fireplace"
+        # -----------------------------------------
 
-
-        if round_start:
+        # -----------Timing System/Game------------
+        if playing:
             ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
             if ticks - start_time > next_second:
                 # print(jiggle_timer)
                 next_second += SEC
                 num_seconds += 1
-                # print(num_seconds) # **temp commented out to test for hitbox barriers**
+                print(num_seconds) # **temp commented out to test for hitbox barriers**
 
                 jiggle_timer -= 1
 
                 if(jiggle_timer == 0):
                     window_phase += 1
                     jiggle_timer = window.jiggle_time
+        # -----------------------------------------
 
-                  
+        # ---------------Pause---------------------
+        if paused:
+            print('paused')
+        # -----------------------------------------
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
@@ -276,8 +287,12 @@ def main():
                 if event.button == 3:
                     right_clicking = False
             
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if playing != paused:
+                        playing = not playing
+                        paused = not paused
         draw_image() # update image every every event has been iterated through
-        #print(pygame.mouse.get_pos())
 
 if __name__ == "__main__":
     main()
