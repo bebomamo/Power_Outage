@@ -1,3 +1,4 @@
+from tkinter import N
 import pygame, os, sys
 from objects import *
 
@@ -57,6 +58,8 @@ HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
 LOAD_image = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
 LOAD = pygame.transform.scale(LOAD_image, (WIDTH, HEIGHT)) # resizing temp load image
 
+PAUSE_MENU = pygame.image.load(os.path.join('assets', 'Pause_Menu.png')).convert()
+
 FIREPLACE_unlit_open_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_unlit_open_beta.PNG')).convert() #adding image
 FIREPLACE_unlit_open = pygame.transform.scale(FIREPLACE_unlit_open_image, (WIDTH, HEIGHT)) #image resizing
 FIREPLACE_unlit_closed_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_unlit_closed_beta.PNG')).convert() #adding image
@@ -97,6 +100,9 @@ damper = False #False is open damper, True is closed
 window_phase = 1
 door_phase = 1
 holding = False
+
+playing = False
+paused = False
 # ------------------------------
 
 # # note: I moved DaySelect from its own file to here because it is only one function. For organization's 
@@ -138,8 +144,10 @@ def draw_image():
         if not holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
 
+    if paused:
+        WIN.blit(PAUSE_MENU, (325, 125))
+    
     pygame.display.update()
-
 
 def main():
     global view
@@ -148,17 +156,21 @@ def main():
     global window_phase
     global door_phase
     global holding
+    global playing
+    global paused
 
     #Functional Control logic initialization
     clock = pygame.time.Clock()
     day = '1' # ****DaySelect() when code is adjusted for day control****
-    playing = False
-    paused = False
 
     # timing initialization
+    sec_timer = pygame.USEREVENT + 0
+    pygame.time.set_timer(sec_timer, 1000)
+
     SEC = 1000 # 1000 milliseconds
-    num_seconds = 0 # number of seconds passed since the current day started
+    # num_seconds = 0 # number of seconds passed since the current day started
     next_second = SEC # next upcoming second in the day
+    num_seconds = 0
     jiggle_timer = 0
 
     # Object initialization
@@ -194,8 +206,7 @@ def main():
             view = "Game-load"
 
         elif view == "Game-load":
-            pygame.time.wait(3000)
-            view = 'Fireplace'
+            pygame.time.delay(3000) # note -- this is currently causing some slight timing issues that need to be dealt with
 
             # instatiate Window, Door, Fireplace, and Bunker objects
             window = Window(day)
@@ -203,8 +214,9 @@ def main():
 
             start_time = pygame.time.get_ticks()
             playing = True
+            view = 'Fireplace'
         
-        elif (view == "Fireplace") and clicking:
+        elif view == "Fireplace" and clicking:
             if(LOG.collidepoint(loc[0],loc[1])):
                 if fire: fire = False
                 elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
@@ -218,7 +230,7 @@ def main():
             elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
             elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
 
-        elif (view == "Window") and clicking:
+        elif view == "Window" and clicking:
             if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
                 view = "Fireplace"
             elif(WI_LOCK.collidepoint(loc[0], loc[1])):
@@ -228,7 +240,7 @@ def main():
                     print('you\'re fucked, buddy')
                     #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
         
-        elif (view == "Door") and clicking:
+        elif view == "Door" and clicking:
             if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
             elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
                 view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
@@ -238,7 +250,7 @@ def main():
             elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
                 door_phase = 1
 
-        elif (view == "Bunker") and clicking:
+        elif view == "Bunker" and clicking:
             if(BUNKER.collidepoint(loc[0], loc[1])):
                 if holding: holding = False
                 else: holding = True
@@ -248,19 +260,21 @@ def main():
 
         # -----------Timing System/Game------------
         if playing:
-            ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
+            # ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
-            if ticks - start_time > next_second:
-                # print(jiggle_timer)
-                next_second += SEC
-                num_seconds += 1
-                print(num_seconds) # **temp commented out to test for hitbox barriers**
+            # if ticks - start_time > next_second:
+            #     # print(jiggle_timer)
+            #     next_second += SEC
+            #     num_seconds += 1
+            #     print(num_seconds) # **temp commented out to test for hitbox barriers**
 
-                jiggle_timer -= 1
+            #     # jiggle_timer -= 1
 
-                if(jiggle_timer == 0):
-                    window_phase += 1
-                    jiggle_timer = window.jiggle_time
+            #     # if(jiggle_timer == 0):
+            #     #     window_phase += 1
+            #     #     jiggle_timer = window.jiggle_time
+            #print(num_seconds)
+            pass
         # -----------------------------------------
 
         # ---------------Pause---------------------
@@ -289,9 +303,16 @@ def main():
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if playing != paused:
+                    if playing != paused: # can only pause/unpause game after entering
                         playing = not playing
                         paused = not paused
+
+            if playing: # all events that we only want to process while the game is being played
+                if event.type == sec_timer:
+                    print(num_seconds)
+                    num_seconds += 1
+
+            
         draw_image() # update image every every event has been iterated through
 
 if __name__ == "__main__":
