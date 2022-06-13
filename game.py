@@ -106,13 +106,13 @@ HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
 LOAD_image = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
 LOAD = pygame.transform.scale(LOAD_image, (WIDTH, HEIGHT)) # resizing temp load image
 
-PAUSE_MENU = pygame.image.load(os.path.join('assets', 'Pause_Menu.png')).convert_alpha()
+PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
-FIREPLACE_unlit_open_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_unlit_open_beta.PNG')).convert() #adding image
+FIREPLACE_unlit_open_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_open_beta.PNG')).convert() #adding image
 FIREPLACE_unlit_open = pygame.transform.scale(FIREPLACE_unlit_open_image, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_unlit_closed_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_unlit_closed_beta.PNG')).convert() #adding image
+FIREPLACE_unlit_closed_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_closed_beta.PNG')).convert() #adding image
 FIREPLACE_unlit_closed = pygame.transform.scale(FIREPLACE_unlit_closed_image, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_lit_open_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_lit_open_beta.PNG')).convert() #adding image
+FIREPLACE_lit_open_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_lit_open_beta.PNG')).convert() #adding image
 FIREPLACE_lit_open = pygame.transform.scale(FIREPLACE_lit_open_image, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
 
 BUNKER_image = pygame.image.load(os.path.join('assets', 'PO_bunker_beta.PNG')).convert() #adding image
@@ -263,46 +263,51 @@ def main():
             playing = True
             view = 'Fireplace'
         
-        elif view == "Fireplace" and clicking:
-            if(LOG.collidepoint(loc[0],loc[1])):
-                if fire: fire = False
-                elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
-                    fire = True
-            elif (DAMPER.collidepoint(loc[0],loc[1])):
-                if not fire:
-                    if damper: damper = False
-                    else: damper = True
-            elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                view = 'Window'
-            elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
-            elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
+        if clicking: # handle clicks
+            if playing: # handle clicks while playing
+                if view == "Fireplace":
+                    if(LOG.collidepoint(loc[0],loc[1])):
+                        if fire: fire = False
+                        elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
+                            fire = True
+                    elif (DAMPER.collidepoint(loc[0],loc[1])):
+                        if not fire:
+                            if damper: damper = False
+                            else: damper = True
+                    elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
+                        view = 'Window'
+                    elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
+                    elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
 
-        elif view == "Window" and clicking:
-            if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
-                view = "Fireplace"
-            elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                if(window_phase == 2): window_phase = 1
-                elif(window_phase == 3): window_phase = 2
-                elif(window_phase == 4): #unlocked
-                    print('you\'re fucked, buddy')
-                    #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
-        
-        elif view == "Door" and clicking:
-            if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
-            elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
-                view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+                elif view == "Window":
+                    if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                        view = "Fireplace"
+                    elif(WI_LOCK.collidepoint(loc[0], loc[1])):
+                        if(window_phase == 2): window_phase = 1
+                        elif(window_phase == 3): window_phase = 2
+                        elif(window_phase == 4): #unlocked
+                            print('you\'re fucked, buddy')
+                            #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+                
+                elif view == "Door":
+                    if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
+                    elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
+                        view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
 
-        elif view == "Door-lock":
-            if right_clicking: view = "Door"
-            elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
-                door_phase = 1
+                elif view == "Door-lock":
+                    if right_clicking: view = "Door"
+                    elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
+                        door_phase = 1
 
-        elif view == "Bunker" and clicking:
-            if(BUNKER.collidepoint(loc[0], loc[1])):
-                if holding: holding = False
-                else: holding = True
-            elif(BU_DOWN.collidepoint(loc[0], loc[1])):
-                if not holding: view = "Fireplace"
+                elif view == "Bunker":
+                    if(BUNKER.collidepoint(loc[0], loc[1])):
+                        if holding: holding = False
+                        else: holding = True
+                    elif(BU_DOWN.collidepoint(loc[0], loc[1])):
+                        if not holding: view = "Fireplace"
+
+            if paused: # handle clicks while paused
+                pass
         # -----------------------------------------
 
         # -----------Timing System/Game------------
