@@ -2,8 +2,10 @@ from tkinter import N
 import pygame, os, sys
 from objects import *
 
+# constants
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
+SEC = 1000 # 1000 milliseconds
 
 pygame.init() # start pygame
 
@@ -46,7 +48,7 @@ pygame.display.set_caption("Power Outage")
 #     f.close()
 
 # calculates the window's jiggletime based on the inputed night
-def get_jiggletime(night):
+def get_jiggletime():
     if(night == '1'): return 90 + random.randrange(0,30,1) #attacked once but only once
     elif(night == '2'): return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
     elif(night == '3'): return 55 + random.randrange(0,20,1) #attacked twice but only twice
@@ -54,7 +56,47 @@ def get_jiggletime(night):
     elif(night == '5'): return 35 + random.randrange(0,10,1) #attacked three or four times
     elif(night == '6'): return 25 + random.randrange(0,5,1) #attacked four or five times
     elif(night == '7'): return 15 + random.randrange(0,5,1) #attacked seven to nine times
-    
+
+# function that ensures all of the game's state variables are set to their default values, called at the start of every night
+def initialize_night():
+    # Fireplace vars
+    global fire
+    global damper
+
+    # Window vars
+    global window_phase
+    global jiggle_time
+    global jiggle_timer
+
+    # Door vars
+    global door_phase
+
+    # Bunker vars
+    global holding
+
+    # Time vars
+    global next_second
+    global num_seconds
+
+    # time
+    next_second = SEC # next upcoming second in the night (starts at 1)
+    num_seconds = 0 # number of seconds that have passed since the current night started
+
+    # Fireplace
+    fire = False
+    damper = False #False is open damper, True is closed
+
+    # Window
+    window_phase = 1
+    jiggle_time = get_jiggletime() # the window's jiggle time for this night
+    jiggle_timer = jiggle_time
+
+    # Door
+    door_phase = 1
+
+    # Bunker
+    holding = False 
+
 # --------initialization nation--------
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
@@ -104,14 +146,9 @@ WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT))
 view = "Home"
 FPS = 60
 
-#game control logic
-fire = False
-damper = False #False is open damper, True is closed
-window_phase = 1
-door_phase = 1
-holding = False
-
+# initialize first night
 night = '1' # ****night_select() when code is adjusted for night control/progress saving****
+initialize_night()
 
 playing = False
 paused = False
@@ -159,22 +196,30 @@ def draw_image():
 
 def main():
     global view
-    global fire
-    global damper
-    global window_phase
-    global door_phase
-    global holding
+
     global playing
     global paused
 
-    clock = pygame.time.Clock()
+    # Fireplace vars
+    global fire
+    global damper
 
-    # timing initialization (a lot of this might not be needed)
-    SEC = 1000 # 1000 milliseconds
-    next_second = SEC # next upcoming second in the night
-    num_seconds = 0 # number of seconds that have passed since the current night started
-    jiggle_time = get_jiggletime(night) # the window's jiggle time for this night
-    jiggle_timer = 0
+    # Window vars
+    global window_phase
+    global jiggle_time
+    global jiggle_timer
+
+    # Door vars
+    global door_phase
+
+    # Bunker vars
+    global holding
+
+    # Time vars
+    global next_second
+    global num_seconds
+    
+    clock = pygame.time.Clock()
 
     # clicking initialization
     clicking = False
@@ -207,9 +252,6 @@ def main():
 
         elif view == "Game-load":
             pygame.time.delay(3000)
-
-            # instatiate Window, Door, Fireplace, and Bunker objects
-            jiggle_timer = jiggle_time
 
             # -----timing stuff-----
             start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
@@ -265,22 +307,21 @@ def main():
 
         # -----------Timing System/Game------------
         if playing:
-            ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
+            # ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
-            if ticks - start_time > next_second:
-                print(jiggle_timer)
-                next_second += SEC
-                num_seconds += 1
-                # print(num_seconds) # **temp commented out to test for hitbox barriers**
+            # if ticks - start_time > next_second:
+            #     print(jiggle_timer)
+            #     next_second += SEC
+            #     num_seconds += 1
+            #     # print(num_seconds) # **temp commented out to test for hitbox barriers**
 
-                jiggle_timer -= 1
+            #     jiggle_timer -= 1
 
-                if(jiggle_timer == 0):
-                    window_phase += 1
-                    jiggle_timer = jiggle_time
-                
-            #print(num_seconds)
-            #pass
+            #     if(jiggle_timer == 0):
+            #         window_phase += 1
+            #         jiggle_timer = jiggle_time
+            pass
+            
         # -----------------------------------------
 
         # ---------------Pause---------------------
@@ -313,9 +354,12 @@ def main():
                         playing = not playing
                         paused = not paused
 
-            if playing: # all events that we only want to process while the game is being played
-                if event.type == sec_timer:
+            if playing: # all events that we only want to process while the game is being played (aka not paused)
+                if event.type == sec_timer: 
+                    # anything in here will occur once for every second of playtime
+                    print('jiggle_timer:', jiggle_timer)
                     num_seconds += 1
+                    jiggle_timer -= 1
             
         draw_image() # update image every every event has been iterated through
 
