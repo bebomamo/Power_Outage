@@ -10,55 +10,61 @@ pygame.init() # start pygame
 # Window setup
 WIDTH, HEIGHT = 900, 500 #subject to change
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-WIN.fill(WHITE) # set to white so we remember it exists, will almost certainly be changed later
+WIN.fill(WHITE)
 pygame.display.set_caption("Power Outage")
 
-#---------Home Screen Startup control logic and day passing logic---------- Temporarily commented out
-# def DaySelect():
-#     f = open("day.txt", mode = 'r')
-#     day = f.read(1)
-#     if(day == '1'): 
+#---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
+# def night_select():
+#     f = open("night.txt", mode = 'r')
+#     night = f.read(1)
+#     if(night == '1'): 
 #         return 'PO_night1.PNG'
-#     if(day == '2'):
+#     if(night == '2'):
 #         return 'PO_night2.PNG'
-#     if(day == '3'):
+#     if(night == '3'):
 #         return 'PO_night3.PNG'
-#     if(day == '4'):
+#     if(night == '4'):
 #         return 'PO_night4.PNG'
-#     if(day == '5'):
+#     if(night == '5'):
 #         return 'PO_night5.PNG'
-#     if(day == '6'):
+#     if(night == '6'):
 #         return 'PO_night6.PNG'
-#     if(day == '7'):
+#     if(night == '7'):
 #         return 'PO_night7.PNG'
 #     f.close()
-#------------Day getter(as a char)----------------
-# def get_day():
-#     f = open("day.txt", mode = 'r')
-#     day = f.read(1)
+#------------Night getter(as a char)----------------
+# def get_night():
+#     f = open("night.txt", mode = 'r')
+#     night = f.read(1)
 #     f.close()
-#     return day
-#------------Day setter(as a char)----------------
-# def set_day(newday):
-#     f = open("day.txt", mode = 'r+')
+#     return night
+#------------Night setter(as a char)----------------
+# def set_night(newnight):
+#     f = open("night.txt", mode = 'r+')
 #     f.truncate(0)
-#     f.write(newday)
+#     f.write(newnight)
 #     f.close()
 
+# calculates the window's jiggletime based on the inputed night
+def get_jiggletime(night):
+    if(night == '1'): return 90 + random.randrange(0,30,1) #attacked once but only once
+    elif(night == '2'): return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
+    elif(night == '3'): return 55 + random.randrange(0,20,1) #attacked twice but only twice
+    elif(night == '4'): return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
+    elif(night == '5'): return 35 + random.randrange(0,10,1) #attacked three or four times
+    elif(night == '6'): return 25 + random.randrange(0,5,1) #attacked four or five times
+    elif(night == '7'): return 15 + random.randrange(0,5,1) #attacked seven to nine times
+    
 # --------initialization nation--------
-# Pygame stuff
-view = "Home"
-FPS = 60
-
 # Objects and backgrounds
-# HomeDay = DaySelect() # - commented out for now
-HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be DaySelect()****
+# home_night = night_select() # - commented out for now
+HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
 
 LOAD_image = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
 LOAD = pygame.transform.scale(LOAD_image, (WIDTH, HEIGHT)) # resizing temp load image
 
-PAUSE_MENU = pygame.image.load(os.path.join('assets', 'Pause_Menu.png')).convert()
+PAUSE_MENU = pygame.image.load(os.path.join('assets', 'Pause_Menu.png')).convert_alpha()
 
 FIREPLACE_unlit_open_image = pygame.image.load(os.path.join('assets', 'PO_Fireplace_unlit_open_beta.PNG')).convert() #adding image
 FIREPLACE_unlit_open = pygame.transform.scale(FIREPLACE_unlit_open_image, (WIDTH, HEIGHT)) #image resizing
@@ -94,6 +100,10 @@ WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #
 WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizing
 
+# Pygame stuff
+view = "Home"
+FPS = 60
+
 #game control logic
 fire = False
 damper = False #False is open damper, True is closed
@@ -101,13 +111,11 @@ window_phase = 1
 door_phase = 1
 holding = False
 
+night = '1' # ****night_select() when code is adjusted for night control/progress saving****
+
 playing = False
 paused = False
-# ------------------------------
-
-# # note: I moved DaySelect from its own file to here because it is only one function. For organization's 
-# #       sake it's probably better to not create an entire file for a single function, as doing so would
-# #       quickly crowd the repository and is not really convention in Python. Commented out for now
+# -------------------------------------
 
 #----------------Image Drawing/View control-----------------
 def draw_image():
@@ -115,7 +123,7 @@ def draw_image():
         WIN.blit(HOME, (0, 0)) #display home image
     
     elif(view == "Game-load"):
-        # here we add an if statement that checks what day we are loading into
+        # here we add an if statement that checks what night we are loading into
         WIN.blit(LOAD, (0, 0)) # temporary
 
     elif view == "Fireplace":
@@ -159,19 +167,14 @@ def main():
     global playing
     global paused
 
-    #Functional Control logic initialization
     clock = pygame.time.Clock()
-    day = '1' # ****DaySelect() when code is adjusted for day control****
 
     # timing initialization (a lot of this might not be needed)
     SEC = 1000 # 1000 milliseconds
-    # num_seconds = 0 # number of seconds passed since the current day started
-    next_second = SEC # next upcoming second in the day
-    num_seconds = 0
+    next_second = SEC # next upcoming second in the night
+    num_seconds = 0 # number of seconds that have passed since the current night started
+    jiggle_time = get_jiggletime(night) # the window's jiggle time for this night
     jiggle_timer = 0
-
-    # Object initialization
-    window = Window(day)
 
     # clicking initialization
     clicking = False
@@ -203,11 +206,10 @@ def main():
             view = "Game-load"
 
         elif view == "Game-load":
-            pygame.time.delay(3000) # note -- this is currently causing some slight timing issues that need to be dealt with
+            pygame.time.delay(3000)
 
             # instatiate Window, Door, Fireplace, and Bunker objects
-            window = Window(day)
-            jiggle_timer = window.jiggle_time
+            jiggle_timer = jiggle_time
 
             # -----timing stuff-----
             start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
@@ -263,21 +265,22 @@ def main():
 
         # -----------Timing System/Game------------
         if playing:
-            # ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
+            ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
-            # if ticks - start_time > next_second:
-            #     # print(jiggle_timer)
-            #     next_second += SEC
-            #     num_seconds += 1
-            #     print(num_seconds) # **temp commented out to test for hitbox barriers**
+            if ticks - start_time > next_second:
+                print(jiggle_timer)
+                next_second += SEC
+                num_seconds += 1
+                # print(num_seconds) # **temp commented out to test for hitbox barriers**
 
-            #     # jiggle_timer -= 1
+                jiggle_timer -= 1
 
-            #     # if(jiggle_timer == 0):
-            #     #     window_phase += 1
-            #     #     jiggle_timer = window.jiggle_time
+                if(jiggle_timer == 0):
+                    window_phase += 1
+                    jiggle_timer = jiggle_time
+                
             #print(num_seconds)
-            pass
+            #pass
         # -----------------------------------------
 
         # ---------------Pause---------------------
@@ -312,9 +315,7 @@ def main():
 
             if playing: # all events that we only want to process while the game is being played
                 if event.type == sec_timer:
-                    print(num_seconds)
                     num_seconds += 1
-
             
         draw_image() # update image every every event has been iterated through
 
