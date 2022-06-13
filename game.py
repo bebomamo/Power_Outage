@@ -6,6 +6,7 @@ from objects import *
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
 SEC = 1000 # 1000 milliseconds
+FPS = 60
 
 pygame.init() # start pygame
 
@@ -15,89 +16,6 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WIN.fill(WHITE)
 pygame.display.set_caption("Power Outage")
 
-#---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
-# def night_select():
-#     f = open("night.txt", mode = 'r')
-#     night = f.read(1)
-#     if(night == '1'): 
-#         return 'PO_night1.PNG'
-#     if(night == '2'):
-#         return 'PO_night2.PNG'
-#     if(night == '3'):
-#         return 'PO_night3.PNG'
-#     if(night == '4'):
-#         return 'PO_night4.PNG'
-#     if(night == '5'):
-#         return 'PO_night5.PNG'
-#     if(night == '6'):
-#         return 'PO_night6.PNG'
-#     if(night == '7'):
-#         return 'PO_night7.PNG'
-#     f.close()
-#------------Night getter(as a char)----------------
-# def get_night():
-#     f = open("night.txt", mode = 'r')
-#     night = f.read(1)
-#     f.close()
-#     return night
-#------------Night setter(as a char)----------------
-# def set_night(newnight):
-#     f = open("night.txt", mode = 'r+')
-#     f.truncate(0)
-#     f.write(newnight)
-#     f.close()
-
-# calculates the window's jiggletime based on the inputed night
-def get_jiggletime():
-    if(night == '1'): return 90 + random.randrange(0,30,1) #attacked once but only once
-    elif(night == '2'): return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
-    elif(night == '3'): return 55 + random.randrange(0,20,1) #attacked twice but only twice
-    elif(night == '4'): return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
-    elif(night == '5'): return 35 + random.randrange(0,10,1) #attacked three or four times
-    elif(night == '6'): return 25 + random.randrange(0,5,1) #attacked four or five times
-    elif(night == '7'): return 15 + random.randrange(0,5,1) #attacked seven to nine times
-
-# function that ensures all of the game's state variables are set to their default values, called at the start of every night
-def initialize_night():
-    # Fireplace vars
-    global fire
-    global damper
-
-    # Window vars
-    global window_phase
-    global jiggle_time
-    global jiggle_timer
-
-    # Door vars
-    global door_phase
-
-    # Bunker vars
-    global holding
-
-    # Time vars
-    global next_second
-    global num_seconds
-
-    # time
-    next_second = SEC # next upcoming second in the night (starts at 1)
-    num_seconds = 0 # number of seconds that have passed since the current night started
-
-    # Fireplace
-    fire = False
-    damper = False #False is open damper, True is closed
-
-    # Window
-    window_phase = 1
-    jiggle_time = get_jiggletime() # the window's jiggle time for this night
-    jiggle_timer = jiggle_time
-
-    # Door
-    door_phase = 1
-
-    # Bunker
-    holding = False 
-
-# --------initialization nation--------
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
 HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
@@ -142,84 +60,120 @@ WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #
 WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizing
 
-# Pygame stuff
-view = "Home"
-FPS = 60
+#---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
+# def night_select():
+#     f = open("night.txt", mode = 'r')
+#     night = f.read(1)
+#     if(night == '1'): 
+#         return 'PO_night1.PNG'
+#     if(night == '2'):
+#         return 'PO_night2.PNG'
+#     if(night == '3'):
+#         return 'PO_night3.PNG'
+#     if(night == '4'):
+#         return 'PO_night4.PNG'
+#     if(night == '5'):
+#         return 'PO_night5.PNG'
+#     if(night == '6'):
+#         return 'PO_night6.PNG'
+#     if(night == '7'):
+#         return 'PO_night7.PNG'
+#     f.close()
+#------------Night getter(as a char)----------------
+# def get_night():
+#     f = open("night.txt", mode = 'r')
+#     night = f.read(1)
+#     f.close()
+#     return night
+#------------Night setter(as a char)----------------
+# def set_night(newnight):
+#     f = open("night.txt", mode = 'r+')
+#     f.truncate(0)
+#     f.write(newnight)
+#     f.close()
 
-# initialize first night
-night = '1' # ****night_select() when code is adjusted for night control/progress saving****
-initialize_night()
+# calculates the window's jiggletime based on the inputed night
+def get_jiggletime(states: dict):
+    if(states['night'] == '1'): return 90 + random.randrange(0,30,1) #attacked once but only once
+    elif(states['night'] == '2'): return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
+    elif(states['night'] == '3'): return 55 + random.randrange(0,20,1) #attacked twice but only twice
+    elif(states['night'] == '4'): return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
+    elif(states['night'] == '5'): return 35 + random.randrange(0,10,1) #attacked three or four times
+    elif(states['night'] == '6'): return 25 + random.randrange(0,5,1) #attacked four or five times
+    elif(states['night'] == '7'): return 15 + random.randrange(0,5,1) #attacked seven to nine times
 
-playing = False
-paused = False
-# -------------------------------------
+# function that ensures all of the game's state variables are set to their default values, called at the start of every night
+def initialize_night(states: dict):
+    # Time
+    states['next_second'] = SEC # next upcoming second in the night (starts at 1)
+    states['num_seconds'] = 0 # number of seconds that have passed since the current night started
 
-#----------------Image Drawing/View control-----------------
-def draw_image():
-    if(view == "Home"):
+    # Fireplace
+    states['fire'] = False
+    states['damper'] = False #False is open damper, True is closed
+
+    # Window
+    states['window_phase'] = 1
+    states['jiggle_time'] = get_jiggletime(states) # the window's jiggle time for this night
+    states['jiggle_timer'] = states['jiggle_time']
+
+    # Door
+    states['door_phase'] = 1
+
+    # Bunker
+    states['holding'] = False 
+
+# function that determines which images to display based off current game states
+def draw_image(states: dict):
+    if states['view'] == "Home":
         WIN.blit(HOME, (0, 0)) #display home image
     
-    elif(view == "Game-load"):
+    elif states['view'] == "Game-load":
         # here we add an if statement that checks what night we are loading into
         WIN.blit(LOAD, (0, 0)) # temporary
 
-    elif view == "Fireplace":
+    elif states['view'] == "Fireplace":
         # if statements that look at the fireplace's state and determine what image to show
-        if damper and not fire: WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
-        elif not damper and not fire: WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
+        if states['damper'] and not states['fire']: WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
+        elif not states['damper'] and not states['fire']: WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
         else: WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fireplace
         
-    elif(view == "Window"):
+    elif states['view'] == "Window":
         # here we add if statements that looks at the window's state and determines what image to show
-        if window_phase == 1: WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
-        elif window_phase == 2: WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
-        elif window_phase == 3: WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
-        elif window_phase == 4: WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
+        if states['window_phase'] == 1: WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
+        elif states['window_phase'] == 2: WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
+        elif states['window_phase'] == 3: WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
+        elif states['window_phase'] == 4: WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
 
-    elif view == "Door": WIN.blit(DOOR, (0,0)) #display Frontdoor image
+    elif states['view'] == "Door": WIN.blit(DOOR, (0,0)) #display Frontdoor image
 
-    elif view == 'Door-lock': 
-        if door_phase == 1:  WIN.blit(DOOR_locked1, (0,0)) #display fully locked door phase (phase = 1)
-        elif door_phase == 2: WIN.blit(DOOR_locked2, (0,0)) #display second phase locked door (phase = 2)
-        elif door_phase == 3: WIN.blit(DOOR_locked3, (0,0)) #display third phase locked door (phase = 3)
-        elif door_phase == 4: WIN.blit(DOOR_locked4, (0,0)) #display Fourth phase locked door (phase = 4)
-        elif door_phase == 5: WIN.blit(DOOR_unlocked, (0,0)) #display unlocked door (phase = 5)
+    elif states['view'] == 'Door-lock': 
+        if states['door_phase'] == 1:  WIN.blit(DOOR_locked1, (0,0)) #display fully locked door phase (phase = 1)
+        elif states['door_phase'] == 2: WIN.blit(DOOR_locked2, (0,0)) #display second phase locked door (phase = 2)
+        elif states['door_phase'] == 3: WIN.blit(DOOR_locked3, (0,0)) #display third phase locked door (phase = 3)
+        elif states['door_phase'] == 4: WIN.blit(DOOR_locked4, (0,0)) #display Fourth phase locked door (phase = 4)
+        elif states['door_phase'] == 5: WIN.blit(DOOR_unlocked, (0,0)) #display unlocked door (phase = 5)
     
-    elif(view == "Bunker"):
-        if not holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
+    elif states['view'] == "Bunker":
+        if not states['holding']: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
 
-    if paused:
+    if states['paused']:
         WIN.blit(PAUSE_MENU, (325, 125))
     
     pygame.display.update()
 
-def main():
-    global view
-
-    global playing
-    global paused
-
-    # Fireplace vars
-    global fire
-    global damper
-
-    # Window vars
-    global window_phase
-    global jiggle_time
-    global jiggle_timer
-
-    # Door vars
-    global door_phase
-
-    # Bunker vars
-    global holding
-
-    # Time vars
-    global next_second
-    global num_seconds
-    
+def main():  
     clock = pygame.time.Clock()
+
+    # initialize first night
+    states = {
+        'night': '1', 
+        'view': 'Home', 
+        'playing': False, 
+        'paused': False,
+        }
+    initialize_night(states)
 
     # clicking initialization
     clicking = False
@@ -247,10 +201,10 @@ def main():
         loc = [mx, my] # mouse location
 
         # ----------View/Click Controls------------
-        if view == "Home" and clicking and START_BUTTON.collidepoint(loc[0],loc[1]):
-            view = "Game-load"
+        if states['view'] == "Home" and clicking and START_BUTTON.collidepoint(loc[0],loc[1]):
+            states['view'] = "Game-load"
 
-        elif view == "Game-load":
+        elif states['view'] == "Game-load":
             pygame.time.delay(3000)
 
             # -----timing stuff-----
@@ -260,77 +214,79 @@ def main():
             pygame.time.set_timer(sec_timer, 1000)
             # ----------------------
 
-            playing = True
-            view = 'Fireplace'
+            states['playing'] = True
+            states['view'] = 'Fireplace'
         
         if clicking: # handle clicks
-            if playing: # handle clicks while playing
-                if view == "Fireplace":
+            if states['playing']: # handle clicks while playing
+                if states['view'] == "Fireplace":
                     if(LOG.collidepoint(loc[0],loc[1])):
-                        if fire: fire = False
-                        elif not damper == False:  #must add message to let the player know the damper must be open to turn on fire
-                            fire = True
+                        if states['fire']: states['fire'] = False
+                        elif not states['damper'] == False:  #must add message to let the player know the damper must be open to turn on fire
+                            states['fire'] = True
                     elif (DAMPER.collidepoint(loc[0],loc[1])):
-                        if not fire:
-                            if damper: damper = False
-                            else: damper = True
+                        if not states['fire']:
+                            if states['damper']: states['damper'] = False
+                            else: states['damper'] = True
                     elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                        view = 'Window'
-                    elif(FP_LEFT.collidepoint(loc[0], loc[1])): view = "Door"
-                    elif(FP_DOWN.collidepoint(loc[0], loc[1])): view = "Bunker"
+                        states['view'] = 'Window'
+                    elif(FP_LEFT.collidepoint(loc[0], loc[1])): states['view'] = "Door"
+                    elif(FP_DOWN.collidepoint(loc[0], loc[1])): states['view'] = "Bunker"
 
-                elif view == "Window":
+                elif states['view'] == "Window":
                     if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
-                        view = "Fireplace"
+                        states['view'] = "Fireplace"
                     elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                        if(window_phase == 2): window_phase = 1
-                        elif(window_phase == 3): window_phase = 2
-                        elif(window_phase == 4): #unlocked
+                        if(states['window_phase'] == 2): states['window_phase'] = 1
+                        elif(states['window_phase'] == 3): states['window_phase'] = 2
+                        elif(states['window_phase'] == 4): #unlocked
                             print('you\'re fucked, buddy')
                             #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
                 
-                elif view == "Door":
-                    if(DOOR.collidepoint(loc[0], loc[1])): view = 'Door-lock'
+                elif states['view'] == "Door":
+                    if(DOOR.collidepoint(loc[0], loc[1])): states['view'] = 'Door-lock'
                     elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
-                        view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+                        states['view'] = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
 
-                elif view == "Door-lock":
-                    if right_clicking: view = "Door"
-                    elif(clicking and not(door_phase == 5)): #can relock door fully with click unless fully unlocked
-                        door_phase = 1
+                elif states['view'] == "Door-lock":
+                    if not(states['door_phase'] == 5): #can relock door fully with click unless fully unlocked
+                        states['door_phase'] = 1
 
-                elif view == "Bunker":
+                elif states['view'] == "Bunker":
                     if(BUNKER.collidepoint(loc[0], loc[1])):
-                        if holding: holding = False
-                        else: holding = True
+                        if states['holding']: states['holding'] = False
+                        else: states['holding'] = True
                     elif(BU_DOWN.collidepoint(loc[0], loc[1])):
-                        if not holding: view = "Fireplace"
+                        if not states['holding']: states['view'] = "Fireplace"
 
-            if paused: # handle clicks while paused
+            if states['paused']: # handle clicks while paused
                 pass
+        
+        if right_clicking: # handle right clicks
+            if states['view'] == "Door-lock": states['view'] = "Door"
         # -----------------------------------------
 
         # -----------Timing System/Game------------
-        if playing:
+        if states['playing']:
             # ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
 
-            # if ticks - start_time > next_second:
-            #     print(jiggle_timer)
-            #     next_second += SEC
-            #     num_seconds += 1
-            #     # print(num_seconds) # **temp commented out to test for hitbox barriers**
+            # if ticks - start_time > states['next_second']:
+            #     print(states['jiggle_timer'])
+            #     states['next_second'] += SEC
+            #     states['num_seconds'] += 1
+            #     # print(states['num_seconds']) # **temp commented out to test for hitbox barriers**
 
-            #     jiggle_timer -= 1
+            #     states['jiggle_timer'] -= 1
 
-            #     if(jiggle_timer == 0):
-            #         window_phase += 1
-            #         jiggle_timer = jiggle_time
+            #     if(states['jiggle_timer'] == 0):
+            #         states['window_phase'] += 1
+            #         states['jiggle_timer'] = states['jiggle_time']
             pass
             
         # -----------------------------------------
 
         # ---------------Pause---------------------
-        if paused:
+        if states['paused']:
             print('paused')
         # -----------------------------------------
 
@@ -355,18 +311,18 @@ def main():
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if playing != paused: # can only pause/unpause game after entering
-                        playing = not playing
-                        paused = not paused
+                    if states['playing'] != states['paused']: # can only pause/unpause game after entering
+                        states['playing'] = not states['playing']
+                        states['paused'] = not states['paused']
 
-            if playing: # all events that we only want to process while the game is being played (aka not paused)
+            if states['playing']: # all events that we only want to process while the game is being played (aka not paused)
                 if event.type == sec_timer: 
                     # anything in here will occur once for every second of playtime
-                    print('jiggle_timer:', jiggle_timer)
-                    num_seconds += 1
-                    jiggle_timer -= 1
+                    print('jiggle_timer:', states['jiggle_timer'])
+                    states['num_seconds'] += 1
+                    states['jiggle_timer'] -= 1
             
-        draw_image() # update image every every event has been iterated through
+        draw_image(states) # update image every every event has been iterated through
 
 if __name__ == "__main__":
     main()
