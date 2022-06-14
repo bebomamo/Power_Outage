@@ -164,7 +164,6 @@ def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: boo
                     elif(states['window_phase'] == 3): states['window_phase'] = 2
                     elif(states['window_phase'] == 4): #unlocked
                         print('you\'re fucked, buddy')
-                        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
                 
             elif states['view'] == "Door":
                 if(rects['DOOR'].collidepoint(loc[0], loc[1])): states['view'] = 'Door-lock'
@@ -193,6 +192,10 @@ def update_states(states: dict):
     if states['jiggle_timer'] < 0:
         states['jiggle_timer'] = states['jiggle_time']
         states['window_phase'] += 1
+    
+    if states['window_phase'] == 4:
+        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+        pass
 
 # function that determines which images to display based off current game states
 def draw_image(states: dict):
@@ -307,7 +310,7 @@ def main():
                     states['num_seconds'] += 1
                     states['jiggle_timer'] -= 1
             
-        draw_image(states) # update image every every event has been iterated through
+        draw_image(states) # update image after every event has been iterated through
 
 if __name__ == "__main__":
     main()
