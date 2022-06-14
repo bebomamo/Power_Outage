@@ -58,7 +58,7 @@ WINDOW_locked2 = pygame.transform.scale(WINDOW_locked2_image, (WIDTH, HEIGHT)) #
 WINDOW_locked3_image = pygame.image.load(os.path.join('assets', 'PO_window_locked3_beta.PNG')).convert() #adding image
 WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #image resizing
 WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
-WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizing
+WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizingg
 
 #---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
 # def night_select():
@@ -123,6 +123,71 @@ def initialize_night(states: dict):
     # Bunker
     states['holding'] = False 
 
+def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
+    if states['view'] == "Home" and clicking and rects['START_BUTTON'].collidepoint(loc[0],loc[1]):
+            states['view'] = "Game-load"
+
+    elif states['view'] == "Game-load":
+        pygame.time.delay(3000)
+
+        # -----timing stuff-----
+        #start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
+        global sec_timer
+        sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+        pygame.time.set_timer(sec_timer, 1000)
+        # ----------------------
+
+        states['playing'] = True
+        states['view'] = 'Fireplace'
+        
+    if clicking: # handle clicks
+        if states['playing']: # handle clicks while playing
+            if states['view'] == "Fireplace":
+                if(rects['LOG'].collidepoint(loc[0],loc[1])):
+                    if states['fire']: states['fire'] = False
+                    elif not states['damper'] == False:  #must add message to let the player know the damper must be open to turn on fire
+                        states['fire'] = True
+                elif (rects['DAMPER'].collidepoint(loc[0],loc[1])):
+                    if not states['fire']:
+                        if states['damper']: states['damper'] = False
+                        else: states['damper'] = True
+                elif(rects['FP_RIGHT'].collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
+                    states['view'] = 'Window'
+                elif(rects['FP_LEFT'].collidepoint(loc[0], loc[1])): states['view'] = "Door"
+                elif(rects['FP_DOWN'].collidepoint(loc[0], loc[1])): states['view'] = "Bunker"
+
+            elif states['view'] == "Window":
+                if(rects['WI_LEFT'].collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                    states['view'] = "Fireplace"
+                elif(rects['WI_LOCK'].collidepoint(loc[0], loc[1])):
+                    if(states['window_phase'] == 2): states['window_phase'] = 1
+                    elif(states['window_phase'] == 3): states['window_phase'] = 2
+                    elif(states['window_phase'] == 4): #unlocked
+                        print('you\'re fucked, buddy')
+                        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
+                
+            elif states['view'] == "Door":
+                if(rects['DOOR'].collidepoint(loc[0], loc[1])): states['view'] = 'Door-lock'
+                elif(rects['DO_RIGHT'].collidepoint(loc[0], loc[1])):
+                    states['view'] = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+
+            elif states['view'] == "Door-lock":
+                if not(states['door_phase'] == 5): #can relock door fully with click unless fully unlocked
+                    states['door_phase'] = 1
+
+            elif states['view'] == "Bunker":
+                if(rects['BUNKER'].collidepoint(loc[0], loc[1])):
+                    if states['holding']: states['holding'] = False
+                    else: states['holding'] = True
+                elif(rects['BU_DOWN'].collidepoint(loc[0], loc[1])):
+                    if not states['holding']: states['view'] = "Fireplace"
+
+        if states['paused']: # handle clicks while paused
+            pass
+        
+    if right_clicking: # handle right clicks
+        if states['view'] == "Door-lock": states['view'] = "Door"
+
 # function that determines which images to display based off current game states
 def draw_image(states: dict):
     if states['view'] == "Home":
@@ -166,7 +231,7 @@ def draw_image(states: dict):
 def main():  
     clock = pygame.time.Clock()
 
-    # initialize first night
+    # ------initialize first night------
     states = {
         'night': '1', 
         'view': 'Home', 
@@ -174,121 +239,35 @@ def main():
         'paused': False,
         }
     initialize_night(states)
+    # ----------------------------------
 
     # clicking initialization
     clicking = False
     right_clicking = False
     
-    #Rect object initialization
-    START_BUTTON = pygame.Rect((378, 46), (402, 414))
-    LOG = pygame.Rect((343, 157), (92, 18))
-    DAMPER = pygame.Rect((325, 125), (10, 24))
-    FP_RIGHT = pygame.Rect((831, 33), (44, 404))
-    FP_LEFT = pygame.Rect((17, 31), (40, 408))
-    FP_DOWN = pygame.Rect((113, 435), (674, 48))
-    WI_LEFT = pygame.Rect((19,27), (62,460))
-    WI_LOCK = pygame.Rect((489, 207), (68, 22))
-    DOOR = pygame.Rect((166, 28), (352, 454))
-    DO_RIGHT = pygame.Rect((786, 28), (80, 458))
-    BUNKER = pygame.Rect((112,34), (642, 312))
-    BU_DOWN = pygame.Rect((112,422), (644,43))
+    # Dictionary containing all of the Rect objects to be used in the game
+    rects = {
+        'START_BUTTON': pygame.Rect((378, 46), (402, 414)),
+        'LOG': pygame.Rect((343, 157), (92, 18)),
+        'DAMPER': pygame.Rect((325, 125), (10, 24)),
+        'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
+        'FP_LEFT': pygame.Rect((17, 31), (40, 408)),
+        'FP_DOWN': pygame.Rect((113, 435), (674, 48)),
+        'WI_LEFT': pygame.Rect((19,27), (62,460)),
+        'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
+        'DOOR': pygame.Rect((166, 28), (352, 454)),
+        'DO_RIGHT': pygame.Rect((786, 28), (80, 458)),
+        'BUNKER': pygame.Rect((112,34), (642, 312)),
+        'BU_DOWN': pygame.Rect((112,422), (644,43))
+    }
 
     # stuff that happens while the game is running
     while True:
         clock.tick(FPS)
 
-        mx, my = pygame.mouse.get_pos() # gets mouse's x and y coordinates
-        loc = [mx, my] # mouse location
+        loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
 
-        # ----------View/Click Controls------------
-        if states['view'] == "Home" and clicking and START_BUTTON.collidepoint(loc[0],loc[1]):
-            states['view'] = "Game-load"
-
-        elif states['view'] == "Game-load":
-            pygame.time.delay(3000)
-
-            # -----timing stuff-----
-            start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
-
-            sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
-            pygame.time.set_timer(sec_timer, 1000)
-            # ----------------------
-
-            states['playing'] = True
-            states['view'] = 'Fireplace'
-        
-        if clicking: # handle clicks
-            if states['playing']: # handle clicks while playing
-                if states['view'] == "Fireplace":
-                    if(LOG.collidepoint(loc[0],loc[1])):
-                        if states['fire']: states['fire'] = False
-                        elif not states['damper'] == False:  #must add message to let the player know the damper must be open to turn on fire
-                            states['fire'] = True
-                    elif (DAMPER.collidepoint(loc[0],loc[1])):
-                        if not states['fire']:
-                            if states['damper']: states['damper'] = False
-                            else: states['damper'] = True
-                    elif(FP_RIGHT.collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
-                        states['view'] = 'Window'
-                    elif(FP_LEFT.collidepoint(loc[0], loc[1])): states['view'] = "Door"
-                    elif(FP_DOWN.collidepoint(loc[0], loc[1])): states['view'] = "Bunker"
-
-                elif states['view'] == "Window":
-                    if(WI_LEFT.collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
-                        states['view'] = "Fireplace"
-                    elif(WI_LOCK.collidepoint(loc[0], loc[1])):
-                        if(states['window_phase'] == 2): states['window_phase'] = 1
-                        elif(states['window_phase'] == 3): states['window_phase'] = 2
-                        elif(states['window_phase'] == 4): #unlocked
-                            print('you\'re fucked, buddy')
-                            #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
-                
-                elif states['view'] == "Door":
-                    if(DOOR.collidepoint(loc[0], loc[1])): states['view'] = 'Door-lock'
-                    elif(DO_RIGHT.collidepoint(loc[0], loc[1])):
-                        states['view'] = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
-
-                elif states['view'] == "Door-lock":
-                    if not(states['door_phase'] == 5): #can relock door fully with click unless fully unlocked
-                        states['door_phase'] = 1
-
-                elif states['view'] == "Bunker":
-                    if(BUNKER.collidepoint(loc[0], loc[1])):
-                        if states['holding']: states['holding'] = False
-                        else: states['holding'] = True
-                    elif(BU_DOWN.collidepoint(loc[0], loc[1])):
-                        if not states['holding']: states['view'] = "Fireplace"
-
-            if states['paused']: # handle clicks while paused
-                pass
-        
-        if right_clicking: # handle right clicks
-            if states['view'] == "Door-lock": states['view'] = "Door"
-        # -----------------------------------------
-
-        # -----------Timing System/Game------------
-        if states['playing']:
-            # ticks = pygame.time.get_ticks() # number of ticks since pygame.init()
-
-            # if ticks - start_time > states['next_second']:
-            #     print(states['jiggle_timer'])
-            #     states['next_second'] += SEC
-            #     states['num_seconds'] += 1
-            #     # print(states['num_seconds']) # **temp commented out to test for hitbox barriers**
-
-            #     states['jiggle_timer'] -= 1
-
-            #     if(states['jiggle_timer'] == 0):
-            #         states['window_phase'] += 1
-            #         states['jiggle_timer'] = states['jiggle_time']
-            pass
-            
-        # -----------------------------------------
-
-        # ---------------Pause---------------------
-        if states['paused']:
-            print('paused')
-        # -----------------------------------------
+        handle_clicks(states, rects, clicking, right_clicking, loc)
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
