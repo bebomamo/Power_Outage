@@ -188,6 +188,12 @@ def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: boo
     if right_clicking: # handle right clicks
         if states['view'] == "Door-lock": states['view'] = "Door"
 
+# function that updates game states as needed
+def update_states(states: dict):
+    if states['jiggle_timer'] < 0:
+        states['jiggle_timer'] = states['jiggle_time']
+        states['window_phase'] += 1
+
 # function that determines which images to display based off current game states
 def draw_image(states: dict):
     if states['view'] == "Home":
@@ -231,7 +237,11 @@ def draw_image(states: dict):
 def main():  
     clock = pygame.time.Clock()
 
-    # ------initialize first night------
+    # clicking initialization
+    clicking = False
+    right_clicking = False
+
+    # initialize first night
     states = {
         'night': '1', 
         'view': 'Home', 
@@ -239,11 +249,6 @@ def main():
         'paused': False,
         }
     initialize_night(states)
-    # ----------------------------------
-
-    # clicking initialization
-    clicking = False
-    right_clicking = False
     
     # Dictionary containing all of the Rect objects to be used in the game
     rects = {
@@ -268,6 +273,7 @@ def main():
         loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
 
         handle_clicks(states, rects, clicking, right_clicking, loc)
+        update_states(states)
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
