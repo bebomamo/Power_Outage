@@ -115,7 +115,7 @@ def initialize_night(states: dict):
     # Window
     states['window_phase'] = 1
     states['jiggle_time'] = get_jiggletime(states) # the window's jiggle time for this night
-    states['jiggle_timer'] = states['jiggle_time']
+    states['jiggle_countdown'] = states['jiggle_time']
 
     # Door
     states['door_phase'] = 1
@@ -123,6 +123,7 @@ def initialize_night(states: dict):
     # Bunker
     states['holding'] = False 
 
+# fucntion that handles clicks based off the current game states and mouse position
 def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
     if states['view'] == "Home" and clicking and rects['START_BUTTON'].collidepoint(loc[0],loc[1]):
             states['view'] = "Game-load"
@@ -143,42 +144,42 @@ def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: boo
     if clicking: # handle clicks
         if states['playing']: # handle clicks while playing
             if states['view'] == "Fireplace":
-                if(rects['LOG'].collidepoint(loc[0],loc[1])):
+                if rects['LOG'].collidepoint(loc[0],loc[1]):
                     if states['fire']: states['fire'] = False
                     elif not states['damper'] == False:  #must add message to let the player know the damper must be open to turn on fire
                         states['fire'] = True
-                elif (rects['DAMPER'].collidepoint(loc[0],loc[1])):
+                elif rects['DAMPER'].collidepoint(loc[0],loc[1]):
                     if not states['fire']:
                         if states['damper']: states['damper'] = False
                         else: states['damper'] = True
-                elif(rects['FP_RIGHT'].collidepoint(loc[0], loc[1])): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
+                elif rects['FP_RIGHT'].collidepoint(loc[0], loc[1]): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                     states['view'] = 'Window'
-                elif(rects['FP_LEFT'].collidepoint(loc[0], loc[1])): states['view'] = "Door"
-                elif(rects['FP_DOWN'].collidepoint(loc[0], loc[1])): states['view'] = "Bunker"
+                elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states['view'] = "Door"
+                elif rects['FP_DOWN'].collidepoint(loc[0], loc[1]): states['view'] = "Bunker"
 
             elif states['view'] == "Window":
-                if(rects['WI_LEFT'].collidepoint(loc[0], loc[1])): #this section needs control logic based on what view the fireplace screen should be
+                if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
                     states['view'] = "Fireplace"
-                elif(rects['WI_LOCK'].collidepoint(loc[0], loc[1])):
-                    if(states['window_phase'] == 2): states['window_phase'] = 1
-                    elif(states['window_phase'] == 3): states['window_phase'] = 2
-                    elif(states['window_phase'] == 4): #unlocked
+                elif rects['WI_LOCK'].collidepoint(loc[0], loc[1]):
+                    if states['window_phase'] == 2: states['window_phase'] = 1
+                    elif states['window_phase'] == 3: states['window_phase'] = 2
+                    elif states['window_phase'] == 4: #unlocked
                         print('you\'re fucked, buddy')
                 
             elif states['view'] == "Door":
-                if(rects['DOOR'].collidepoint(loc[0], loc[1])): states['view'] = 'Door-lock'
-                elif(rects['DO_RIGHT'].collidepoint(loc[0], loc[1])):
+                if rects['DOOR'].collidepoint(loc[0], loc[1]): states['view'] = 'Door-lock'
+                elif rects['DO_RIGHT'].collidepoint(loc[0], loc[1]):
                     states['view'] = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
 
             elif states['view'] == "Door-lock":
-                if not(states['door_phase'] == 5): #can relock door fully with click unless fully unlocked
+                if not states['door_phase'] == 5: #can relock door fully with click unless fully unlocked
                     states['door_phase'] = 1
 
             elif states['view'] == "Bunker":
-                if(rects['BUNKER'].collidepoint(loc[0], loc[1])):
+                if rects['BUNKER'].collidepoint(loc[0], loc[1]):
                     if states['holding']: states['holding'] = False
                     else: states['holding'] = True
-                elif(rects['BU_DOWN'].collidepoint(loc[0], loc[1])):
+                elif rects['BU_DOWN'].collidepoint(loc[0], loc[1]):
                     if not states['holding']: states['view'] = "Fireplace"
 
         if states['paused']: # handle clicks while paused
@@ -189,8 +190,8 @@ def handle_clicks(states: dict, rects: dict, clicking: bool, right_clicking: boo
 
 # function that updates game states as needed
 def update_states(states: dict):
-    if states['jiggle_timer'] < 0:
-        states['jiggle_timer'] = states['jiggle_time']
+    if states['jiggle_countdown'] < 0:
+        states['jiggle_countdown'] = states['jiggle_time']
         states['window_phase'] += 1
     
     if states['window_phase'] == 4:
@@ -233,6 +234,7 @@ def draw_image(states: dict):
         else: WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
 
     if states['paused']:
+        # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
     
     pygame.display.update()
@@ -306,9 +308,9 @@ def main():
             if states['playing']: # all events that we only want to process while the game is being played (aka not paused)
                 if event.type == sec_timer: 
                     # anything in here will occur once for every second of playtime
-                    print('jiggle_timer:', states['jiggle_timer'])
+                    print('jiggle_countdown:', states['jiggle_countdown'])
                     states['num_seconds'] += 1
-                    states['jiggle_timer'] -= 1
+                    states['jiggle_countdown'] -= 1
             
         draw_image(states) # update image after every event has been iterated through
 
