@@ -1,16 +1,59 @@
+from curses import window
 import random
 
-class Window:
-    def __init__(self, day):
-        if(day == '1'): self.jiggle_time = 90 + random.randrange(0,30,1) #attacked once but only once
-        elif(day == '2'): self.jiggle_time = 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
-        elif(day == '3'): self.jiggle_time = 55 + random.randrange(0,20,1) #attacked twice but only twice
-        elif(day == '4'): self.jiggle_time = 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
-        elif(day == '5'): self.jiggle_time = 35 + random.randrange(0,10,1) #attacked three or four times
-        elif(day == '6'): self.jiggle_time = 25 + random.randrange(0,5,1) #attacked four or five times
-        elif(day == '7'): self.jiggle_time = 15 + random.randrange(0,5,1) #attacked seven to nine times
+# Function which calculates a valid jiggletime based on the inputted night
+def get_jiggletime(night):
+    if night == '1': return 90 + random.randrange(0,30,1) #attacked once but only once
+    elif night == '2': return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
+    elif night == '3': return 55 + random.randrange(0,20,1) #attacked twice but only twice
+    elif night == '4': return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
+    elif night == '5': return 35 + random.randrange(0,10,1) #attacked three or four times
+    elif night == '6': return 25 + random.randrange(0,5,1) #attacked four or five times
+    elif night == '7': return 15 + random.randrange(0,5,1) #attacked seven to nine times
 
-    
+# Class which contains every game state, initialized with the default values listed below
+class States:
+    def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
+    num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None):
+        if night is None: night = '1'
+        self.night = night
+
+        if view is None: view = 'Home'
+        self.view = view
+
+        if playing is None: playing = False
+        self.playing = playing
+
+        if paused is None: paused = False
+        self.paused = paused
+
+        if next_second is None: next_second = 1000
+        self.next_second = next_second
+
+        if num_seconds is None: num_seconds = 0
+        self.num_seconds = num_seconds
+
+        if fire is None: fire = False
+        self.fire = fire
+
+        if damper is None: damper = False
+        self.damper = damper
+
+        if window_phase is None: window_phase = 1
+        self.window_phase = window_phase
+
+        if door_phase is None: door_phase = 1
+        self.door_phase = door_phase
+
+        if holding is None: holding = False
+        self.holding = holding
+
+        if jiggle_time is None: jiggle_time = get_jiggletime(self.night)
+        self.jiggle_time = jiggle_time
+
+        self.jiggle_countdown = jiggle_time
+
+
 # class Fireplace:
 #     def __init__(self, day):
 #         if(day == '1'): self.climbdown = 600 #ten minutes
@@ -20,74 +63,3 @@ class Window:
 #         elif(day == '5'): self.climbdown = 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
 #         elif(day == '6'): self.climbdown = 117 #attacked 5 times no matter what
 #         elif(day == '7'): self.climbdown = 87 + random.randrange(0,20,1) #attacked 5 or 6 times
-
-# class Door:
-#     def __init__(self, day):
-#         if()
-
-# note: FrontDoor, Bunker, and Fireplace (at least) will all be added once their attributes have been precisely defined
-#       At this point, it seems like FrontDoor, Bunker, and Fireplace should all be classes and Fear should not,
-#       although this may change.
-
-#coordinate hitbox outlines
-#Play button -> top left = (378, 46)
-#            -> bottom left = (378, 460)
-#            -> bottom right = (780, 460)
-#            -> top right = (780, 46)
-
-#Fireplace -> log top left  (343, 157)
-#          -> log bottom left
-#          -> log bottom right  (435, 175)
-#          -> log top right
-#         
-#          -> damper tl  (325, 125)
-#          -> damper bl  (325, 149)
-#          -> damper br  (335, 149)
-#          -> damper tr  (335, 125)
-#
-#          -> right tl  (831, 33)
-#          -> right bl
-#          -> right br  (875, 437)
-#          -> right tr
-#
-#          -> left tl (17, 31)
-#          -> left br (57, 439)
-#
-#          -> down tl (113, 435)
-#          -> down br (787, 483)
-#
-#WINDOW
-#          ->left left = 19
-#          ->left top = 27
-#          ->left width = 62
-#          ->left height = 460
-#
-#          ->lock left = 489
-#          ->lock top = 207
-#          ->lock width = 68
-#          ->lock height = 22
-#
-#DOOR
-#          ->door left = 166
-#          ->door top = 28
-#          ->door width = 352
-#          ->door height = 454
-#
-#          ->right left = 786
-#          ->right top = 28
-#          ->right width = 80
-#          ->right height = 458
-#
-#BUNKER
-#          ->bunker left = 112
-#          ->bunker top = 34
-#          ->bunker width = 642
-#          ->bunker height = 312
-#
-#          ->down left = 112
-#          ->down top = 422
-#          ->down width = 644
-#          ->down height = 43
-#
-#
-#
