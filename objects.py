@@ -1,4 +1,3 @@
-from curses import window
 import random
 
 # Function which calculates a valid jiggletime based on the inputted night
@@ -52,7 +51,6 @@ class States:
         self.jiggle_time = jiggle_time
 
         self.jiggle_countdown = jiggle_time
-
 
 # class Fireplace:
 #     def __init__(self, day):

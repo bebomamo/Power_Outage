@@ -19,47 +19,62 @@ pygame.display.set_caption("Power Outage")
 
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
-HOME_image = pygame.image.load(os.path.join('assets', 'PO_night1.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
-HOME = pygame.transform.scale(HOME_image, (WIDTH, HEIGHT)) #image resizing
+HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
+HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-LOAD_image = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
-LOAD = pygame.transform.scale(LOAD_image, (WIDTH, HEIGHT)) # resizing temp load image
+LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
+LOAD = pygame.transform.scale(LOAD_IMAGE, (WIDTH, HEIGHT)) # resizing temp load image
 
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
-FIREPLACE_unlit_open_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_open_beta.PNG')).convert() #adding image
-FIREPLACE_unlit_open = pygame.transform.scale(FIREPLACE_unlit_open_image, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_unlit_closed_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_closed_beta.PNG')).convert() #adding image
-FIREPLACE_unlit_closed = pygame.transform.scale(FIREPLACE_unlit_closed_image, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_lit_open_image = pygame.image.load(os.path.join('assets', 'PO_fireplace_lit_open_beta.PNG')).convert() #adding image
-FIREPLACE_lit_open = pygame.transform.scale(FIREPLACE_lit_open_image, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
+NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
+NIGHT1_LOAD = pygame.transform.scale(NIGHT1_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT2_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night2.PNG')).convert()
+NIGHT2_LOAD = pygame.transform.scale(NIGHT2_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT3_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night3.PNG')).convert()
+NIGHT3_LOAD = pygame.transform.scale(NIGHT3_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT4_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night4.PNG')).convert()
+NIGHT4_LOAD = pygame.transform.scale(NIGHT4_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT5_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night5.PNG')).convert()
+NIGHT5_LOAD = pygame.transform.scale(NIGHT5_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT6_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night6.PNG')).convert()
+NIGHT6_LOAD = pygame.transform.scale(NIGHT6_LOAD_IMAGE, (WIDTH, HEIGHT))
+NIGHT7_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night7.PNG')).convert()
+NIGHT7_LOAD = pygame.transform.scale(NIGHT7_LOAD_IMAGE, (WIDTH, HEIGHT))
 
-BUNKER_image = pygame.image.load(os.path.join('assets', 'PO_bunker_beta.PNG')).convert() #adding image
-BUNKER = pygame.transform.scale(BUNKER_image, (WIDTH, HEIGHT)) #image resizing
-BUNKER_held_image = pygame.image.load(os.path.join('assets', 'PO_bunker_held_beta.PNG')).convert() #adding image
-BUNKER_held = pygame.transform.scale(BUNKER_held_image, (WIDTH, HEIGHT)) #image resizing
+FIREPLACE_UNLIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_open_beta.PNG')).convert() #adding image
+FIREPLACE_UNLIT_OPEN = pygame.transform.scale(FIREPLACE_UNLIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing
+FIREPLACE_UNLIT_CLOSED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_closed_beta.PNG')).convert() #adding image
+FIREPLACE_UNLIT_CLOSED = pygame.transform.scale(FIREPLACE_UNLIT_CLOSED_IMAGE, (WIDTH, HEIGHT)) #image resizing
+FIREPLACE_LIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_lit_open_beta.PNG')).convert() #adding image
+FIREPLACE_LIT_OPEN = pygame.transform.scale(FIREPLACE_LIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
 
-DOOR_image = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
-DOOR = pygame.transform.scale(DOOR_image, (WIDTH, HEIGHT)) #image resizing
-DOOR_locked1_image = pygame.image.load(os.path.join('assets', 'PO_door_locked1_beta.PNG')).convert() #adding image
-DOOR_locked1 = pygame.transform.scale(DOOR_locked1_image, (WIDTH, HEIGHT)) #image resizing
-DOOR_locked2_image = pygame.image.load(os.path.join('assets', 'PO_door_locked2_beta.PNG')).convert() #adding image
-DOOR_locked2 = pygame.transform.scale(DOOR_locked2_image, (WIDTH, HEIGHT)) #image resizing
-DOOR_locked3_image = pygame.image.load(os.path.join('assets', 'PO_door_locked3_beta.PNG')).convert() #adding image
-DOOR_locked3 = pygame.transform.scale(DOOR_locked3_image, (WIDTH, HEIGHT)) #image resizing
-DOOR_locked4_image = pygame.image.load(os.path.join('assets', 'PO_door_locked4_beta.PNG')).convert() #adding image
-DOOR_locked4 = pygame.transform.scale(DOOR_locked4_image, (WIDTH, HEIGHT)) #image resizing
-DOOR_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_door_unlocked_beta.PNG')).convert() #adding image
-DOOR_unlocked = pygame.transform.scale(DOOR_unlocked_image, (WIDTH, HEIGHT)) #image resizing
+BUNKER_IMAGE = pygame.image.load(os.path.join('assets', 'PO_bunker_beta.PNG')).convert() #adding image
+BUNKER = pygame.transform.scale(BUNKER_IMAGE, (WIDTH, HEIGHT)) #image resizing
+BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('assets', 'PO_bunker_held_beta.PNG')).convert() #adding image
+BUNKER_HELD = pygame.transform.scale(BUNKER_HELD_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-WINDOW_locked1_image = pygame.image.load(os.path.join('assets', 'PO_window_locked1_beta.PNG')).convert() #adding image
-WINDOW_locked1 = pygame.transform.scale(WINDOW_locked1_image, (WIDTH, HEIGHT)) #image resizing
-WINDOW_locked2_image = pygame.image.load(os.path.join('assets', 'PO_window_locked2_beta.PNG')).convert() #adding image
-WINDOW_locked2 = pygame.transform.scale(WINDOW_locked2_image, (WIDTH, HEIGHT)) #image resizing
-WINDOW_locked3_image = pygame.image.load(os.path.join('assets', 'PO_window_locked3_beta.PNG')).convert() #adding image
-WINDOW_locked3 = pygame.transform.scale(WINDOW_locked3_image, (WIDTH, HEIGHT)) #image resizing
-WINDOW_unlocked_image = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
-WINDOW_unlocked = pygame.transform.scale(WINDOW_unlocked_image, (WIDTH, HEIGHT)) #image resizingg
+DOOR_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
+DOOR = pygame.transform.scale(DOOR_IMAGE, (WIDTH, HEIGHT)) #image resizing
+DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked1_beta.PNG')).convert() #adding image
+DOOR_LOCKED1 = pygame.transform.scale(DOOR_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
+DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked2_beta.PNG')).convert() #adding image
+DOOR_LOCKED2 = pygame.transform.scale(DOOR_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
+DOOR_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked3_beta.PNG')).convert() #adding image
+DOOR_LOCKED3 = pygame.transform.scale(DOOR_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
+DOOR_LOCKED4_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked4_beta.PNG')).convert() #adding image
+DOOR_LOCKED4 = pygame.transform.scale(DOOR_LOCKED4_IMAGE, (WIDTH, HEIGHT)) #image resizing
+DOOR_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_unlocked_beta.PNG')).convert() #adding image
+DOOR_UNLOCKED = pygame.transform.scale(DOOR_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
+
+WINDOW_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked1_beta.PNG')).convert() #adding image
+WINDOW_LOCKED1 = pygame.transform.scale(WINDOW_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
+WINDOW_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked2_beta.PNG')).convert() #adding image
+WINDOW_LOCKED2 = pygame.transform.scale(WINDOW_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
+WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked3_beta.PNG')).convert() #adding image
+WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
+WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
+WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizingg
 
 #---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
 # def night_select():
@@ -177,34 +192,39 @@ def draw_image(states: States):
         WIN.blit(HOME, (0, 0)) #display home image
     
     elif states.view == "Game-load":
-        # here we add an if statement that checks what night we are loading into
-        WIN.blit(LOAD, (0, 0)) # temporary
+        if states.night == '1': WIN.blit(NIGHT1_LOAD, (0,0))
+        elif states.night == '2': WIN.blit(NIGHT2_LOAD, (0,0))
+        elif states.night == '3': WIN.blit(NIGHT3_LOAD, (0,0))
+        elif states.night == '4': WIN.blit(NIGHT4_LOAD, (0,0))
+        elif states.night == '5': WIN.blit(NIGHT5_LOAD, (0,0))
+        elif states.night == '6': WIN.blit(NIGHT6_LOAD, (0,0))
+        elif states.night == '7': WIN.blit(NIGHT7_LOAD, (0,0))
 
     elif states.view == "Fireplace":
         # if statements that look at the fireplace's state and determine what image to show
-        if states.damper and not states.fire: WIN.blit(FIREPLACE_unlit_closed, (0,0)) #display unlit closed damper fireplace
-        elif not states.damper and not states.fire: WIN.blit(FIREPLACE_unlit_open, (0,0)) #display unlit open damper fireplace
-        else: WIN.blit(FIREPLACE_lit_open, (0,0)) #display lit open damper fireplace
+        if states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_CLOSED, (0,0)) #display unlit closed damper fireplace
+        elif not states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_OPEN, (0,0)) #display unlit open damper fireplace
+        else: WIN.blit(FIREPLACE_LIT_OPEN, (0,0)) #display lit open damper fireplace
         
     elif states.view == "Window":
         # here we add if statements that looks at the window's state and determines what image to show
-        if states.window_phase == 1: WIN.blit(WINDOW_locked1, (0, 0)) #display fully locked window phase (phase = 1)
-        elif states.window_phase == 2: WIN.blit(WINDOW_locked2, (0,0)) #display second phase locked window (phase = 2)
-        elif states.window_phase == 3: WIN.blit(WINDOW_locked3, (0,0)) #display third phase locked window (phase = 3)
-        elif states.window_phase == 4: WIN.blit(WINDOW_unlocked, (0,0)) #display window unlocked (phase = 4)
+        if states.window_phase == 1: WIN.blit(WINDOW_LOCKED1, (0, 0)) #display fully locked window phase (phase = 1)
+        elif states.window_phase == 2: WIN.blit(WINDOW_LOCKED2, (0,0)) #display second phase locked window (phase = 2)
+        elif states.window_phase == 3: WIN.blit(WINDOW_LOCKED3, (0,0)) #display third phase locked window (phase = 3)
+        elif states.window_phase == 4: WIN.blit(WINDOW_UNLOCKED, (0,0)) #display window unlocked (phase = 4)
 
     elif states.view == "Door": WIN.blit(DOOR, (0,0)) #display Frontdoor image
 
     elif states.view == 'Door-lock': 
-        if states.door_phase == 1:  WIN.blit(DOOR_locked1, (0,0)) #display fully locked door phase (phase = 1)
-        elif states.door_phase == 2: WIN.blit(DOOR_locked2, (0,0)) #display second phase locked door (phase = 2)
-        elif states.door_phase == 3: WIN.blit(DOOR_locked3, (0,0)) #display third phase locked door (phase = 3)
-        elif states.door_phase == 4: WIN.blit(DOOR_locked4, (0,0)) #display Fourth phase locked door (phase = 4)
-        elif states.door_phase == 5: WIN.blit(DOOR_unlocked, (0,0)) #display unlocked door (phase = 5)
+        if states.door_phase == 1:  WIN.blit(DOOR_LOCKED1, (0,0)) #display fully locked door phase (phase = 1)
+        elif states.door_phase == 2: WIN.blit(DOOR_LOCKED2, (0,0)) #display second phase locked door (phase = 2)
+        elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
+        elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
+        elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
     
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
-        else: WIN.blit(BUNKER_held, (0,0)) #display bunker held closed image
+        else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
 
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
@@ -223,7 +243,7 @@ def main():
     
     # Dictionary containing all of the Rect objects to be used in the game
     rects = {
-        'START_BUTTON': pygame.Rect((378, 46), (402, 414)),
+        'START_BUTTON': pygame.Rect((125, 203), (625, 59)),
         'LOG': pygame.Rect((343, 157), (92, 18)),
         'DAMPER': pygame.Rect((325, 125), (10, 24)),
         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
@@ -274,7 +294,6 @@ def main():
             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
                 if event.type == sec_timer: 
                     # anything in here will occur once for every second of playtime
-                    print('jiggle_countdown:', states.jiggle_countdown)
                     states.num_seconds += 1
                     states.jiggle_countdown -= 1
             
