@@ -110,8 +110,11 @@ WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT))
 
 # fucntion that handles clicks based off the current game states and mouse position
 def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
-    if states.view == "Home" and clicking and rects['START_BUTTON'].collidepoint(loc[0],loc[1]):
-            states.view = "Game-load"
+    if states.view == "Home" and clicking:
+        if rects['START_BUTTON'].collidepoint(loc[0],loc[1]): states.view = "Game-load"
+        elif rects['QUIT_BUTTON'].collidepoint(loc[0],loc[1]):
+            pygame.quit()
+            sys.exit()
 
     elif states.view == "Game-load":
         pygame.time.delay(3000)
@@ -168,7 +171,13 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     if not states.holding: states.view = "Fireplace"
 
         if states.paused: # handle clicks while paused
-            pass
+            if rects['RESUME_BUTTON'].collidepoint(loc[0],loc[1]):
+                states.paused = False
+                states.playing = True
+            elif rects['QUIT_BUTTON_PAUSED'].collidepoint(loc[0],loc[1]):
+                # TODO: should ask the player whether or not they want to save most recent night
+                pygame.quit()
+                sys.exit()
         
     if right_clicking: # handle right clicks
         if states.playing: # handle right clicks while playing
@@ -242,8 +251,15 @@ def main():
     states = States() # initialize game states
     
     # Dictionary containing all of the Rect objects to be used in the game
+    HOME_BUTTON_WIDTH = 625
+    HOME_BUTTON_HEIGHT = 59
+    PAUSE_BUTTON_WIDTH = 85
+    PAUSE_BUTTON_HEIGHT = 18
     rects = {
-        'START_BUTTON': pygame.Rect((125, 203), (625, 59)),
+        'START_BUTTON': pygame.Rect((125, 203), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
+        'QUIT_BUTTON': pygame.Rect((125, 407), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
+        'RESUME_BUTTON': pygame.Rect((405,203), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
+        'QUIT_BUTTON_PAUSED': pygame.Rect((405, 293), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
         'LOG': pygame.Rect((343, 157), (92, 18)),
         'DAMPER': pygame.Rect((325, 125), (10, 24)),
         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
