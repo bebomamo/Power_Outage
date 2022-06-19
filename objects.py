@@ -1,4 +1,4 @@
-import random
+import random, pygame, os
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
@@ -51,6 +51,12 @@ class States:
         self.jiggle_time = jiggle_time
 
         self.jiggle_countdown = jiggle_time
+
+class Button(pygame.sprite.Sprite):
+    def __init__(self, image: str, pos_x: int, pos_y: int):
+        super().__init__()
+        self.image = pygame.image.load(os.path.join('assets', image)).convert_alpha()
+        self.rect = self.image.get_rect(x=pos_x, y=pos_y)
 
 # class Fireplace:
 #     def __init__(self, day):
