@@ -2,6 +2,7 @@ from tkinter import N
 import pygame, os, sys
 from objects import *
 from dataclasses import dataclass
+from pygame import mixer
 
 # constants
 WHITE = (255, 255, 255)
@@ -10,6 +11,7 @@ SEC = 1000 # 1000 milliseconds
 FPS = 60
 
 pygame.init() # start pygame
+pygame.mixer.init() #start mixer 
 
 # Window setup
 WIDTH, HEIGHT = 900, 500 #subject to change
@@ -75,6 +77,9 @@ WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locke
 WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
 WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizingg
+
+#Audio asset initialization
+JIGGLE = pygame.mixer.Sound(os.path.join('assets', 'Bunker_hold.m4a'))
 
 #---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
 # def night_select():
