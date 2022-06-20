@@ -55,8 +55,16 @@ class States:
 class Button(pygame.sprite.Sprite):
     def __init__(self, image: str, pos_x: int, pos_y: int):
         super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         self.image = pygame.image.load(os.path.join('assets', image)).convert_alpha()
         self.rect = self.image.get_rect(x=pos_x, y=pos_y)
+    
+    def draw():
+        pass
+    
+    def is_mouse_over():
+        pass
 
 # class Fireplace:
 #     def __init__(self, day):
