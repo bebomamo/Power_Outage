@@ -79,7 +79,7 @@ WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlo
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizingg
 
 #Audio asset initialization
-JIGGLE = pygame.mixer.Sound(os.path.join('assets', 'Bunker_hold.m4a'))
+# JIGGLE = pygame.mixer.Sound(os.path.join('assets', 'Bunker_hold.m4a'))
 
 #---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
 # def night_select():
@@ -165,7 +165,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     states.view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
 
             elif states.view == "Door-lock":
-                if not states.door_phase == 5: #can relock door fully with click unless fully unlocked
+                if states.door_phase < 5: #can relock door fully with click unless fully unlocked
                     states.door_phase = 1
 
             elif states.view == "Bunker":
@@ -192,6 +192,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
 
 # function that updates game states as needed
 def update_states(states: States):
+    # Window
     if states.jiggle_countdown < 0:
         states.jiggle_countdown = states.jiggle_time
         states.window_phase += 1
@@ -199,6 +200,11 @@ def update_states(states: States):
     if states.window_phase == 4:
         #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
         pass
+
+    # Door
+    if states.lock_countdown < 0:
+        states.lock_countdown = states.lock_time
+        states.door_phase += 1
 
 # function that determines which images to display based off current game states
 def draw_image(states: States):
@@ -317,6 +323,7 @@ def main():
                     # anything in here will occur once for every second of playtime
                     states.num_seconds += 1
                     states.jiggle_countdown -= 1
+                    states.lock_countdown -= 1
             
         draw_image(states) # update image after every event has been iterated through
 
