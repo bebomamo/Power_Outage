@@ -1,4 +1,4 @@
-import random
+import random, pygame, os
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
@@ -108,3 +108,26 @@ class States:
 
         self.bunkerwalk_countdown = bunkerwalk_time
 
+class Button(pygame.sprite.Sprite):
+    def __init__(self, image: str, pos_x: int, pos_y: int):
+        super().__init__()
+        self.pos_x = pos_x
+        self.pos_y = pos_y
+        self.image = pygame.image.load(os.path.join('assets', image)).convert_alpha()
+        self.rect = self.image.get_rect(x=pos_x, y=pos_y)
+    
+    def draw():
+        pass
+    
+    def is_mouse_over():
+        pass
+
+# class Fireplace:
+#     def __init__(self, day):
+#         if(day == '1'): self.climbdown = 600 #ten minutes
+#         elif(day == '2'): self.climbdown = 267 + random.randrange(0,60,1) #50/50 attacked once or twice
+#         elif(day == '3'): self.climbdown = 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
+#         elif(day == '4'): self.climbdown = 182 + random.randrange(0,14,1) #attacked three times no matter what
+#         elif(day == '5'): self.climbdown = 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
+#         elif(day == '6'): self.climbdown = 117 #attacked 5 times no matter what
+#         elif(day == '7'): self.climbdown = 87 + random.randrange(0,20,1) #attacked 5 or 6 times

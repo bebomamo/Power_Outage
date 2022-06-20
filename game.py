@@ -249,7 +249,7 @@ def draw_image(states: States):
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
-    
+
     pygame.display.update()
 
 def main():  
