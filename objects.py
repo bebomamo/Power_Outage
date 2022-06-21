@@ -48,7 +48,7 @@ def get_bunkerwalk(night):
 class States:
     def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
     num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
-    climbdown_time=None, lock_time=None, bunkerwalk_time=None):
+    climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None):
         # Game states
         if night is None: night = '1'
         self.night = night
@@ -107,6 +107,10 @@ class States:
         self.bunkerwalk_time = bunkerwalk_time
 
         self.bunkerwalk_countdown = bunkerwalk_time
+
+        #music states
+        if music_swap is None: music_swap = True
+        self.music_swap = music_swap
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, image: str, pos_x: int, pos_y: int):
