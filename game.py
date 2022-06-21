@@ -24,9 +24,6 @@ pygame.display.set_caption("Power Outage")
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #adding temp loading image
-LOAD = pygame.transform.scale(LOAD_IMAGE, (WIDTH, HEIGHT)) # resizing temp load image
-
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
 NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
@@ -76,10 +73,30 @@ WINDOW_LOCKED2 = pygame.transform.scale(WINDOW_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #
 WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked3_beta.PNG')).convert() #adding image
 WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
 WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
-WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizingg
+WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Audio asset initialization
-# JIGGLE = pygame.mixer.Sound(os.path.join('assets', 'Bunker_hold.m4a'))
+#for window
+JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav'))
+#for door
+LOCK_s = mixer.Sound(os.path.join('assets', 'Lock.wav'))
+#for bunker
+BUNKER_HOLD_s = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav'))
+BUNKER_RELEASE_s = mixer.Sound(os.path.join('assets', 'Bunker_release.wav'))
+WALK_TOWARDS_s = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
+WALK_AWAY_s = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
+#for fireplace
+CLIMB_DOWN_s = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
+CLIMB_UP_s = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
+CLOSE_DAMPER_s = mixer.Sound(os.path.join('assets', 'Close_damper.wav'))
+OPEN_DAMPER_s = mixer.Sound(os.path.join('assets', 'Open_damper.wav'))
+FIRE_ON_s = mixer.Sound(os.path.join('assets', 'Fire_on.wav'))
+FIRE_RUNNING_s = mixer.Sound(os.path.join('assets', 'Fire_running.wav'))
+FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav'))
+#for fear
+BEEPS_s = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
+FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
+
 
 #---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
 # def night_select():
@@ -196,6 +213,7 @@ def update_states(states: States):
     if states.jiggle_countdown < 0:
         states.jiggle_countdown = states.jiggle_time
         states.window_phase += 1
+        JIGGLE_s.play()
     
     if states.window_phase == 4:
         #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
@@ -205,6 +223,8 @@ def update_states(states: States):
     if states.lock_countdown < 0:
         states.lock_countdown = states.lock_time
         states.door_phase += 1
+        LOCK_s.play()
+
 
 # function that determines which images to display based off current game states
 def draw_image(states: States):
