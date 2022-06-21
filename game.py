@@ -76,25 +76,23 @@ WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlo
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Audio asset initialization
-mixer.music.load(os.path.join('assets', 'Ambient.wav'))
-mixer.music.play(-1)
 #for window
-JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav'))
+JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
 #for door
-LOCK_s = mixer.Sound(os.path.join('assets', 'Lock.wav'))
+LOCK_s = mixer.Sound(os.path.join('assets', 'Lock.wav')) #
 #for bunker
-BUNKER_HOLD_s = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav'))
-BUNKER_RELEASE_s = mixer.Sound(os.path.join('assets', 'Bunker_release.wav'))
+BUNKER_HOLD_s = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav')) #
+BUNKER_RELEASE_s = mixer.Sound(os.path.join('assets', 'Bunker_release.wav')) #
 WALK_TOWARDS_s = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
 WALK_AWAY_s = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
 #for fireplace
 CLIMB_DOWN_s = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
 CLIMB_UP_s = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
-CLOSE_DAMPER_s = mixer.Sound(os.path.join('assets', 'Close_damper.wav'))
-OPEN_DAMPER_s = mixer.Sound(os.path.join('assets', 'Open_damper.wav'))
-FIRE_ON_s = mixer.Sound(os.path.join('assets', 'Fire_on.wav'))
-FIRE_RUNNING_s = mixer.Sound(os.path.join('assets', 'Fire_running.wav'))
-FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav'))
+CLOSE_DAMPER_s = mixer.Sound(os.path.join('assets', 'Close_damper.wav')) #
+OPEN_DAMPER_s = mixer.Sound(os.path.join('assets', 'Open_damper.wav')) #
+FIRE_ON_s = mixer.Sound(os.path.join('assets', 'Fire_on.wav')) #
+FIRE_RUNNING_s = mixer.Sound(os.path.join('assets', 'Fire_running.wav')) #
+FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 #for fear
 BEEPS_s = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
@@ -132,6 +130,19 @@ FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 #     f.write(newnight)
 #     f.close()
 
+#function that updates constant background noise
+def update_music(states: States):
+    if states.fire and states.music_swap == True:
+        mixer.music.stop()
+        mixer.music.load(os.path.join('assets', 'Fire_running.wav'))
+        mixer.music.play(-1)
+        states.music_swap = False
+    elif states.music_swap == True:
+        mixer.music.stop()
+        mixer.music.load(os.path.join('assets', 'Ambient.wav'))
+        mixer.music.play(-1)
+        states.music_swap = False
+
 # fucntion that handles clicks based off the current game states and mouse position
 def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
     if states.view == "Home" and clicking:
@@ -157,13 +168,22 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
         if states.playing: # handle clicks while playing
             if states.view == "Fireplace":
                 if rects['LOG'].collidepoint(loc[0],loc[1]):
-                    if states.fire: states.fire = False
+                    if states.fire: 
+                        FIRE_OFF_s.play()
+                        states.fire = False
+                        states.music_swap = True
                     elif not states.damper == False:  #must add message to let the player know the damper must be open to turn on fire
+                        FIRE_ON_s.play()
                         states.fire = True
+                        states.music_swap = True
                 elif rects['DAMPER'].collidepoint(loc[0],loc[1]):
                     if not states.fire:
-                        if states.damper: states.damper = False
-                        else: states.damper = True
+                        if states.damper: 
+                            states.damper = False
+                            OPEN_DAMPER_s.play()
+                        else: 
+                            states.damper = True
+                            CLOSE_DAMPER_s.play()
                 elif rects['FP_RIGHT'].collidepoint(loc[0], loc[1]): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                     states.view = 'Window'
                 elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states.view = "Door"
@@ -189,8 +209,12 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
 
             elif states.view == "Bunker":
                 if rects['BUNKER'].collidepoint(loc[0], loc[1]):
-                    if states.holding: states.holding = False
-                    else: states.holding = True
+                    if states.holding: 
+                        states.holding = False
+                        BUNKER_RELEASE_s.play()
+                    else: 
+                        states.holding = True
+                        BUNKER_HOLD_s.play()
                 elif rects['BU_DOWN'].collidepoint(loc[0], loc[1]):
                     if not states.holding: states.view = "Fireplace"
 
@@ -314,6 +338,7 @@ def main():
 
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
+        update_music(states)
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
