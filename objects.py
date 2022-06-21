@@ -48,7 +48,8 @@ def get_bunkerwalk(night):
 class States:
     def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
     num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
-    climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None):
+    climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
+    B_checked=None, B_checkedtime=None, B_firstattack=None):
         # Game states
         if night is None: night = '1'
         self.night = night
@@ -90,6 +91,14 @@ class States:
 
         self.climbdown_countdown = climbdown_time
 
+        if FP_attack is None: FP_attack = False
+        self.FP_attack = FP_attack
+
+        if FP_time is None: FP_time = 5
+        self.FP_time = FP_time
+
+        self.FP_countdown = FP_time
+
         # Door states
         if door_phase is None: door_phase = 1
         self.door_phase = door_phase
@@ -107,6 +116,25 @@ class States:
         self.bunkerwalk_time = bunkerwalk_time
 
         self.bunkerwalk_countdown = bunkerwalk_time
+
+        if B_attack is None: B_attack = False
+        self.B_attack = B_attack
+
+        if B_time is None: B_time = 4
+        self.B_time = B_time
+
+        self.B_countdown = B_time
+
+        if B_checked is None: B_checked = False
+        self.B_checked = B_checked
+
+        if B_checkedtime is None: B_checkedtime = 3
+        self.B_checkedtime = B_checkedtime
+
+        self.B_CTcountdown = B_checkedtime
+
+        if B_firstattack is None: B_firstattack = False
+        self.B_firstattack = B_firstattack
 
         #music states
         if music_swap is None: music_swap = True
