@@ -184,11 +184,18 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                         else: 
                             states.damper = True
                             CLOSE_DAMPER_s.play()
+                            if states.FP_attack:
+                                states.FP_countdown = states.FP_time
+                                states.FP_attack = False
+                                CLIMB_UP_s.play()
                 elif rects['FP_RIGHT'].collidepoint(loc[0], loc[1]): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                     states.view = 'Window'
                 elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states.view = "Door"
-                elif rects['FP_DOWN'].collidepoint(loc[0], loc[1]): states.view = "Bunker"
-
+                elif rects['FP_DOWN'].collidepoint(loc[0], loc[1]): 
+                    states.view = "Bunker"
+                    states.B_checked = True
+                    states.B_CTcountdown = states.B_checkedtime
+                    
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
                     states.view = "Fireplace"
@@ -201,7 +208,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
             elif states.view == "Door":
                 if rects['DOOR'].collidepoint(loc[0], loc[1]): states.view = 'Door-lock'
                 elif rects['DO_RIGHT'].collidepoint(loc[0], loc[1]):
-                    states.view = "Fireplace" #Again needs control logic based on what the fireplace state is ******good example********
+                    states.view = "Fireplace" #Again needs control logic based on what the fireplace state is
 
             elif states.view == "Door-lock":
                 if states.door_phase < 5: #can relock door fully with click unless fully unlocked
@@ -215,6 +222,10 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     else: 
                         states.holding = True
                         BUNKER_HOLD_s.play()
+                        if states.B_attack:
+                                states.B_countdown = states.B_time
+                                states.B_attack = False
+                                WALK_AWAY_s.play()
                 elif rects['BU_DOWN'].collidepoint(loc[0], loc[1]):
                     if not states.holding: states.view = "Fireplace"
 
@@ -250,6 +261,23 @@ def update_states(states: States):
         states.lock_countdown = states.lock_time
         states.door_phase += 1
         LOCK_s.play()
+
+    # Fireplace
+    if states.climbdown_countdown < 0:
+        states.climbdown_countdown = states.climbdown_time
+        CLIMB_DOWN_s.play()
+        states.FP_attack = True
+
+    if states.FP_countdown < 0:
+        pass
+
+    # Bunker
+    if states.bunkerwalk_countdown < 0:
+        states.bunkerwalk_countdown = states.bunkerwalk_time
+        WALK_TOWARDS_s.play()
+        states.B_attack = True
+
+        
 
 
 # function that determines which images to display based off current game states
@@ -371,6 +399,18 @@ def main():
                     states.num_seconds += 1
                     states.jiggle_countdown -= 1
                     states.lock_countdown -= 1
+                    states.climbdown_countdown -= 1
+                    if states.FP_attack:
+                        states.FP_countdown -= 1
+                    if not states.B_checked:    
+                        states.bunkerwalk_countdown -= 1
+                    elif states.B_CTcountdown > 0:
+                        states.B_CTcountdown -= 1
+                    else:
+                        states.B_checked = False
+                        states.B_CTcountdown = states.B_checkedtime
+                    if states.B_attack:
+                        states.B_countdown -= 1
             
         draw_image(states) # update image after every event has been iterated through
 
