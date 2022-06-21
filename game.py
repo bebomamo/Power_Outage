@@ -76,6 +76,8 @@ WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlo
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Audio asset initialization
+mixer.music.load(os.path.join('assets', 'Ambient.wav'))
+mixer.music.play(-1)
 #for window
 JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav'))
 #for door
