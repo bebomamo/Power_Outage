@@ -51,7 +51,7 @@ class States:
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
     B_checked=None, B_checkedtime=None, B_firstattack=None):
         # Game states
-        if night is None: night = '1'
+        if night is None: night = '3'
         self.night = night
 
         if view is None: view = 'Home'

@@ -193,8 +193,9 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                 elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states.view = "Door"
                 elif rects['FP_DOWN'].collidepoint(loc[0], loc[1]): 
                     states.view = "Bunker"
-                    states.B_checked = True
-                    states.B_CTcountdown = states.B_checkedtime
+                    if not states.B_firstattack:
+                        states.B_checked = True
+                        states.B_CTcountdown = states.B_checkedtime
                     
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
@@ -265,17 +266,19 @@ def update_states(states: States):
     # Fireplace
     if states.climbdown_countdown < 0:
         states.climbdown_countdown = states.climbdown_time
-        CLIMB_DOWN_s.play()
-        states.FP_attack = True
+        if not states.damper:
+            CLIMB_DOWN_s.play()
+            states.FP_attack = True
 
     if states.FP_countdown < 0:
         pass
 
     # Bunker
     if states.bunkerwalk_countdown < 0:
-        states.bunkerwalk_countdown = states.bunkerwalk_time
+        states.bunkerwalk_countdown = states.bunkerwalk_time / 4
         WALK_TOWARDS_s.play()
         states.B_attack = True
+        states.B_firstattack = True
 
         
 
