@@ -70,7 +70,7 @@ class States:
     def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
     num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
-    B_checked=None, B_checkedtime=None, B_firstattack=None, is_lost=None):
+    B_checked=None, B_checkedtime=None, B_firstattack=None, is_lost=None, is_won=None):
         # Game states
         if night is None: night = get_night()
         self.night = night
@@ -164,6 +164,9 @@ class States:
         #progression control
         if is_lost is None: is_lost = False
         self.is_lost = is_lost
+
+        if is_won is None: is_won = False
+        self.is_won = is_won
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, image: str, pos_x: int, pos_y: int):

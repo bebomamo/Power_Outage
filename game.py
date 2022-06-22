@@ -251,15 +251,12 @@ def progression(states: States):
         pygame.time.delay(10000)
         states.is_lost = True
     if states.is_lost:
-        WIN.blit(ROUND_WIN, (0,0)) #should be playing the jumpscare but that doesn't exist yet
-        return True
+        pygame.time.delay(3000)
     if states.num_seconds >= 600:
-        WIN.blit(ROUND_WIN, (0,0)) #play round progression cutscene
+        states.is_won = True
         pygame.time.delay(3000)
         prog_night()
-        return True
-    return False
-
+        
 # function that determines which images to display based off current game states
 def draw_image(states: States):
     if states.view == "Home":
@@ -298,6 +295,12 @@ def draw_image(states: States):
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
+    
+    if states.is_lost:
+        WIN.blit(ROUND_WIN, (0,0))
+
+    if states.is_won:
+        WIN.blit(ROUND_WIN, (0,0))
 
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
@@ -347,11 +350,12 @@ def main():
         update_states(states)
         update_music(states)
         draw_image(states) # update image after every event has been iterated through
-        if progression(states):
-            if states.is_lost:
-                states = States(None, 'Game-load')
-            else:
-                states = States(None, 'Game-load')
+        progression(states)
+
+        if states.is_lost:
+            states = States()
+        if states.is_won:
+            states = States()
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
