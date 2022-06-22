@@ -172,7 +172,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                         FIRE_OFF_s.play()
                         states.fire = False
                         states.music_swap = True
-                    elif not states.damper == False:  #must add message to let the player know the damper must be open to turn on fire
+                    elif not states.damper:  #must add message to let the player know the damper must be open to turn on fire
                         FIRE_ON_s.play()
                         states.fire = True
                         states.music_swap = True
