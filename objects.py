@@ -1,4 +1,5 @@
 import random, pygame, os
+from game import WIN
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
@@ -51,7 +52,7 @@ class States:
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
     B_checked=None, B_checkedtime=None, B_firstattack=None):
         # Game states
-        if night is None: night = '3'
+        if night is None: night = '1'
         self.night = night
 
         if view is None: view = 'Home'
@@ -140,16 +141,22 @@ class States:
         if music_swap is None: music_swap = True
         self.music_swap = music_swap
 
-class Button(pygame.sprite.Sprite):
-    def __init__(self, image: str, pos_x: int, pos_y: int):
-        super().__init__()
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.image = pygame.image.load(os.path.join('assets', image)).convert_alpha()
-        self.rect = self.image.get_rect(x=pos_x, y=pos_y)
+class Button():
+    def __init__(self, default_image: str, hover_image: str, pos: tuple):
+        self.pos_x, self.pos_y = pos
+        self.default_image = pygame.image.load(os.path.join('assets', default_image)).convert_alpha()
+        self.hover_image = pygame.image.load(os.path.join('assets', hover_image)).convert_alpha()
+        self.image = self.default_image
+        self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
     
-    def draw():
-        pass
-    
-    def is_mouse_over():
-        pass
+    def is_mouse_over(self):
+        loc = pygame.mouse.get_pos()
+        if self.rect.collidepoint(loc[0],loc[1]): return True
+        return False
+
+    def draw(self):
+        if self.is_mouse_over():
+            self.image = self.hover_image
+            self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
+            WIN.blit(self.image, (self.pos_x, self.pos_y))
+        else: WIN.blit(self.image, (self.pos_x, self.pos_y))
