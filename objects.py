@@ -43,15 +43,36 @@ def get_bunkerwalk(night):
     elif night == '6': return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
     elif night == '7': return 117 #attacked 5 times no matter what
 
+# night set/get 
+#------------Night getter(as a char)----------------
+def get_night():
+    f = open("night.txt", mode = 'r')
+    night = f.read(1)
+    f.close()
+    return night
+#------------Night setter(as a char)----------------
+def prog_night():
+    currentnight = get_night()
+    newnight = 1
+    if(currentnight == '1'): newnight = '2'
+    elif(currentnight == '2'): newnight = '3'
+    elif(currentnight == '3'): newnight = '4'
+    elif(currentnight == '4'): newnight = '5'
+    elif(currentnight == '5'): newnight = '6'
+    elif(currentnight == '6'): newnight = '7'
+    f = open("night.txt", mode = 'r+')
+    f.truncate(0)
+    f.write(newnight)
+    f.close()
 
 # Class which contains every game state, initialized with the default values listed below
 class States:
     def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
     num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
-    B_checked=None, B_checkedtime=None, B_firstattack=None):
+    B_checked=None, B_checkedtime=None, B_firstattack=None, is_lost=None):
         # Game states
-        if night is None: night = '3'
+        if night is None: night = get_night()
         self.night = night
 
         if view is None: view = 'Home'
@@ -83,7 +104,7 @@ class States:
         if fire is None: fire = False
         self.fire = fire
 
-        if damper is None: damper = False
+        if damper is None: damper = False #actually means open
         self.damper = damper
 
         if climbdown_time is None: climbdown_time = get_climbdown(self.night)
@@ -139,6 +160,10 @@ class States:
         #music states
         if music_swap is None: music_swap = True
         self.music_swap = music_swap
+
+        #progression control
+        if is_lost is None: is_lost = False
+        self.is_lost = is_lost
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, image: str, pos_x: int, pos_y: int):

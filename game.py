@@ -24,6 +24,9 @@ pygame.display.set_caption("Power Outage")
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
+ROUND_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #roundwin temp image
+ROUND_WIN = pygame.transform.scale(ROUND_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
+
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
 NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
@@ -97,38 +100,6 @@ FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 BEEPS_s = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
-
-#---------Home Screen Startup control logic and night passing logic---------- Temporarily commented out
-# def night_select():
-#     f = open("night.txt", mode = 'r')
-#     night = f.read(1)
-#     if(night == '1'): 
-#         return 'PO_night1.PNG'
-#     if(night == '2'):
-#         return 'PO_night2.PNG'
-#     if(night == '3'):
-#         return 'PO_night3.PNG'
-#     if(night == '4'):
-#         return 'PO_night4.PNG'
-#     if(night == '5'):
-#         return 'PO_night5.PNG'
-#     if(night == '6'):
-#         return 'PO_night6.PNG'
-#     if(night == '7'):
-#         return 'PO_night7.PNG'
-#     f.close()
-#------------Night getter(as a char)----------------
-# def get_night():
-#     f = open("night.txt", mode = 'r')
-#     night = f.read(1)
-#     f.close()
-#     return night
-#------------Night setter(as a char)----------------
-# def set_night(newnight):
-#     f = open("night.txt", mode = 'r+')
-#     f.truncate(0)
-#     f.write(newnight)
-#     f.close()
 
 #function that updates constant background noise
 def update_music(states: States):
@@ -252,10 +223,6 @@ def update_states(states: States):
         states.jiggle_countdown = states.jiggle_time
         states.window_phase += 1
         JIGGLE_s.play()
-    
-    if states.window_phase == 4:
-        #play error audiobite, as in you're already fucking and will be jumpscared within 5 seconds
-        pass
 
     # Door
     if states.lock_countdown < 0:
@@ -270,9 +237,6 @@ def update_states(states: States):
             CLIMB_DOWN_s.play()
             states.FP_attack = True
 
-    if states.FP_countdown < 0:
-        pass
-
     # Bunker
     if states.bunkerwalk_countdown < 0:
         states.bunkerwalk_countdown = states.bunkerwalk_time / 4
@@ -280,8 +244,21 @@ def update_states(states: States):
         states.B_attack = True
         states.B_firstattack = True
 
-        
-
+#game progression function
+def progression(states: States):
+    if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0):
+        BEEPS_s.play()
+        pygame.time.delay(10000)
+        states.is_lost = True
+    if states.is_lost:
+        WIN.blit(ROUND_WIN, (0,0)) #should be playing the jumpscare but that doesn't exist yet
+        return True
+    if states.num_seconds >= 600:
+        WIN.blit(ROUND_WIN, (0,0)) #play round progression cutscene
+        pygame.time.delay(3000)
+        prog_night()
+        return True
+    return False
 
 # function that determines which images to display based off current game states
 def draw_image(states: States):
@@ -318,7 +295,6 @@ def draw_image(states: States):
         elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
         elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
         elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
-    
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
@@ -370,6 +346,12 @@ def main():
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
+        draw_image(states) # update image after every event has been iterated through
+        if progression(states):
+            if states.is_lost:
+                states = States(None, 'Game-load')
+            else:
+                states = States(None, 'Game-load')
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
@@ -415,7 +397,7 @@ def main():
                     if states.B_attack:
                         states.B_countdown -= 1
             
-        draw_image(states) # update image after every event has been iterated through
+        
 
 if __name__ == "__main__":
     main()
