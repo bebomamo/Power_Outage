@@ -292,6 +292,7 @@ def draw_image(states: States):
         elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
         elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
         elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
+        
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
@@ -401,7 +402,5 @@ def main():
                     if states.B_attack:
                         states.B_countdown -= 1
             
-        
-
 if __name__ == "__main__":
     main()
