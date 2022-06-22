@@ -1,4 +1,5 @@
 import random, pygame, os
+from game import WIN
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
@@ -165,16 +166,22 @@ class States:
         if is_lost is None: is_lost = False
         self.is_lost = is_lost
 
-class Button(pygame.sprite.Sprite):
-    def __init__(self, image: str, pos_x: int, pos_y: int):
-        super().__init__()
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.image = pygame.image.load(os.path.join('assets', image)).convert_alpha()
-        self.rect = self.image.get_rect(x=pos_x, y=pos_y)
+class Button():
+    def __init__(self, default_image: str, hover_image: str, pos: tuple):
+        self.pos_x, self.pos_y = pos
+        self.default_image = pygame.image.load(os.path.join('assets', default_image)).convert_alpha()
+        self.hover_image = pygame.image.load(os.path.join('assets', hover_image)).convert_alpha()
+        self.image = self.default_image
+        self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
     
-    def draw():
-        pass
-    
-    def is_mouse_over():
-        pass
+    def is_mouse_over(self):
+        loc = pygame.mouse.get_pos()
+        if self.rect.collidepoint(loc[0],loc[1]): return True
+        return False
+
+    def draw(self):
+        if self.is_mouse_over():
+            self.image = self.hover_image
+            self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
+            WIN.blit(self.image, (self.pos_x, self.pos_y))
+        else: WIN.blit(self.image, (self.pos_x, self.pos_y))
