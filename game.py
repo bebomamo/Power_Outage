@@ -253,7 +253,7 @@ def progression(states: States):
     if states.is_lost:
         WIN.blit(ROUND_WIN, (0,0)) #should be playing the jumpscare but that doesn't exist yet
         return True
-    if states.num_seconds >= 600:
+    elif states.num_seconds >= 600:
         WIN.blit(ROUND_WIN, (0,0)) #play round progression cutscene
         pygame.time.delay(3000)
         prog_night()
@@ -295,6 +295,7 @@ def draw_image(states: States):
         elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
         elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
         elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
+        
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
@@ -347,11 +348,10 @@ def main():
         update_states(states)
         update_music(states)
         draw_image(states) # update image after every event has been iterated through
+
         if progression(states):
-            if states.is_lost:
-                states = States(None, 'Game-load')
-            else:
-                states = States(None, 'Game-load')
+            if states.is_lost: states = States(None, 'Game-load')
+            else: states = States(None, 'Game-load')
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
@@ -397,7 +397,5 @@ def main():
                     if states.B_attack:
                         states.B_countdown -= 1
             
-        
-
 if __name__ == "__main__":
     main()

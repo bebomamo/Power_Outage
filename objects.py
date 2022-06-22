@@ -1,5 +1,4 @@
 import random, pygame, os
-from game import WIN
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
@@ -167,8 +166,9 @@ class States:
         self.is_lost = is_lost
 
 class Button():
-    def __init__(self, default_image: str, hover_image: str, pos: tuple):
+    def __init__(self, default_image: str, hover_image: str, pos: tuple, win: pygame.Surface):
         self.pos_x, self.pos_y = pos
+        self.win = win
         self.default_image = pygame.image.load(os.path.join('assets', default_image)).convert_alpha()
         self.hover_image = pygame.image.load(os.path.join('assets', hover_image)).convert_alpha()
         self.image = self.default_image
@@ -183,5 +183,5 @@ class Button():
         if self.is_mouse_over():
             self.image = self.hover_image
             self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
-            WIN.blit(self.image, (self.pos_x, self.pos_y))
-        else: WIN.blit(self.image, (self.pos_x, self.pos_y))
+            self.win.blit(self.image, (self.pos_x, self.pos_y))
+        else: self.win.blit(self.image, (self.pos_x, self.pos_y))
