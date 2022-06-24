@@ -168,7 +168,7 @@ class States:
         if is_won is None: is_won = False
         self.is_won = is_won
 
-
+# simple button class that allows for different images to be displayed depending on whether the mouse is over the button
 class Button():
     def __init__(self, default_image: str, hover_image: str, pos: tuple, win: pygame.Surface):
         self.pos_x, self.pos_y = pos
@@ -188,4 +188,7 @@ class Button():
             self.image = self.hover_image
             self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
             self.win.blit(self.image, (self.pos_x, self.pos_y))
-        else: self.win.blit(self.image, (self.pos_x, self.pos_y))
+        else:
+            self.image = self.default_image
+            self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y) 
+            self.win.blit(self.image, (self.pos_x, self.pos_y))

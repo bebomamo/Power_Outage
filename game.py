@@ -258,9 +258,12 @@ def progression(states: States):
         prog_night()
         
 # function that determines which images to display based off current game states
-def draw_image(states: States):
+def draw_image(states: States, buttons: dict):
     if states.view == "Home":
         WIN.blit(HOME, (0, 0)) #display home image
+        buttons['START_BUTTON'].draw()
+        buttons['RESTART_BUTTON'].draw()
+        buttons['QUIT_BUTTON'].draw()
     
     elif states.view == "Game-load":
         if states.night == '1': WIN.blit(NIGHT1_LOAD, (0,0))
@@ -306,6 +309,9 @@ def draw_image(states: States):
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
+        buttons['RESUME_BUTTON'].draw()
+        buttons['SETTINGS_BUTTON_PAUSED'].draw()
+        buttons['QUIT_BUTTON_PAUSED'].draw()
 
     pygame.display.update()
 
@@ -318,16 +324,22 @@ def main():
 
     states = States() # initialize game states
     
+    # Dictionary containing all of the Button objects to be used in the game
+    buttons = {
+        'START_BUTTON': Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN),
+        'RESTART_BUTTON': Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN),
+        'QUIT_BUTTON': Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN),
+        'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
+        'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
+        'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
+    }
+
     # Dictionary containing all of the Rect objects to be used in the game
-    HOME_BUTTON_WIDTH = 625
-    HOME_BUTTON_HEIGHT = 59
-    PAUSE_BUTTON_WIDTH = 85
-    PAUSE_BUTTON_HEIGHT = 18
     rects = {
-        'START_BUTTON': pygame.Rect((125, 203), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
-        'QUIT_BUTTON': pygame.Rect((125, 407), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
-        'RESUME_BUTTON': pygame.Rect((405,203), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
-        'QUIT_BUTTON_PAUSED': pygame.Rect((405, 293), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
+        'START_BUTTON': buttons['START_BUTTON'].rect,
+        'QUIT_BUTTON': buttons['QUIT_BUTTON'].rect,
+        'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
+        'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
         'LOG': pygame.Rect((343, 157), (92, 18)),
         'DAMPER': pygame.Rect((325, 125), (10, 24)),
         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
@@ -350,7 +362,7 @@ def main():
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
-        draw_image(states) # update image after every event has been iterated through
+        draw_image(states, buttons) # update image after every event has been iterated through
         progression(states)
 
         if states.is_lost:
