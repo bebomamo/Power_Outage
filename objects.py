@@ -2,46 +2,46 @@ import random, pygame, os
 
 # Function which calculates a valid jiggletime based on the inputted night
 def get_jiggletime(night):
-    if night == '1': return 90 + random.randrange(0,30,1) #attacked once but only once
-    elif night == '2': return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
-    elif night == '3': return 55 + random.randrange(0,20,1) #attacked twice but only twice
-    elif night == '4': return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
-    elif night == '5': return 35 + random.randrange(0,10,1) #attacked three or four times
-    elif night == '6': return 25 + random.randrange(0,5,1) #attacked four or five times
-    elif night == '7': return 15 + random.randrange(0,5,1) #attacked seven to nine times
+    if night == 1: return 90 + random.randrange(0,30,1) #attacked once but only once
+    elif night == 2: return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
+    elif night == 3: return 55 + random.randrange(0,20,1) #attacked twice but only twice
+    elif night == 4: return 45 + random.randrange(0,15,1) #attacked twice or 3 times but likely twice
+    elif night == 5: return 35 + random.randrange(0,10,1) #attacked three or four times
+    elif night == 6: return 25 + random.randrange(0,5,1) #attacked four or five times
+    elif night == 7: return 15 + random.randrange(0,5,1) #attacked seven to nine times
 
 # Function that returns the climbdown time for the fireplace
 def get_climbdown(night):
-    if night == '1': return 600 #ten minutes (never attacks night 1)
-    elif night == '2': return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
-    elif night == '3': return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
-    elif night == '4': return 182 + random.randrange(0,14,1) #attacked three times no matter what
-    elif night == '5': return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
-    elif night == '6': return 117 #attacked 5 times no matter what
-    elif night == '7': return 87 + random.randrange(0,20,1) #attacked 5 or 6 times
+    if night == 1: return 600 #ten minutes (never attacks night 1)
+    elif night == 2: return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
+    elif night == 3: return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
+    elif night == 4: return 182 + random.randrange(0,14,1) #attacked three times no matter what
+    elif night == 5: return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
+    elif night == 6: return 117 #attacked 5 times no matter what
+    elif night == 7: return 87 + random.randrange(0,20,1) #attacked 5 or 6 times
 
 # Function that returns when door lockpicked phase based on input night
 # All attack timings are very similar to jiggletime, however attacks happen on average 10 seconds more frequently since there are more door phases
 def get_locktime(night):
-    if night == '1': return 80 + random.randrange(0,30,1) 
-    elif night == '2': return 60 + random.randrange(0,30,1) 
-    elif night == '3': return 45 + random.randrange(0,20,1) 
-    elif night == '4': return 35 + random.randrange(0,15,1) 
-    elif night == '5': return 25 + random.randrange(0,10,1) 
-    elif night == '6': return 15 + random.randrange(0,5,1) 
-    elif night == '7': return 5 + random.randrange(0,5,1)
+    if night == 1: return 80 + random.randrange(0,30,1) 
+    elif night == 2: return 60 + random.randrange(0,30,1) 
+    elif night == 3: return 45 + random.randrange(0,20,1) 
+    elif night == 4: return 35 + random.randrange(0,15,1) 
+    elif night == 5: return 25 + random.randrange(0,10,1) 
+    elif night == 6: return 15 + random.randrange(0,5,1) 
+    elif night == 7: return 5 + random.randrange(0,5,1)
 
 # Function that determines when the bunker man will attack, attacks begin night 3 and are more frequent after the first attack.
 # The first attack can also be slowed by checking the bunker door which will be very useful in later nights, this logic will be implemented in game.py however
 # This function will simply give a base attack time that is similar to climbdown based again upon the input night
 def get_bunkerwalk(night):
-    if night == '1': return 601 #no attacking night 1
-    elif night == '2': return 601 #no attacking night 2
-    elif night == '3': return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
-    elif night == '4': return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
-    elif night == '5': return 182 + random.randrange(0,14,1) #attacked three times no matter what
-    elif night == '6': return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
-    elif night == '7': return 117 #attacked 5 times no matter what
+    if night == 1: return 601 #no attacking night 1
+    elif night == 2: return 601 #no attacking night 2
+    elif night == 3: return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
+    elif night == 4: return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
+    elif night == 5: return 182 + random.randrange(0,14,1) #attacked three times no matter what
+    elif night == 6: return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
+    elif night == 7: return 117 #attacked 5 times no matter what
 
 # night set/get 
 #------------Night getter(as a char)----------------
@@ -72,10 +72,10 @@ class States:
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
     B_checked=None, B_checkedtime=None, B_firstattack=None):
         # Game states
-        if night is None: night = get_night()
+        if night is None: night = 1 #get_night()
         self.night = night
 
-        if view is None: view = 'Home'
+        if view is None: view = 'Fireplace'
         self.view = view
 
         if playing is None: playing = False

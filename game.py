@@ -11,7 +11,8 @@ SEC = 1000 # 1000 milliseconds
 FPS = 60
 
 pygame.init() # start pygame
-pygame.mixer.init() #start mixer 
+pygame.mixer.init() #start mixer
+clock = pygame.time.Clock()  
 
 # Window setup
 WIDTH, HEIGHT = 900, 500 #subject to change
@@ -100,7 +101,6 @@ FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
-
 #function that updates constant background noise
 def update_music(states: States):
     if states.fire and states.music_swap == True:
@@ -114,27 +114,8 @@ def update_music(states: States):
         mixer.music.play(-1)
         states.music_swap = False
 
-# fucntion that handles clicks based off the current game states and mouse position
+# fucntion that handles clicks during the game based off the current game states and mouse position
 def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
-    if states.view == "Home" and clicking:
-        if rects['START_BUTTON'].collidepoint(loc[0],loc[1]): states.view = "Game-load"
-        elif rects['QUIT_BUTTON'].collidepoint(loc[0],loc[1]):
-            pygame.quit()
-            sys.exit()
-
-    elif states.view == "Game-load":
-        pygame.time.delay(3000)
-
-        # -----timing stuff-----
-        #start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
-        global sec_timer
-        sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
-        pygame.time.set_timer(sec_timer, 1000)
-        # ----------------------
-
-        states.playing = True
-        states.view = 'Fireplace'
-        
     if clicking: # handle clicks
         if states.playing: # handle clicks while playing
             if states.view == "Fireplace":
@@ -244,24 +225,9 @@ def update_states(states: States):
         states.B_attack = True
         states.B_firstattack = True
         
-# function that determines which images to display based off current game states
+# function that determines which images to display during the game based off current game states
 def draw_image(states: States, buttons: dict):
-    if states.view == "Home":
-        WIN.blit(HOME, (0, 0)) #display home image
-        buttons['START_BUTTON'].draw()
-        buttons['RESTART_BUTTON'].draw()
-        buttons['QUIT_BUTTON'].draw()
-    
-    elif states.view == "Game-load":
-        if states.night == '1': WIN.blit(NIGHT1_LOAD, (0,0))
-        elif states.night == '2': WIN.blit(NIGHT2_LOAD, (0,0))
-        elif states.night == '3': WIN.blit(NIGHT3_LOAD, (0,0))
-        elif states.night == '4': WIN.blit(NIGHT4_LOAD, (0,0))
-        elif states.night == '5': WIN.blit(NIGHT5_LOAD, (0,0))
-        elif states.night == '6': WIN.blit(NIGHT6_LOAD, (0,0))
-        elif states.night == '7': WIN.blit(NIGHT7_LOAD, (0,0))
-
-    elif states.view == "Fireplace":
+    if states.view == "Fireplace":
         # if statements that look at the fireplace's state and determine what image to show
         if states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_CLOSED, (0,0)) #display unlit closed damper fireplace
         elif not states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_OPEN, (0,0)) #display unlit open damper fireplace
@@ -296,20 +262,64 @@ def draw_image(states: States, buttons: dict):
 
     pygame.display.update()
 
-def main():  
-    clock = pygame.time.Clock()
+# function that controls the game's home screen
+def home_screen(states: States):
+    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+
+    while True:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(HOME, (0,0))
+
+        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]:
+            button.draw()
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
+                    load_screen(states) # display proper loading screen
+                    game_screen(states) # enter game
+                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]): pass
+                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    pygame.quit()
+                    sys.exit()
+                    
+# function that controls the game's loading screens
+def load_screen(states: States):
+    if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
+    elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
+    elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
+    elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
+    elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
+    elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
+    elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
+    pygame.display.update()
+    pygame.time.delay(3000)
+
+# Function that manages the in-game portion of the game. The actual implementations for the game's features,
+# such as click handeling and displaying images, are defined in the above functions.
+def game_screen(states: States):
+    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+    pygame.time.set_timer(sec_timer, 1000)
 
     # clicking initialization
     clicking = False
     right_clicking = False
 
-    states = States() # initialize game states
-    
+    states.playing = True # game is now being played
+
     # Dictionary containing all of the Button objects to be used in the game
     buttons = {
-        'START_BUTTON': Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN),
-        'RESTART_BUTTON': Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN),
-        'QUIT_BUTTON': Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN),
         'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
         'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
         'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
@@ -317,8 +327,6 @@ def main():
 
     # Dictionary containing all of the Rect objects to be used in the game
     rects = {
-        'START_BUTTON': buttons['START_BUTTON'].rect,
-        'QUIT_BUTTON': buttons['QUIT_BUTTON'].rect,
         'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
         'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
         'LOG': pygame.Rect((343, 157), (92, 18)),
@@ -334,20 +342,18 @@ def main():
         'BU_DOWN': pygame.Rect((112,422), (644,43))
     }
 
-    # stuff that happens while the game is running
     while True:
         clock.tick(FPS)
 
-        loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
+        loc = pygame.mouse.get_pos()
 
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
         draw_image(states, buttons) # update image after every event has been iterated through
 
-        clicking = False # one click allowed per frame - probably a temporary solution
+        clicking = False # one click allowed per frame - may or may not be changed
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -366,9 +372,8 @@ def main():
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if states.playing != states.paused: # can only pause/unpause game after entering
-                        states.playing = not states.playing
-                        states.paused = not states.paused
+                    states.playing = not states.playing
+                    states.paused = not states.paused
 
             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
                 if event.type == sec_timer: 
@@ -377,17 +382,114 @@ def main():
                     states.jiggle_countdown -= 1
                     states.lock_countdown -= 1
                     states.climbdown_countdown -= 1
-                    if states.FP_attack:
-                        states.FP_countdown -= 1
-                    if not states.B_checked:    
-                        states.bunkerwalk_countdown -= 1
-                    elif states.B_CTcountdown > 0:
-                        states.B_CTcountdown -= 1
+
+                    if states.FP_attack: states.FP_countdown -= 1
+                    
+                    if not states.B_checked: states.bunkerwalk_countdown -= 1
+                    elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
                     else:
                         states.B_checked = False
                         states.B_CTcountdown = states.B_checkedtime
                     if states.B_attack:
                         states.B_countdown -= 1
+
+# function that controls the sequencing of the game (which screens are to be displayed and when, current game states, etc.)
+def main():
+    states = States()
+    home_screen(states)
             
 if __name__ == "__main__":
     main()
+
+
+
+# def main():  
+#     clock = pygame.time.Clock()
+
+#     # clicking initialization
+#     clicking = False
+#     right_clicking = False
+
+#     states = States() # initialize game states
+    
+#     # Dictionary containing all of the Button objects to be used in the game
+#     buttons = {
+#         'START_BUTTON': Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN),
+#         'RESTART_BUTTON': Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN),
+#         'QUIT_BUTTON': Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN),
+#         'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
+#         'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
+#         'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
+#     }
+
+#     # Dictionary containing all of the Rect objects to be used in the game
+#     rects = {
+#         'START_BUTTON': buttons['START_BUTTON'].rect,
+#         'QUIT_BUTTON': buttons['QUIT_BUTTON'].rect,
+#         'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
+#         'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
+#         'LOG': pygame.Rect((343, 157), (92, 18)),
+#         'DAMPER': pygame.Rect((325, 125), (10, 24)),
+#         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
+#         'FP_LEFT': pygame.Rect((17, 31), (40, 408)),
+#         'FP_DOWN': pygame.Rect((113, 435), (674, 48)),
+#         'WI_LEFT': pygame.Rect((19,27), (62,460)),
+#         'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
+#         'DOOR': pygame.Rect((166, 28), (352, 454)),
+#         'DO_RIGHT': pygame.Rect((786, 28), (80, 458)),
+#         'BUNKER': pygame.Rect((112,34), (642, 312)),
+#         'BU_DOWN': pygame.Rect((112,422), (644,43))
+#     }
+
+#     # stuff that happens while the game is running
+#     while True:
+#         clock.tick(FPS)
+
+#         loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
+
+#         handle_clicks(states, rects, clicking, right_clicking, loc)
+#         update_states(states)
+#         update_music(states)
+#         draw_image(states, buttons) # update image after every event has been iterated through
+
+#         clicking = False # one click allowed per frame - probably a temporary solution
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+
+#             if event.type == pygame.MOUSEBUTTONDOWN:
+#                 if event.button == 1: # left clicking
+#                     clicking = True
+#                 if event.button == 3: # right clicking
+#                     right_clicking = True
+            
+#             if event.type == pygame.MOUSEBUTTONUP:
+#                 if event.button == 1:
+#                     clicking = False
+#                 if event.button == 3:
+#                     right_clicking = False
+            
+#             if event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_ESCAPE:
+#                     if states.playing != states.paused: # can only pause/unpause game after entering
+#                         states.playing = not states.playing
+#                         states.paused = not states.paused
+
+#             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
+#                 if event.type == sec_timer: 
+#                     # anything in here will occur once for every second of playtime
+#                     states.num_seconds += 1
+#                     states.jiggle_countdown -= 1
+#                     states.lock_countdown -= 1
+#                     states.climbdown_countdown -= 1
+
+#                     if states.FP_attack: states.FP_countdown -= 1
+
+#                     if not states.B_checked: states.bunkerwalk_countdown -= 1
+#                     elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
+#                     else:
+#                         states.B_checked = False
+#                         states.B_CTcountdown = states.B_checkedtime
+#                     if states.B_attack:
+#                         states.B_countdown -= 1
