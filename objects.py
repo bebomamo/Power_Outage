@@ -53,7 +53,7 @@ def get_night():
 #------------Night setter(as a char)----------------
 def prog_night():
     currentnight = get_night()
-    newnight = 1
+    newnight = '1'
     if(currentnight == '1'): newnight = '2'
     elif(currentnight == '2'): newnight = '3'
     elif(currentnight == '3'): newnight = '4'

@@ -80,25 +80,25 @@ WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT))
 
 #Audio asset initialization
 #for window
-JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
+JIGGLE_S = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
 #for door
-LOCK_s = mixer.Sound(os.path.join('assets', 'Lock.wav')) #
+LOCK_S = mixer.Sound(os.path.join('assets', 'Lock.wav')) #
 #for bunker
-BUNKER_HOLD_s = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav')) #
-BUNKER_RELEASE_s = mixer.Sound(os.path.join('assets', 'Bunker_release.wav')) #
-WALK_TOWARDS_s = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
-WALK_AWAY_s = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
+BUNKER_HOLD_S = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav')) #
+BUNKER_RELEASE_S = mixer.Sound(os.path.join('assets', 'Bunker_release.wav')) #
+WALK_TOWARDS_S = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
+WALK_AWAY_S = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
 #for fireplace
-CLIMB_DOWN_s = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
-CLIMB_UP_s = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
-CLOSE_DAMPER_s = mixer.Sound(os.path.join('assets', 'Close_damper.wav')) #
-OPEN_DAMPER_s = mixer.Sound(os.path.join('assets', 'Open_damper.wav')) #
-FIRE_ON_s = mixer.Sound(os.path.join('assets', 'Fire_on.wav')) #
-FIRE_RUNNING_s = mixer.Sound(os.path.join('assets', 'Fire_running.wav')) #
-FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
+CLIMB_DOWN_S = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
+CLIMB_UP_S = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
+CLOSE_DAMPER_S = mixer.Sound(os.path.join('assets', 'Close_damper.wav')) #
+OPEN_DAMPER_S = mixer.Sound(os.path.join('assets', 'Open_damper.wav')) #
+FIRE_ON_S = mixer.Sound(os.path.join('assets', 'Fire_on.wav')) #
+FIRE_RUNNING_S = mixer.Sound(os.path.join('assets', 'Fire_running.wav')) #
+FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 #for fear
-BEEPS_s = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
-FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
+BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
+FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
 
 #function that updates constant background noise
@@ -140,25 +140,25 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
             if states.view == "Fireplace":
                 if rects['LOG'].collidepoint(loc[0],loc[1]):
                     if states.fire: 
-                        FIRE_OFF_s.play()
+                        FIRE_OFF_S.play()
                         states.fire = False
                         states.music_swap = True
                     elif not states.damper:  #must add message to let the player know the damper must be open to turn on fire
-                        FIRE_ON_s.play()
+                        FIRE_ON_S.play()
                         states.fire = True
                         states.music_swap = True
                 elif rects['DAMPER'].collidepoint(loc[0],loc[1]):
                     if not states.fire:
                         if states.damper: 
                             states.damper = False
-                            OPEN_DAMPER_s.play()
+                            OPEN_DAMPER_S.play()
                         else: 
                             states.damper = True
-                            CLOSE_DAMPER_s.play()
+                            CLOSE_DAMPER_S.play()
                             if states.FP_attack:
                                 states.FP_countdown = states.FP_time
                                 states.FP_attack = False
-                                CLIMB_UP_s.play()
+                                CLIMB_UP_S.play()
                 elif rects['FP_RIGHT'].collidepoint(loc[0], loc[1]): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                     states.view = 'Window'
                 elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states.view = "Door"
@@ -190,14 +190,14 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                 if rects['BUNKER'].collidepoint(loc[0], loc[1]):
                     if states.holding: 
                         states.holding = False
-                        BUNKER_RELEASE_s.play()
+                        BUNKER_RELEASE_S.play()
                     else: 
                         states.holding = True
-                        BUNKER_HOLD_s.play()
+                        BUNKER_HOLD_S.play()
                         if states.B_attack:
                                 states.B_countdown = states.B_time
                                 states.B_attack = False
-                                WALK_AWAY_s.play()
+                                WALK_AWAY_S.play()
                 elif rects['BU_DOWN'].collidepoint(loc[0], loc[1]):
                     if not states.holding: states.view = "Fireplace"
 
@@ -222,40 +222,41 @@ def update_states(states: States):
     if states.jiggle_countdown < 0:
         states.jiggle_countdown = states.jiggle_time
         states.window_phase += 1
-        JIGGLE_s.play()
+        JIGGLE_S.play()
 
     # Door
     if states.lock_countdown < 0:
         states.lock_countdown = states.lock_time
         states.door_phase += 1
-        LOCK_s.play()
+        LOCK_S.play()
 
     # Fireplace
     if states.climbdown_countdown < 0:
         states.climbdown_countdown = states.climbdown_time
         if not states.damper:
-            CLIMB_DOWN_s.play()
+            CLIMB_DOWN_S.play()
             states.FP_attack = True
 
     # Bunker
     if states.bunkerwalk_countdown < 0:
         states.bunkerwalk_countdown = states.bunkerwalk_time / 4
-        WALK_TOWARDS_s.play()
+        WALK_TOWARDS_S.play()
         states.B_attack = True
         states.B_firstattack = True
 
 #game progression function
 def progression(states: States):
     if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0):
-        BEEPS_s.play()
+        BEEPS_S.play()
         pygame.time.delay(10000)
         states.is_lost = True
     if states.is_lost:
         pygame.time.delay(3000)
-    if states.num_seconds >= 600:
+    if states.num_seconds >= 5:
         states.is_won = True
         pygame.time.delay(3000)
         prog_night()
+    
         
 # function that determines which images to display based off current game states
 def draw_image(states: States, buttons: dict):
@@ -365,10 +366,10 @@ def main():
         draw_image(states, buttons) # update image after every event has been iterated through
         progression(states)
 
-        if states.is_lost:
-            states = States()
         if states.is_won:
-            states = States()
+            states = States(None, 'Game-load')
+        if states.is_lost:
+            states = States(None, 'Game-load')
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
