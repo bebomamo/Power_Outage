@@ -243,20 +243,6 @@ def update_states(states: States):
         WALK_TOWARDS_S.play()
         states.B_attack = True
         states.B_firstattack = True
-
-#game progression function
-def progression(states: States):
-    if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0):
-        BEEPS_S.play()
-        pygame.time.delay(10000)
-        states.is_lost = True
-    if states.is_lost:
-        pygame.time.delay(3000)
-    if states.num_seconds >= 5:
-        states.is_won = True
-        pygame.time.delay(3000)
-        prog_night()
-    
         
 # function that determines which images to display based off current game states
 def draw_image(states: States, buttons: dict):
@@ -300,12 +286,6 @@ def draw_image(states: States, buttons: dict):
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
-    
-    if states.is_lost:
-        WIN.blit(ROUND_WIN, (0,0))
-
-    if states.is_won:
-        WIN.blit(ROUND_WIN, (0,0))
 
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
@@ -364,12 +344,6 @@ def main():
         update_states(states)
         update_music(states)
         draw_image(states, buttons) # update image after every event has been iterated through
-        progression(states)
-
-        if states.is_won:
-            states = States(None, 'Game-load')
-        if states.is_lost:
-            states = States(None, 'Game-load')
 
         clicking = False # one click allowed per frame - probably a temporary solution
         for event in pygame.event.get():
