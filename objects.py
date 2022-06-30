@@ -49,10 +49,10 @@ def get_night():
     f = open("night.txt", mode = 'r')
     night = f.read(1)
     f.close()
-    return night
+    return int(night)
 #------------Night setter(as a char)----------------
 def prog_night():
-    currentnight = get_night()
+    currentnight = str(get_night())
     newnight = '1'
     if(currentnight == '1'): newnight = '2'
     elif(currentnight == '2'): newnight = '3'
@@ -72,7 +72,7 @@ class States:
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
     B_checked=None, B_checkedtime=None, B_firstattack=None):
         # Game states
-        if night is None: night = 1 #get_night()
+        if night is None: night = get_night()
         self.night = night
 
         if view is None: view = 'Fireplace'

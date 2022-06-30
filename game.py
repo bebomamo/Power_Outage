@@ -289,11 +289,14 @@ def home_screen(states: States):
                 if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
                     load_screen(states) # display proper loading screen
                     game_screen(states) # enter game
-                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]): pass
+                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    states.night = 1 # start at night 1 no matter what 
+                    load_screen(states)
+                    game_screen(states)
                 if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     pygame.quit()
                     sys.exit()
-                    
+
 # function that controls the game's loading screens
 def load_screen(states: States):
     if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
