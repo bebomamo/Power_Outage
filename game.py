@@ -101,6 +101,53 @@ FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
+# function that controls the game's home screen
+def home_screen(states: States):
+    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+
+    while True:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(HOME, (0,0))
+
+        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]:
+            button.draw()
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
+                    load_screen(states) # display proper loading screen
+                    game_screen(states) # enter game
+                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    states.night = 1 # start at night 1 no matter what 
+                    load_screen(states)
+                    game_screen(states)
+                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    pygame.quit()
+                    sys.exit()
+
+# function that controls the game's loading screens
+def load_screen(states: States):
+    if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
+    elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
+    elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
+    elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
+    elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
+    elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
+    elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
+    pygame.display.update()
+    pygame.time.delay(3000)
+
 #function that updates constant background noise
 def update_music(states: States):
     if states.fire and states.music_swap == True:
@@ -261,53 +308,6 @@ def draw_image(states: States, buttons: dict):
         buttons['QUIT_BUTTON_PAUSED'].draw()
 
     pygame.display.update()
-
-# function that controls the game's home screen
-def home_screen(states: States):
-    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
-    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
-
-    while True:
-        clock.tick(FPS)
-
-        loc = pygame.mouse.get_pos()
-
-        WIN.blit(HOME, (0,0))
-
-        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]:
-            button.draw()
-
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
-                    load_screen(states) # display proper loading screen
-                    game_screen(states) # enter game
-                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                    states.night = 1 # start at night 1 no matter what 
-                    load_screen(states)
-                    game_screen(states)
-                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                    pygame.quit()
-                    sys.exit()
-
-# function that controls the game's loading screens
-def load_screen(states: States):
-    if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
-    elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
-    elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
-    elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
-    elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
-    elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
-    elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
-    pygame.display.update()
-    pygame.time.delay(3000)
 
 # Function that manages the in-game portion of the game. The actual implementations for the game's features,
 # such as click handeling and displaying images, are defined in the above functions.
