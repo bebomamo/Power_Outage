@@ -67,13 +67,18 @@ def prog_night():
 
 # Class which contains every game state, initialized with the default values listed below
 class States:
-    def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
-    num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
-    climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
-    B_checked=None, B_checkedtime=None, B_firstattack=None):
-        # Game states
+    def __init__(self, night=None, keep_playing=None, view=None, playing=None, paused=None, night_won=None, 
+    night_lost=None, next_second=None, num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, 
+    holding=None, jiggle_time=None, climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, 
+    FP_attack=None, FP_time=None, B_attack=None, B_time=None, B_checked=None, B_checkedtime=None, B_firstattack=None):
+        # ------Game states------
         if night is None: night = get_night()
         self.night = night
+
+        if keep_playing is None: keep_playing = False # If this attribute is True then the game will be active. Winning
+        self.keep_playing = keep_playing              # a night will advance the player to the next night and losing will 
+                                                      # repeat the previous night. If it is False, the player will be prompted
+                                                      # to save/not save and will then be returned to the home screen.
 
         if view is None: view = 'Fireplace'
         self.view = view
@@ -84,14 +89,20 @@ class States:
         if paused is None: paused = False
         self.paused = paused
 
-        # Time states
+        if night_won is None: night_won = False
+        self.night_won = night_won
+
+        if night_lost is None: night_lost = False
+        self.night_lost = night_lost
+
+        # ------Time states------
         if next_second is None: next_second = 1000
         self.next_second = next_second
 
         if num_seconds is None: num_seconds = 0
         self.num_seconds = num_seconds
 
-        # Window states
+        # ------Window states------
         if window_phase is None: window_phase = 1
         self.window_phase = window_phase
 
@@ -100,7 +111,7 @@ class States:
 
         self.jiggle_countdown = jiggle_time
 
-        # Fireplace states
+        # ------Fireplace states------
         if fire is None: fire = False
         self.fire = fire
 
@@ -120,7 +131,7 @@ class States:
 
         self.FP_countdown = FP_time
 
-        # Door states
+        # ------Door states------
         if door_phase is None: door_phase = 1
         self.door_phase = door_phase
 
@@ -129,7 +140,7 @@ class States:
 
         self.lock_countdown = lock_time
 
-        # Bunker states
+        # ------Bunker states------
         if holding is None: holding = False
         self.holding = holding
 
@@ -157,7 +168,7 @@ class States:
         if B_firstattack is None: B_firstattack = False
         self.B_firstattack = B_firstattack
 
-        #music states
+        # ------Music states------
         if music_swap is None: music_swap = True
         self.music_swap = music_swap
 

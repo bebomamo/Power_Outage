@@ -25,8 +25,8 @@ pygame.display.set_caption("Power Outage")
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-ROUND_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #roundwin temp image
-ROUND_WIN = pygame.transform.scale(ROUND_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
+NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #nightwin temp image
+NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
@@ -126,15 +126,17 @@ def home_screen(states: States):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
-                    load_screen(states) # display proper loading screen
-                    game_screen(states) # enter game
+                    states.keep_playing = True # begin game sequence
+                    break
                 if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     states.night = 1 # start at night 1 no matter what 
-                    load_screen(states)
-                    game_screen(states)
+                    states.keep_playing = True
+                    break
                 if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     pygame.quit()
                     sys.exit()
+
+        if states.keep_playing: break
 
 # function that controls the game's loading screens
 def load_screen(states: States):
@@ -309,6 +311,15 @@ def draw_image(states: States, buttons: dict):
 
     pygame.display.update()
 
+# function that determines whether the player has won or lost the current night
+def is_night_over(states: States):
+    # player loses
+    if states.window_phase == 4 or states.door_phase == 5 or states.FP_countdown < 0 or states.B_countdown < 0:
+        states.night_lost = True
+
+    # player wins
+    if states.num_seconds > 600: states.night_won = True
+
 # Function that manages the in-game portion of the game. The actual implementations for the game's features,
 # such as click handeling and displaying images, are defined in the above functions.
 def game_screen(states: States):
@@ -353,7 +364,10 @@ def game_screen(states: States):
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
+        is_night_over(states)
         draw_image(states, buttons) # update image after every event has been iterated through
+
+        if states.night_won or states.night_lost: break
 
         clicking = False # one click allowed per frame - may or may not be changed
         for event in pygame.event.get():
@@ -379,7 +393,7 @@ def game_screen(states: States):
                     states.paused = not states.paused
 
             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
-                if event.type == sec_timer: 
+                if event.type == sec_timer:
                     # anything in here will occur once for every second of playtime
                     states.num_seconds += 1
                     states.jiggle_countdown -= 1
@@ -393,106 +407,34 @@ def game_screen(states: States):
                     else:
                         states.B_checked = False
                         states.B_CTcountdown = states.B_checkedtime
-                    if states.B_attack:
-                        states.B_countdown -= 1
+                    if states.B_attack: states.B_countdown -= 1
 
 # function that controls the sequencing of the game (which screens are to be displayed and when, current game states, etc.)
 def main():
     states = States()
+
     home_screen(states)
+
+    # NOTE: There is currently a slight timing bug where, for every night other than the first,
+    #       the sec_timer event continues to be run during pygame.time.delay, meaning that every timing feature
+    #       is 3 seconds shorter than they otherwise would be. Since 3 seconds is insignificant in the scheme
+    #       of an entire round I'm leaving the bug be for now, but I will probably try and fix it later
+
+    while states.keep_playing:
+        current_night = states.night
+        load_screen(states)
+        game_screen(states)
+
+        if states.night_won: 
+            current_night += 1 # increment night if player beats current night
+
+            if current_night == 8:
+                # player has beaten the game and must be sent to a special screen
+                pass
+
+            states = States(current_night, True)
+        elif states.night_lost: states = States(current_night, True)
+
             
 if __name__ == "__main__":
     main()
-
-
-
-# def main():  
-#     clock = pygame.time.Clock()
-
-#     # clicking initialization
-#     clicking = False
-#     right_clicking = False
-
-#     states = States() # initialize game states
-    
-#     # Dictionary containing all of the Button objects to be used in the game
-#     buttons = {
-#         'START_BUTTON': Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN),
-#         'RESTART_BUTTON': Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN),
-#         'QUIT_BUTTON': Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN),
-#         'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
-#         'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
-#         'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
-#     }
-
-#     # Dictionary containing all of the Rect objects to be used in the game
-#     rects = {
-#         'START_BUTTON': buttons['START_BUTTON'].rect,
-#         'QUIT_BUTTON': buttons['QUIT_BUTTON'].rect,
-#         'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
-#         'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
-#         'LOG': pygame.Rect((343, 157), (92, 18)),
-#         'DAMPER': pygame.Rect((325, 125), (10, 24)),
-#         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
-#         'FP_LEFT': pygame.Rect((17, 31), (40, 408)),
-#         'FP_DOWN': pygame.Rect((113, 435), (674, 48)),
-#         'WI_LEFT': pygame.Rect((19,27), (62,460)),
-#         'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
-#         'DOOR': pygame.Rect((166, 28), (352, 454)),
-#         'DO_RIGHT': pygame.Rect((786, 28), (80, 458)),
-#         'BUNKER': pygame.Rect((112,34), (642, 312)),
-#         'BU_DOWN': pygame.Rect((112,422), (644,43))
-#     }
-
-#     # stuff that happens while the game is running
-#     while True:
-#         clock.tick(FPS)
-
-#         loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
-
-#         handle_clicks(states, rects, clicking, right_clicking, loc)
-#         update_states(states)
-#         update_music(states)
-#         draw_image(states, buttons) # update image after every event has been iterated through
-
-#         clicking = False # one click allowed per frame - probably a temporary solution
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-
-#             if event.type == pygame.MOUSEBUTTONDOWN:
-#                 if event.button == 1: # left clicking
-#                     clicking = True
-#                 if event.button == 3: # right clicking
-#                     right_clicking = True
-            
-#             if event.type == pygame.MOUSEBUTTONUP:
-#                 if event.button == 1:
-#                     clicking = False
-#                 if event.button == 3:
-#                     right_clicking = False
-            
-#             if event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_ESCAPE:
-#                     if states.playing != states.paused: # can only pause/unpause game after entering
-#                         states.playing = not states.playing
-#                         states.paused = not states.paused
-
-#             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
-#                 if event.type == sec_timer: 
-#                     # anything in here will occur once for every second of playtime
-#                     states.num_seconds += 1
-#                     states.jiggle_countdown -= 1
-#                     states.lock_countdown -= 1
-#                     states.climbdown_countdown -= 1
-
-#                     if states.FP_attack: states.FP_countdown -= 1
-
-#                     if not states.B_checked: states.bunkerwalk_countdown -= 1
-#                     elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
-#                     else:
-#                         states.B_checked = False
-#                         states.B_CTcountdown = states.B_checkedtime
-#                     if states.B_attack:
-#                         states.B_countdown -= 1
