@@ -1,8 +1,9 @@
+from ast import Num
 from tkinter import N
 import pygame, os, sys
 from objects import *
 from dataclasses import dataclass
-from pygame import mixer
+from pygame import QUIT, mixer
 
 # constants
 WHITE = (255, 255, 255)
@@ -25,10 +26,15 @@ pygame.display.set_caption("Power Outage")
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #nightwin temp image
+NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_win_screen_beta.png')).convert()
 NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
+NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'PO_lose_screen_beta.png')).convert()
+NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
+
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
+
+SAVE_MENU = pygame.image.load(os.path.join('assets', 'PO_save_menu_beta.png')).convert_alpha()
 
 NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
 NIGHT1_LOAD = pygame.transform.scale(NIGHT1_LOAD_IMAGE, (WIDTH, HEIGHT))
@@ -101,21 +107,67 @@ FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
+# function that controls the game's win screen
+def win_screen(states: States):
+    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+
+    buttons = [NEXT_NIGHT_BUTTON, QUIT_BUTTON]
+    
+    advance = False # set to True when the player is ready to move onto the next screen
+    save_menu = False # set to True when the save menu is to be displayed
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(NIGHT_WIN, (0,0))
+        NEXT_NIGHT_BUTTON.draw()
+        QUIT_BUTTON.draw()
+
+        if save_menu:
+            WIN.blit(SAVE_MENU, (325, 125))
+            SAVE_BUTTON_YES.draw()
+            SAVE_BUTTON_NO.draw()
+        
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not save_menu:
+                    if NEXT_NIGHT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        advance = True
+                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        save_menu = True
+                if save_menu:
+                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
+                        # write current_night to nights.txt
+                        pygame.quit()
+                        sys.exit()
+                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
+                        pygame.quit()
+                        sys.exit()
+
+
 # function that controls the game's home screen
 def home_screen(states: States):
     START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
     RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
 
-    while True:
+    advance = False # set to True when the player is ready to move onto the next screen
+
+    while not advance:
         clock.tick(FPS)
 
         loc = pygame.mouse.get_pos()
 
         WIN.blit(HOME, (0,0))
 
-        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]:
-            button.draw()
+        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]: button.draw()
 
         pygame.display.update()
 
@@ -127,28 +179,39 @@ def home_screen(states: States):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
                     states.keep_playing = True # begin game sequence
-                    break
+                    advance = True
                 if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     states.night = 1 # start at night 1 no matter what 
                     states.keep_playing = True
-                    break
+                    advance = True
                 if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     pygame.quit()
                     sys.exit()
 
-        if states.keep_playing: break
-
 # function that controls the game's loading screens
 def load_screen(states: States):
-    if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
-    elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
-    elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
-    elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
-    elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
-    elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
-    elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
-    pygame.display.update()
-    pygame.time.delay(3000)
+    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+    pygame.time.set_timer(sec_timer, 1000)
+
+    advance = False
+    num_seconds = 0 # number of seconds passes since screen was entered
+
+    while not advance:
+        if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
+        elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
+        elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
+        elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
+        elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
+        elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
+        elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
+
+        if num_seconds > 3: advance = True
+
+        for event in pygame.event.get():
+            if event.type == sec_timer:
+                num_seconds += 1
+
+        pygame.display.update()
 
 #function that updates constant background noise
 def update_music(states: States):
@@ -331,6 +394,7 @@ def game_screen(states: States):
     right_clicking = False
 
     states.playing = True # game is now being played
+    advance = False # set to True when the player is ready to move onto the next screen
 
     # Dictionary containing all of the Button objects to be used in the game
     buttons = {
@@ -356,7 +420,7 @@ def game_screen(states: States):
         'BU_DOWN': pygame.Rect((112,422), (644,43))
     }
 
-    while True:
+    while not advance:
         clock.tick(FPS)
 
         loc = pygame.mouse.get_pos()
@@ -367,7 +431,7 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update image after every event has been iterated through
 
-        if states.night_won or states.night_lost: break
+        if states.night_won or states.night_lost: advance = True
 
         clicking = False # one click allowed per frame - may or may not be changed
         for event in pygame.event.get():
@@ -414,26 +478,47 @@ def main():
     states = States()
 
     home_screen(states)
-
-    # NOTE: There is currently a slight timing bug where, for every night other than the first,
-    #       the sec_timer event continues to be run during pygame.time.delay, meaning that every timing feature
-    #       is 3 seconds shorter than they otherwise would be. Since 3 seconds is insignificant in the scheme
-    #       of an entire round I'm leaving the bug be for now, but I will probably try and fix it later
+    current_night = states.night
+    load_screen(states)
 
     while states.keep_playing:
-        current_night = states.night
-        load_screen(states)
         game_screen(states)
-
         if states.night_won: 
-            current_night += 1 # increment night if player beats current night
-
-            if current_night == 8:
-                # player has beaten the game and must be sent to a special screen
-                pass
-
+            current_night += 1
             states = States(current_night, True)
-        elif states.night_lost: states = States(current_night, True)
+            win_screen(states)
+            load_screen(states)
+            game_screen(states)
+
+            # Display win screen
+            #   a.) Player presses next night
+            #          1. States is reinstantiated with new night
+            #          2. load_screen and home_screen are displayed
+            #
+            #   b.) Player presses quit
+            #          1. Save menu is displayed
+            #               i. Player presses 'yes' -> upcoming night is written to nights.txt and game exits
+            #               ii. Player presses 'no' -> no changes are made to nights.txt and game exits
+
+
+
+            # if current_night == 8:
+            #     # player has beaten the game and must be sent to a special screen
+            #     pass
+        elif states.night_lost: 
+
+            # Display lose screen
+            #   a.) Player presses restart
+            #           1. States is reinstantiated with same night
+            #           2. load_screen and home_screen are displayed
+            #   
+            #   b.) Player presses quit
+            #           1. Save menu is displayed
+            #               i. Player presses 'yes' -> failed night is written to nights.txt and game exits
+            #               ii. Player presses 'no' -> no changes are made to nights.txt and game exits
+
+            #states = States(current_night, True)
+            pass
 
             
 if __name__ == "__main__":
