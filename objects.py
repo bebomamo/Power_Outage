@@ -44,25 +44,17 @@ def get_bunkerwalk(night):
     elif night == 7: return 117 #attacked 5 times no matter what
 
 # night set/get 
-#------------Night getter(as a char)----------------
+#------------Night getter----------------
 def get_night():
     f = open("night.txt", mode = 'r')
     night = f.read(1)
     f.close()
     return int(night)
-#------------Night setter(as a char)----------------
-def prog_night():
-    currentnight = str(get_night())
-    newnight = '1'
-    if(currentnight == '1'): newnight = '2'
-    elif(currentnight == '2'): newnight = '3'
-    elif(currentnight == '3'): newnight = '4'
-    elif(currentnight == '4'): newnight = '5'
-    elif(currentnight == '5'): newnight = '6'
-    elif(currentnight == '6'): newnight = '7'
+#------------Night setter----------------
+def set_night(night: int):
     f = open("night.txt", mode = 'r+')
     f.truncate(0)
-    f.write(newnight)
+    f.write(str(night))
     f.close()
 
 # Class which contains every game state, initialized with the default values listed below

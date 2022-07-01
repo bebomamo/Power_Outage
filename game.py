@@ -144,7 +144,7 @@ def win_screen(states: States):
                         save_menu = True
                 if save_menu:
                     if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
-                        # write current_night to nights.txt
+                        set_night(states.night)
                         pygame.quit()
                         sys.exit()
                     if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
