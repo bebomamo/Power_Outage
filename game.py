@@ -107,51 +107,6 @@ FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
-# function that controls the game's win screen
-def win_screen(states: States):
-    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
-
-    buttons = [NEXT_NIGHT_BUTTON, QUIT_BUTTON]
-    
-    advance = False # set to True when the player is ready to move onto the next screen
-    save_menu = False # set to True when the save menu is to be displayed
-
-    while not advance:
-        clock.tick(FPS)
-
-        loc = pygame.mouse.get_pos()
-
-        WIN.blit(NIGHT_WIN, (0,0))
-        NEXT_NIGHT_BUTTON.draw()
-        QUIT_BUTTON.draw()
-
-        if save_menu:
-            WIN.blit(SAVE_MENU, (325, 125))
-            SAVE_BUTTON_YES.draw()
-            SAVE_BUTTON_NO.draw()
-        
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if not save_menu:
-                    if NEXT_NIGHT_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                        advance = True
-                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                        save_menu = True
-                if save_menu:
-                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
-                        set_night(states.night)
-                        pygame.quit()
-                        sys.exit()
-                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
-                        pygame.quit()
-                        sys.exit()
-
-
 # function that controls the game's home screen
 def home_screen(states: States):
     START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
@@ -212,6 +167,90 @@ def load_screen(states: States):
                 num_seconds += 1
 
         pygame.display.update()
+
+# function that controls the game's win screen
+def win_screen(states: States):
+    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    
+    advance = False # set to True when the player is ready to move onto the next screen
+    save_menu = False # set to True when the save menu is to be displayed
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(NIGHT_WIN, (0,0))
+        NEXT_NIGHT_BUTTON.draw()
+        QUIT_BUTTON.draw()
+
+        if save_menu:
+            WIN.blit(SAVE_MENU, (325, 125))
+            SAVE_BUTTON_YES.draw()
+            SAVE_BUTTON_NO.draw()
+        
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not save_menu:
+                    if NEXT_NIGHT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        advance = True
+                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        save_menu = True
+                if save_menu:
+                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
+                        set_night(states.night) # write night to night.txt (it will already have been incremented when this is called)
+                        pygame.quit()
+                        sys.exit()
+                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
+                        pygame.quit()
+                        sys.exit()
+
+# function that controls the game's lose screen
+def lose_screen(states: States):
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    
+    advance = False # set to True when the player is ready to move onto the next screen
+    save_menu = False # set to True when the save menu is to be displayed
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(NIGHT_LOSE, (0,0))
+        RESTART_BUTTON.draw()
+        QUIT_BUTTON.draw()
+
+        if save_menu:
+            WIN.blit(SAVE_MENU, (325, 125))
+            SAVE_BUTTON_YES.draw()
+            SAVE_BUTTON_NO.draw()
+        
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not save_menu:
+                    if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        advance = True
+                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        save_menu = True
+                if save_menu:
+                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
+                        set_night(states.night) # write failed night to night.txt (night will not have been incremented when this is called)
+                        pygame.quit()
+                        sys.exit()
+                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
+                        pygame.quit()
+                        sys.exit()
 
 #function that updates constant background noise
 def update_music(states: States):
@@ -490,36 +529,19 @@ def main():
             load_screen(states)
             game_screen(states)
 
-            # Display win screen
-            #   a.) Player presses next night
-            #          1. States is reinstantiated with new night
-            #          2. load_screen and home_screen are displayed
-            #
-            #   b.) Player presses quit
-            #          1. Save menu is displayed
-            #               i. Player presses 'yes' -> upcoming night is written to nights.txt and game exits
-            #               ii. Player presses 'no' -> no changes are made to nights.txt and game exits
+            if current_night == 8:
+                # player has beaten the game and must be sent to a special screen
+                pass
 
-
-
-            # if current_night == 8:
-            #     # player has beaten the game and must be sent to a special screen
-            #     pass
         elif states.night_lost: 
 
-            # Display lose screen
-            #   a.) Player presses restart
-            #           1. States is reinstantiated with same night
-            #           2. load_screen and home_screen are displayed
-            #   
-            #   b.) Player presses quit
-            #           1. Save menu is displayed
-            #               i. Player presses 'yes' -> failed night is written to nights.txt and game exits
-            #               ii. Player presses 'no' -> no changes are made to nights.txt and game exits
+            # TODO - Implement jumpscare. This will probably end up being done in game_screen but I'm putting this comment
+            #        here so that it will be more visible
 
-            #states = States(current_night, True)
-            pass
-
+            states = States(current_night, True)
+            lose_screen(states)
+            load_screen(states)
+            game_screen(states)
             
 if __name__ == "__main__":
     main()
