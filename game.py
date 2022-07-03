@@ -1,4 +1,5 @@
 from ast import Num
+from sre_constants import JUMP
 from tkinter import N
 import pygame, os, sys
 from objects import *
@@ -31,6 +32,9 @@ NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resi
 
 NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'PO_lose_screen_beta.png')).convert()
 NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
+
+JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert_alpha()
+JUMPSCARE = pygame.transform.scale(JUMPSCARE_IMAGE, (WIDTH, HEIGHT))
 
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
 
@@ -411,6 +415,9 @@ def draw_image(states: States, buttons: dict):
         buttons['SETTINGS_BUTTON_PAUSED'].draw()
         buttons['QUIT_BUTTON_PAUSED'].draw()
 
+    if states.night_lost:
+        if states.lose_timer > 10: WIN.blit(JUMPSCARE, (0,0))
+
     pygame.display.update()
 
 # function that determines whether the player has won or lost the current night
@@ -470,7 +477,11 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update image after every event has been iterated through
 
-        if states.night_won or states.night_lost: advance = True
+        if states.night_won: advance = True
+
+        if states.night_lost: 
+            BEEPS_S.play()
+            if states.lose_timer > 13: advance = True
 
         clicking = False # one click allowed per frame - may or may not be changed
         for event in pygame.event.get():
@@ -478,39 +489,43 @@ def game_screen(states: States):
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1: # left clicking
-                    clicking = True
-                if event.button == 3: # right clicking
-                    right_clicking = True
-            
-            if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    clicking = False
-                if event.button == 3:
-                    right_clicking = False
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    states.playing = not states.playing
-                    states.paused = not states.paused
+            if not states.night_lost: # if night is lost you can't click or press any buttons
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1: # left clicking
+                        clicking = True
+                    if event.button == 3: # right clicking
+                        right_clicking = True
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        clicking = False
+                    if event.button == 3:
+                        right_clicking = False
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        states.playing = not states.playing
+                        states.paused = not states.paused
 
             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
                 if event.type == sec_timer:
                     # anything in here will occur once for every second of playtime
-                    states.num_seconds += 1
-                    states.jiggle_countdown -= 1
-                    states.lock_countdown -= 1
-                    states.climbdown_countdown -= 1
+                    if not states.night_lost and not states.night_won:
+                        states.num_seconds += 1
+                        states.jiggle_countdown -= 1
+                        states.lock_countdown -= 1
+                        states.climbdown_countdown -= 1
 
-                    if states.FP_attack: states.FP_countdown -= 1
-                    
-                    if not states.B_checked: states.bunkerwalk_countdown -= 1
-                    elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
-                    else:
-                        states.B_checked = False
-                        states.B_CTcountdown = states.B_checkedtime
-                    if states.B_attack: states.B_countdown -= 1
+                        if states.FP_attack: states.FP_countdown -= 1
+                        
+                        if not states.B_checked: states.bunkerwalk_countdown -= 1
+                        elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
+                        else:
+                            states.B_checked = False
+                            states.B_CTcountdown = states.B_checkedtime
+                        if states.B_attack: states.B_countdown -= 1
+
+                    elif states.night_lost: states.lose_timer += 1 # increment lose_timer if night is lost
 
 # function that controls the sequencing of the game (which screens are to be displayed and when, current game states, etc.)
 def main():

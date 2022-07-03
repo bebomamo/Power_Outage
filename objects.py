@@ -60,7 +60,7 @@ def set_night(night: int):
 # Class which contains every game state, initialized with the default values listed below
 class States:
     def __init__(self, night=None, keep_playing=None, view=None, playing=None, paused=None, night_won=None, 
-    night_lost=None, next_second=None, num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, 
+    night_lost=None, next_second=None, num_seconds=None, lose_timer=None, fire=None, damper=None, window_phase=None, door_phase=None, 
     holding=None, jiggle_time=None, climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, 
     FP_attack=None, FP_time=None, B_attack=None, B_time=None, B_checked=None, B_checkedtime=None, B_firstattack=None):
         # ------Game states------
@@ -93,6 +93,10 @@ class States:
 
         if num_seconds is None: num_seconds = 0
         self.num_seconds = num_seconds
+
+        if lose_timer is None: lose_timer = 0 # When the night has been lost this timer starts increasing every second. During this time,
+        self.lose_timer = lose_timer          # the player is unabele to do anything. When it reaches a certain number (10 for now, 
+                                              # could be changed/randomized), the player will be jumpscared.
 
         # ------Window states------
         if window_phase is None: window_phase = 1
