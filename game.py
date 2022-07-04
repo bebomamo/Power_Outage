@@ -78,6 +78,24 @@ WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #
 WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
+#Fear bar section initialization
+FEARBAR1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p1.PNG')).convert() #initializing all fear bar images
+FEARBAR1 = pygame.transform.scale(FEARBAR1_IMAGE, (200, 50)) # image resizing 
+FEARBAR2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p2.PNG')).convert()
+FEARBAR2 = pygame.transform.scale(FEARBAR2_IMAGE, (200, 50))
+FEARBAR3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p3.PNG')).convert()
+FEARBAR3 = pygame.transform.scale(FEARBAR3_IMAGE, (200, 50))
+FEARBAR4_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p4.PNG')).convert()
+FEARBAR4 = pygame.transform.scale(FEARBAR4_IMAGE, (200, 50))
+FEARBAR5_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p5.PNG')).convert()
+FEARBAR5 = pygame.transform.scale(FEARBAR5_IMAGE, (200, 50))
+FEARBAR6_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p6.PNG')).convert()
+FEARBAR6 = pygame.transform.scale(FEARBAR6_IMAGE, (200, 50))
+FEARBAR7_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p7.PNG')).convert()
+FEARBAR7 = pygame.transform.scale(FEARBAR7_IMAGE, (200, 50))
+FEARBAR8_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p8.PNG')).convert()
+FEARBAR8 = pygame.transform.scale(FEARBAR8_IMAGE, (200, 50))
+
 #Audio asset initialization
 #for window
 JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
@@ -244,9 +262,23 @@ def update_states(states: States):
         states.B_attack = True
         states.B_firstattack = True
 
+    #Fear Bar
+    if states.fear_countdown < 0:                     #controls natural fear dropping
+        states.fear_countdown = states.fear_time
+        states.fear += 1
+        FEAR_s.play()
+    if states.fire:                                   #controls fire healing fear
+        if states.fire_countdown < 0: 
+            states.fire_countdown = states.fire_time 
+            if states.fear > 1:
+                states.fear -= 1
+
+
+
+
 #game progression function
 def progression(states: States):
-    if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0):
+    if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0) or (states.fear >= 7):
         BEEPS_s.play()
         pygame.time.delay(10000)
         states.is_lost = True
@@ -256,6 +288,16 @@ def progression(states: States):
         states.is_won = True
         pygame.time.delay(3000)
         prog_night()
+
+def fear(fear):
+    if fear == 1: return FEARBAR1
+    elif fear == 2: return FEARBAR2
+    elif fear == 3: return FEARBAR3
+    elif fear == 4: return FEARBAR4
+    elif fear == 5: return FEARBAR5
+    elif fear == 6: return FEARBAR6
+    elif fear == 7: return FEARBAR7
+    elif fear == 8: return FEARBAR8
         
 # function that determines which images to display based off current game states
 def draw_image(states: States):
@@ -283,9 +325,10 @@ def draw_image(states: States):
         elif states.window_phase == 2: WIN.blit(WINDOW_LOCKED2, (0,0)) #display second phase locked window (phase = 2)
         elif states.window_phase == 3: WIN.blit(WINDOW_LOCKED3, (0,0)) #display third phase locked window (phase = 3)
         elif states.window_phase == 4: WIN.blit(WINDOW_UNLOCKED, (0,0)) #display window unlocked (phase = 4)
-
-    elif states.view == "Door": WIN.blit(DOOR, (0,0)) #display Frontdoor image
-
+        
+    elif states.view == "Door": 
+        WIN.blit(DOOR, (0,0)) #display Frontdoor image
+        
     elif states.view == 'Door-lock': 
         if states.door_phase == 1:  WIN.blit(DOOR_LOCKED1, (0,0)) #display fully locked door phase (phase = 1)
         elif states.door_phase == 2: WIN.blit(DOOR_LOCKED2, (0,0)) #display second phase locked door (phase = 2)
@@ -296,7 +339,11 @@ def draw_image(states: States):
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
-    
+        
+    # FEAR determining display
+    if states.playing:
+        WIN.blit(fear(states.fear), (80,10))
+
     if states.is_lost:
         WIN.blit(ROUND_WIN, (0,0))
 
@@ -390,6 +437,7 @@ def main():
                     states.jiggle_countdown -= 1
                     states.lock_countdown -= 1
                     states.climbdown_countdown -= 1
+                    states.fear_countdown -= 1
                     if states.FP_attack:
                         states.FP_countdown -= 1
                     if not states.B_checked:    
@@ -401,6 +449,8 @@ def main():
                         states.B_CTcountdown = states.B_checkedtime
                     if states.B_attack:
                         states.B_countdown -= 1
+                    if states.fire:
+                        states.fire_countdown -= 1
             
 if __name__ == "__main__":
     main()

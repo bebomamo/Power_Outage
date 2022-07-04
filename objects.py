@@ -43,6 +43,16 @@ def get_bunkerwalk(night):
     elif night == '6': return 147 + random.randrange(0,20,1) #50/50 attacked 3 or 4 times
     elif night == '7': return 117 #attacked 5 times no matter what
 
+#Fear countdown by night timing calculator
+def get_fear(night):
+    if night == '1': return 60 #ten auto fear ticks
+    elif night == '2': return 50 
+    elif night == '3': return 40
+    elif night == '4': return 30 
+    elif night == '5': return 20 
+    elif night == '6': return 10
+    elif night == '7': return 5 #constant fear ticks
+
 # night set/get 
 #------------Night getter(as a char)----------------
 def get_night():
@@ -70,7 +80,7 @@ class States:
     def __init__(self, night=None, view=None, playing=None, paused=None, next_second=None, 
     num_seconds=None, fire=None, damper=None, window_phase=None, door_phase=None, holding=None, jiggle_time=None, 
     climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, FP_attack=None, FP_time=None, B_attack=None, B_time=None,
-    B_checked=None, B_checkedtime=None, B_firstattack=None, is_lost=None, is_won=None):
+    B_checked=None, B_checkedtime=None, B_firstattack=None, is_lost=None, is_won=None, fear=None, fear_time=None, fire_time=None):
         # Game states
         if night is None: night = get_night()
         self.night = night
@@ -167,6 +177,20 @@ class States:
 
         if is_won is None: is_won = False
         self.is_won = is_won
+
+        #fear control
+        if fear is None: fear = 1
+        self.fear = fear
+
+        if fear_time is None: fear_time = get_fear(self.night)
+        self.fear_time = fear_time
+
+        self.fear_countdown = fear_time  
+
+        if fire_time is None: fire_time = 2
+        self.fire_time = fire_time
+
+        self.fire_countdown = fire_time
 
 
 class Button():
