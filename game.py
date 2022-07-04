@@ -1,8 +1,10 @@
+from ast import Num
+from sre_constants import JUMP
 from tkinter import N
 import pygame, os, sys
 from objects import *
 from dataclasses import dataclass
-from pygame import mixer
+from pygame import QUIT, mixer
 
 # constants
 WHITE = (255, 255, 255)
@@ -11,7 +13,8 @@ SEC = 1000 # 1000 milliseconds
 FPS = 60
 
 pygame.init() # start pygame
-pygame.mixer.init() #start mixer 
+pygame.mixer.init() #start mixer
+clock = pygame.time.Clock()  
 
 # Window setup
 WIDTH, HEIGHT = 900, 500 #subject to change
@@ -24,10 +27,18 @@ pygame.display.set_caption("Power Outage")
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-ROUND_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert() #roundwin temp image
-ROUND_WIN = pygame.transform.scale(ROUND_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
+NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_win_screen_beta.png')).convert()
+NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
+
+NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'PO_lose_screen_beta.png')).convert()
+NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
+
+JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert_alpha()
+JUMPSCARE = pygame.transform.scale(JUMPSCARE_IMAGE, (WIDTH, HEIGHT))
 
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
+
+SAVE_MENU = pygame.image.load(os.path.join('assets', 'PO_save_menu_beta.png')).convert_alpha()
 
 NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
 NIGHT1_LOAD = pygame.transform.scale(NIGHT1_LOAD_IMAGE, (WIDTH, HEIGHT))
@@ -98,26 +109,170 @@ FEARBAR8 = pygame.transform.scale(FEARBAR8_IMAGE, (200, 50))
 
 #Audio asset initialization
 #for window
-JIGGLE_s = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
+JIGGLE_S = mixer.Sound(os.path.join('assets', 'Jiggle.wav')) #
 #for door
-LOCK_s = mixer.Sound(os.path.join('assets', 'Lock.wav')) #
+LOCK_S = mixer.Sound(os.path.join('assets', 'Lock.wav')) #
 #for bunker
-BUNKER_HOLD_s = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav')) #
-BUNKER_RELEASE_s = mixer.Sound(os.path.join('assets', 'Bunker_release.wav')) #
-WALK_TOWARDS_s = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
-WALK_AWAY_s = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
+BUNKER_HOLD_S = mixer.Sound(os.path.join('assets', 'Bunker_hold.wav')) #
+BUNKER_RELEASE_S = mixer.Sound(os.path.join('assets', 'Bunker_release.wav')) #
+WALK_TOWARDS_S = mixer.Sound(os.path.join('assets', 'Walk_towards.wav'))
+WALK_AWAY_S = mixer.Sound(os.path.join('assets', 'Walk_away.wav'))
 #for fireplace
-CLIMB_DOWN_s = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
-CLIMB_UP_s = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
-CLOSE_DAMPER_s = mixer.Sound(os.path.join('assets', 'Close_damper.wav')) #
-OPEN_DAMPER_s = mixer.Sound(os.path.join('assets', 'Open_damper.wav')) #
-FIRE_ON_s = mixer.Sound(os.path.join('assets', 'Fire_on.wav')) #
-FIRE_RUNNING_s = mixer.Sound(os.path.join('assets', 'Fire_running.wav')) #
-FIRE_OFF_s = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
+CLIMB_DOWN_S = mixer.Sound(os.path.join('assets', 'Climb_down.wav'))
+CLIMB_UP_S = mixer.Sound(os.path.join('assets', 'Climb_up.wav'))
+CLOSE_DAMPER_S = mixer.Sound(os.path.join('assets', 'Close_damper.wav')) #
+OPEN_DAMPER_S = mixer.Sound(os.path.join('assets', 'Open_damper.wav')) #
+FIRE_ON_S = mixer.Sound(os.path.join('assets', 'Fire_on.wav')) #
+FIRE_RUNNING_S = mixer.Sound(os.path.join('assets', 'Fire_running.wav')) #
+FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 #for fear
-BEEPS_s = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
-FEAR_s = mixer.Sound(os.path.join('assets', 'Fear.wav'))
+BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
+FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
 
+# function that controls the game's home screen
+def home_screen(states: States):
+    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+
+    advance = False # set to True when the player is ready to move onto the next screen
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(HOME, (0,0))
+
+        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]: button.draw()
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
+                    states.keep_playing = True # begin game sequence
+                    advance = True
+                if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    states.night = 1 # start at night 1 no matter what 
+                    states.keep_playing = True
+                    advance = True
+                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    pygame.quit()
+                    sys.exit()
+
+# function that controls the game's loading screens
+def load_screen(states: States):
+    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+    pygame.time.set_timer(sec_timer, 1000)
+
+    advance = False
+    num_seconds = 0 # number of seconds passes since screen was entered
+
+    while not advance:
+        if states.night == 1: WIN.blit(NIGHT1_LOAD, (0,0))
+        elif states.night == 2: WIN.blit(NIGHT2_LOAD, (0,0))
+        elif states.night == 3: WIN.blit(NIGHT3_LOAD, (0,0))
+        elif states.night == 4: WIN.blit(NIGHT4_LOAD, (0,0))
+        elif states.night == 5: WIN.blit(NIGHT5_LOAD, (0,0))
+        elif states.night == 6: WIN.blit(NIGHT6_LOAD, (0,0))
+        elif states.night == 7: WIN.blit(NIGHT7_LOAD, (0,0))
+
+        if num_seconds > 3: advance = True
+
+        for event in pygame.event.get():
+            if event.type == sec_timer:
+                num_seconds += 1
+
+        pygame.display.update()
+
+# function that controls the game's win screen
+def win_screen(states: States):
+    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    
+    advance = False # set to True when the player is ready to move onto the next screen
+    save_menu = False # set to True when the save menu is to be displayed
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(NIGHT_WIN, (0,0))
+        NEXT_NIGHT_BUTTON.draw()
+        QUIT_BUTTON.draw()
+
+        if save_menu:
+            WIN.blit(SAVE_MENU, (325, 125))
+            SAVE_BUTTON_YES.draw()
+            SAVE_BUTTON_NO.draw()
+        
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not save_menu:
+                    if NEXT_NIGHT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        advance = True
+                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        save_menu = True
+                if save_menu:
+                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
+                        set_night(states.night) # write night to night.txt (it will already have been incremented when this is called)
+                        pygame.quit()
+                        sys.exit()
+                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
+                        pygame.quit()
+                        sys.exit()
+
+# function that controls the game's lose screen
+def lose_screen(states: States):
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    
+    advance = False # set to True when the player is ready to move onto the next screen
+    save_menu = False # set to True when the save menu is to be displayed
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(NIGHT_LOSE, (0,0))
+        RESTART_BUTTON.draw()
+        QUIT_BUTTON.draw()
+
+        if save_menu:
+            WIN.blit(SAVE_MENU, (325, 125))
+            SAVE_BUTTON_YES.draw()
+            SAVE_BUTTON_NO.draw()
+        
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not save_menu:
+                    if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        advance = True
+                    if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        save_menu = True
+                if save_menu:
+                    if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
+                        set_night(states.night) # write failed night to night.txt (night will not have been incremented when this is called)
+                        pygame.quit()
+                        sys.exit()
+                    if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
+                        pygame.quit()
+                        sys.exit()
 
 #function that updates constant background noise
 def update_music(states: States):
@@ -132,51 +287,32 @@ def update_music(states: States):
         mixer.music.play(-1)
         states.music_swap = False
 
-# fucntion that handles clicks based off the current game states and mouse position
+# fucntion that handles clicks during the game based off the current game states and mouse position
 def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: bool, loc: tuple):
-    if states.view == "Home" and clicking:
-        if rects['START_BUTTON'].collidepoint(loc[0],loc[1]): states.view = "Game-load"
-        elif rects['QUIT_BUTTON'].collidepoint(loc[0],loc[1]):
-            pygame.quit()
-            sys.exit()
-
-    elif states.view == "Game-load":
-        pygame.time.delay(3000)
-
-        # -----timing stuff-----
-        #start_time = pygame.time.get_ticks() # number of ms since pygame.init() was called
-        global sec_timer
-        sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
-        pygame.time.set_timer(sec_timer, 1000)
-        # ----------------------
-
-        states.playing = True
-        states.view = 'Fireplace'
-        
     if clicking: # handle clicks
         if states.playing: # handle clicks while playing
             if states.view == "Fireplace":
                 if rects['LOG'].collidepoint(loc[0],loc[1]):
                     if states.fire: 
-                        FIRE_OFF_s.play()
+                        FIRE_OFF_S.play()
                         states.fire = False
                         states.music_swap = True
                     elif not states.damper:  #must add message to let the player know the damper must be open to turn on fire
-                        FIRE_ON_s.play()
+                        FIRE_ON_S.play()
                         states.fire = True
                         states.music_swap = True
                 elif rects['DAMPER'].collidepoint(loc[0],loc[1]):
                     if not states.fire:
                         if states.damper: 
                             states.damper = False
-                            OPEN_DAMPER_s.play()
+                            OPEN_DAMPER_S.play()
                         else: 
                             states.damper = True
-                            CLOSE_DAMPER_s.play()
+                            CLOSE_DAMPER_S.play()
                             if states.FP_attack:
                                 states.FP_countdown = states.FP_time
                                 states.FP_attack = False
-                                CLIMB_UP_s.play()
+                                CLIMB_UP_S.play()
                 elif rects['FP_RIGHT'].collidepoint(loc[0], loc[1]): #these next three sections need lots of control logic once the game functionality begins getting coded, this is just for movement control
                     states.view = 'Window'
                 elif rects['FP_LEFT'].collidepoint(loc[0], loc[1]): states.view = "Door"
@@ -208,14 +344,14 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                 if rects['BUNKER'].collidepoint(loc[0], loc[1]):
                     if states.holding: 
                         states.holding = False
-                        BUNKER_RELEASE_s.play()
+                        BUNKER_RELEASE_S.play()
                     else: 
                         states.holding = True
-                        BUNKER_HOLD_s.play()
+                        BUNKER_HOLD_S.play()
                         if states.B_attack:
                                 states.B_countdown = states.B_time
                                 states.B_attack = False
-                                WALK_AWAY_s.play()
+                                WALK_AWAY_S.play()
                 elif rects['BU_DOWN'].collidepoint(loc[0], loc[1]):
                     if not states.holding: states.view = "Fireplace"
 
@@ -240,25 +376,25 @@ def update_states(states: States):
     if states.jiggle_countdown < 0:
         states.jiggle_countdown = states.jiggle_time
         states.window_phase += 1
-        JIGGLE_s.play()
+        JIGGLE_S.play()
 
     # Door
     if states.lock_countdown < 0:
         states.lock_countdown = states.lock_time
         states.door_phase += 1
-        LOCK_s.play()
+        LOCK_S.play()
 
     # Fireplace
     if states.climbdown_countdown < 0:
         states.climbdown_countdown = states.climbdown_time
         if not states.damper:
-            CLIMB_DOWN_s.play()
+            CLIMB_DOWN_S.play()
             states.FP_attack = True
 
     # Bunker
     if states.bunkerwalk_countdown < 0:
         states.bunkerwalk_countdown = states.bunkerwalk_time / 4
-        WALK_TOWARDS_s.play()
+        WALK_TOWARDS_S.play()
         states.B_attack = True
         states.B_firstattack = True
 
@@ -266,28 +402,12 @@ def update_states(states: States):
     if states.fear_countdown < 0:                     #controls natural fear dropping
         states.fear_countdown = states.fear_time
         states.fear += 1
-        FEAR_s.play()
+        FEAR_S.play()
     if states.fire:                                   #controls fire healing fear
         if states.fire_countdown < 0: 
             states.fire_countdown = states.fire_time 
             if states.fear > 1:
                 states.fear -= 1
-
-
-
-
-#game progression function
-def progression(states: States):
-    if (states.window_phase == 4) or (states.door_phase == 5) or (states.FP_countdown < 0) or (states.B_countdown < 0) or (states.fear >= 7):
-        BEEPS_s.play()
-        pygame.time.delay(10000)
-        states.is_lost = True
-    if states.is_lost:
-        pygame.time.delay(3000)
-    if states.num_seconds >= 600:
-        states.is_won = True
-        pygame.time.delay(3000)
-        prog_night()
 
 def fear(fear):
     if fear == 1: return FEARBAR1
@@ -299,21 +419,9 @@ def fear(fear):
     elif fear == 7: return FEARBAR7
     elif fear == 8: return FEARBAR8
         
-# function that determines which images to display based off current game states
-def draw_image(states: States):
-    if states.view == "Home":
-        WIN.blit(HOME, (0, 0)) #display home image
-    
-    elif states.view == "Game-load":
-        if states.night == '1': WIN.blit(NIGHT1_LOAD, (0,0))
-        elif states.night == '2': WIN.blit(NIGHT2_LOAD, (0,0))
-        elif states.night == '3': WIN.blit(NIGHT3_LOAD, (0,0))
-        elif states.night == '4': WIN.blit(NIGHT4_LOAD, (0,0))
-        elif states.night == '5': WIN.blit(NIGHT5_LOAD, (0,0))
-        elif states.night == '6': WIN.blit(NIGHT6_LOAD, (0,0))
-        elif states.night == '7': WIN.blit(NIGHT7_LOAD, (0,0))
-
-    elif states.view == "Fireplace":
+# function that determines which images to display during the game based off current game states
+def draw_image(states: States, buttons: dict):
+    if states.view == "Fireplace":
         # if statements that look at the fireplace's state and determine what image to show
         if states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_CLOSED, (0,0)) #display unlit closed damper fireplace
         elif not states.damper and not states.fire: WIN.blit(FIREPLACE_UNLIT_OPEN, (0,0)) #display unlit open damper fireplace
@@ -344,37 +452,51 @@ def draw_image(states: States):
     if states.playing:
         WIN.blit(fear(states.fear), (80,10))
 
-    if states.is_lost:
-        WIN.blit(ROUND_WIN, (0,0))
-
-    if states.is_won:
-        WIN.blit(ROUND_WIN, (0,0))
-
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
+        buttons['RESUME_BUTTON'].draw()
+        buttons['SETTINGS_BUTTON_PAUSED'].draw()
+        buttons['QUIT_BUTTON_PAUSED'].draw()
+
+    if states.night_lost:
+        if states.lose_timer > 10: WIN.blit(JUMPSCARE, (0,0))
 
     pygame.display.update()
 
-def main():  
-    clock = pygame.time.Clock()
+# function that determines whether the player has won or lost the current night
+def is_night_over(states: States):
+    # player loses
+    if states.window_phase == 4 or states.door_phase == 5 or states.FP_countdown < 0 or states.B_countdown < 0 or states.fear >= 7:
+        states.night_lost = True
+
+    # player wins
+    if states.num_seconds > 600: states.night_won = True
+
+# Function that manages the in-game portion of the game. The actual implementations for the game's features,
+# such as click handeling and displaying images, are defined in the above functions.
+def game_screen(states: States):
+    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+    pygame.time.set_timer(sec_timer, 1000)
 
     # clicking initialization
     clicking = False
     right_clicking = False
 
-    states = States() # initialize game states
-    
+    states.playing = True # game is now being played
+    advance = False # set to True when the player is ready to move onto the next screen
+
+    # Dictionary containing all of the Button objects to be used in the game
+    buttons = {
+        'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
+        'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
+        'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
+    }
+
     # Dictionary containing all of the Rect objects to be used in the game
-    HOME_BUTTON_WIDTH = 625
-    HOME_BUTTON_HEIGHT = 59
-    PAUSE_BUTTON_WIDTH = 85
-    PAUSE_BUTTON_HEIGHT = 18
     rects = {
-        'START_BUTTON': pygame.Rect((125, 203), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
-        'QUIT_BUTTON': pygame.Rect((125, 407), (HOME_BUTTON_WIDTH, HOME_BUTTON_HEIGHT)),
-        'RESUME_BUTTON': pygame.Rect((405,203), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
-        'QUIT_BUTTON_PAUSED': pygame.Rect((405, 293), (PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT)),
+        'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
+        'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
         'LOG': pygame.Rect((343, 157), (92, 18)),
         'DAMPER': pygame.Rect((325, 125), (10, 24)),
         'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
@@ -388,69 +510,100 @@ def main():
         'BU_DOWN': pygame.Rect((112,422), (644,43))
     }
 
-    # stuff that happens while the game is running
-    while True:
+    while not advance:
         clock.tick(FPS)
 
-        loc = pygame.mouse.get_pos() # gets mouse's x and y coordinates
+        loc = pygame.mouse.get_pos()
 
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
-        draw_image(states) # update image after every event has been iterated through
-        progression(states)
+        is_night_over(states)
+        draw_image(states, buttons) # update image after every event has been iterated through
 
-        if states.is_lost:
-            states = States()
-        if states.is_won:
-            states = States()
+        if states.night_won: advance = True
 
-        clicking = False # one click allowed per frame - probably a temporary solution
+        if states.night_lost: 
+            BEEPS_S.play()
+            if states.lose_timer > 13: advance = True
+
+        clicking = False # one click allowed per frame - may or may not be changed
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1: # left clicking
-                    clicking = True
-                if event.button == 3: # right clicking
-                    right_clicking = True
-            
-            if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    clicking = False
-                if event.button == 3:
-                    right_clicking = False
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    if states.playing != states.paused: # can only pause/unpause game after entering
+            if not states.night_lost: # if night is lost you can't click or press any buttons
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1: # left clicking
+                        clicking = True
+                    if event.button == 3: # right clicking
+                        right_clicking = True
+                
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        clicking = False
+                    if event.button == 3:
+                        right_clicking = False
+                
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
                         states.playing = not states.playing
                         states.paused = not states.paused
 
             if states.playing: # all events that we only want to process while the game is being played (aka not paused)
-                if event.type == sec_timer: 
+                if event.type == sec_timer:
                     # anything in here will occur once for every second of playtime
-                    states.num_seconds += 1
-                    states.jiggle_countdown -= 1
-                    states.lock_countdown -= 1
-                    states.climbdown_countdown -= 1
-                    states.fear_countdown -= 1
-                    if states.FP_attack:
-                        states.FP_countdown -= 1
-                    if not states.B_checked:    
-                        states.bunkerwalk_countdown -= 1
-                    elif states.B_CTcountdown > 0:
-                        states.B_CTcountdown -= 1
-                    else:
-                        states.B_checked = False
-                        states.B_CTcountdown = states.B_checkedtime
-                    if states.B_attack:
-                        states.B_countdown -= 1
-                    if states.fire:
-                        states.fire_countdown -= 1
+                    if not states.night_lost and not states.night_won:
+                        states.num_seconds += 1
+                        states.jiggle_countdown -= 1
+                        states.lock_countdown -= 1
+                        states.climbdown_countdown -= 1
+                        states.fear_countdown -= 1
+
+                        if states.FP_attack: states.FP_countdown -= 1
+                        
+                        if not states.B_checked: states.bunkerwalk_countdown -= 1
+                        elif states.B_CTcountdown > 0: states.B_CTcountdown -= 1
+                        else:
+                            states.B_checked = False
+                            states.B_CTcountdown = states.B_checkedtime
+                        if states.B_attack: states.B_countdown -= 1
+
+                        if states.fire: states.fire_countdown -= 1
+
+                    elif states.night_lost: states.lose_timer += 1 # increment lose_timer if night is lost
+
+# function that controls the sequencing of the game (which screens are to be displayed and when, current game states, etc.)
+def main():
+    states = States()
+
+    home_screen(states)
+    current_night = states.night
+    load_screen(states)
+
+    while states.keep_playing:
+        game_screen(states)
+        if states.night_won: 
+            current_night += 1
+            states = States(current_night, True)
+            win_screen(states)
+            load_screen(states)
+            game_screen(states)
+
+            if current_night == 8:
+                # player has beaten the game and must be sent to a special screen
+                pass
+
+        elif states.night_lost: 
+
+            # TODO - Implement jumpscare. This will probably end up being done in game_screen but I'm putting this comment
+            #        here so that it will be more visible
+
+            states = States(current_night, True)
+            lose_screen(states)
+            load_screen(states)
+            game_screen(states)
             
 if __name__ == "__main__":
     main()
