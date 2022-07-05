@@ -339,7 +339,9 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     if not states.B_firstattack:
                         states.B_checked = True
                         states.B_CTcountdown = states.B_checkedtime
-                elif rects['egg'].collidepoint(loc[0], loc[1]): egg_screen()
+                elif rects['egg'].collidepoint(loc[0], loc[1]): 
+                    # egg_screen()
+                    pass
                     
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
@@ -468,15 +470,16 @@ def draw_image(states: States, buttons: dict):
         else: WIN.blit(BUNKER_HELD, (0,0)) #display bunker held closed image
         
     # FEAR determining display
-    if states.playing:
-        WIN.blit(fear(states.fear), (80,10))
+    WIN.blit(fear(states.fear), (80,10))
 
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
-        buttons['RESUME_BUTTON'].draw()
-        buttons['SETTINGS_BUTTON_PAUSED'].draw()
-        buttons['QUIT_BUTTON_PAUSED'].draw()
+        # buttons['RESUME_BUTTON'].draw()
+        # buttons['SETTINGS_BUTTON_PAUSED'].draw()
+        # buttons['QUIT_BUTTON_PAUSED'].draw()
+
+    for button in buttons: buttons[button].draw()
 
     if states.night_lost:
         if states.lose_timer > 10: WIN.blit(JUMPSCARE, (0,0))
@@ -492,6 +495,31 @@ def is_night_over(states: States):
     # player wins
     if states.num_seconds > 600: states.night_won = True
 
+# Function that determines what Buttons are to be displayed based on all current game states
+def button_manager(states: States, buttons: dict, rects: dict):
+    if states.view == 'Fireplace':
+        buttons['FP_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', (17,32), WIN)
+        buttons['FP_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', (831,32), WIN)
+        buttons['FP_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', (113,435), WIN)
+    
+    if states.view == 'Door':
+        buttons['DO_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', (787,28), WIN)
+
+    if states.view == 'Window':
+        buttons['WI_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', (11,29), WIN)
+
+    if states.view == 'Bunker':
+        buttons['BU_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', (113,422), WIN)
+
+    if states.paused:
+        buttons['RESUME_BUTTON'] = Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN)
+        buttons['SETTINGS_BUTTON_PAUSED'] = Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN)
+        buttons['QUIT_BUTTON_PAUSED'] = Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
+
+    # add every Button's rectangle to the rects dictionary
+    for button in buttons: rects[button] = buttons[button].rect
+        
+
 # Function that manages the in-game portion of the game. The actual implementations for the game's features,
 # such as click handeling and displaying images, are defined in the above functions.
 def game_screen(states: States):
@@ -505,41 +533,29 @@ def game_screen(states: States):
     states.playing = True # game is now being played
     advance = False # set to True when the player is ready to move onto the next screen
 
-    # Dictionary containing all of the Button objects to be used in the game
-    buttons = {
-        'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN),
-        'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN),
-        'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
-    }
-
-    # Dictionary containing all of the Rect objects to be used in the game
-    rects = {
-        'RESUME_BUTTON': buttons['RESUME_BUTTON'].rect,
-        'QUIT_BUTTON_PAUSED': buttons['QUIT_BUTTON_PAUSED'].rect,
-        'LOG': pygame.Rect((343, 157), (92, 18)),
-        'DAMPER': pygame.Rect((325, 125), (10, 24)),
-        'FP_RIGHT': pygame.Rect((831, 33), (44, 404)),
-        'FP_LEFT': pygame.Rect((17, 31), (40, 408)),
-        'FP_DOWN': pygame.Rect((113, 435), (674, 48)),
-        'WI_LEFT': pygame.Rect((19,27), (62,460)),
-        'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
-        'DOOR': pygame.Rect((166, 28), (352, 454)),
-        'DO_RIGHT': pygame.Rect((786, 28), (80, 458)),
-        'BUNKER': pygame.Rect((112,34), (642, 312)),
-        'BU_DOWN': pygame.Rect((112,422), (644,43)),
-        'egg': pygame.Rect((390,290), (10,10))
-    }
-
     while not advance:
         clock.tick(FPS)
 
+        # Dictionary containing all of the Button objects to be used in the game
+        buttons = {}
+
+        # Dictionary containing all of the Rect objects to be used in the game
+        rects = {
+            'LOG': pygame.Rect((343, 157), (92, 18)),
+            'DAMPER': pygame.Rect((325, 125), (10, 24)),
+            'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
+            'DOOR': pygame.Rect((166, 28), (352, 454)),
+            'BUNKER': pygame.Rect((112,34), (642, 312)),
+            'egg': pygame.Rect((390,290), (10,10))
+        }
+
         loc = pygame.mouse.get_pos()
-        print(loc)
+        button_manager(states, buttons, rects)
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
         is_night_over(states)
-        draw_image(states, buttons) # update image after every event has been iterated through
+        draw_image(states, buttons) # update display after all game states have been updated
 
         if states.night_won: advance = True
 
