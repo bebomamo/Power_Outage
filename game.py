@@ -128,6 +128,8 @@ FIRE_OFF_S = mixer.Sound(os.path.join('assets', 'Fire_off.wav')) #
 #for fear
 BEEPS_S = mixer.Sound(os.path.join('assets', 'New_Recording.wav'))
 FEAR_S = mixer.Sound(os.path.join('assets', 'Fear.wav'))
+#for jumpscare
+JUMPSCARE_S = mixer.Sound(os.path.join('assets', 'JumpscareOne.wav'))
 
 # function that controls the game's home screen
 def home_screen(states: States):
@@ -283,7 +285,7 @@ def egg_screen():
     num_seconds = 0 # number of seconds that have passed since this screen was entered
 
     while not advance:
-
+        
         # code for video should go here
 
         if num_seconds > 5: advance = True
@@ -530,11 +532,14 @@ def game_screen(states: States):
         'egg': pygame.Rect((390,290), (10,10))
     }
 
+    beepcheck = False
+    jumpscarecheck = False
+
     while not advance:
         clock.tick(FPS)
 
         loc = pygame.mouse.get_pos()
-        print(loc)
+        
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
@@ -544,7 +549,13 @@ def game_screen(states: States):
         if states.night_won: advance = True
 
         if states.night_lost: 
-            BEEPS_S.play()
+            if states.lose_timer > 10 and jumpscarecheck == False:
+                BEEPS_S.stop()
+                JUMPSCARE_S.play()
+                jumpscarecheck = True
+            elif beepcheck == False:
+                BEEPS_S.play()
+                beepcheck = True
             if states.lose_timer > 13: advance = True
 
         clicking = False # one click allowed per frame - may or may not be changed
