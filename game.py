@@ -321,6 +321,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     if not states.B_firstattack:
                         states.B_checked = True
                         states.B_CTcountdown = states.B_checkedtime
+                elif rects['egg'].collidepoint(loc[0], loc[1]): states.egg = True
                     
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
@@ -507,14 +508,15 @@ def game_screen(states: States):
         'DOOR': pygame.Rect((166, 28), (352, 454)),
         'DO_RIGHT': pygame.Rect((786, 28), (80, 458)),
         'BUNKER': pygame.Rect((112,34), (642, 312)),
-        'BU_DOWN': pygame.Rect((112,422), (644,43))
+        'BU_DOWN': pygame.Rect((112,422), (644,43)),
+        'egg': pygame.Rect((390,290), (10,10))
     }
 
     while not advance:
         clock.tick(FPS)
 
         loc = pygame.mouse.get_pos()
-
+        print(loc)
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)

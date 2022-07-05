@@ -72,7 +72,8 @@ class States:
     def __init__(self, night=None, keep_playing=None, view=None, playing=None, paused=None, night_won=None, 
     night_lost=None, next_second=None, num_seconds=None, lose_timer=None, fire=None, damper=None, window_phase=None, door_phase=None, 
     holding=None, jiggle_time=None, climbdown_time=None, lock_time=None, bunkerwalk_time=None, music_swap=None, 
-    FP_attack=None, FP_time=None, B_attack=None, B_time=None, B_checked=None, B_checkedtime=None, B_firstattack=None, fear=None, fear_time=None, fire_time=None):
+    FP_attack=None, FP_time=None, B_attack=None, B_time=None, B_checked=None, B_checkedtime=None, B_firstattack=None, fear=None, fear_time=None, fire_time=None,
+    egg=None):
         # ------Game states------
         if night is None: night = get_night()
         self.night = night
@@ -191,6 +192,10 @@ class States:
         self.fire_time = fire_time
 
         self.fire_countdown = fire_time
+
+        #Egg 
+        if egg is None: egg = False
+        self.egg = egg
 
 # simple button class that allows for different images to be displayed depending on whether the mouse is over the button
 class Button():
