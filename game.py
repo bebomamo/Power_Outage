@@ -274,6 +274,24 @@ def lose_screen(states: States):
                         pygame.quit()
                         sys.exit()
 
+# Function that controls the game's easter egg screen
+def egg_screen():
+    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+    pygame.time.set_timer(sec_timer, 1000)
+
+    advance = False
+    num_seconds = 0 # number of seconds that have passed since this screen was entered
+
+    while not advance:
+
+        # code for video should go here
+
+        if num_seconds > 5: advance = True
+
+        for event in pygame.event.get():
+            if event.type == sec_timer:
+                num_seconds += 1
+
 #function that updates constant background noise
 def update_music(states: States):
     if states.fire and states.music_swap == True:
@@ -321,7 +339,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     if not states.B_firstattack:
                         states.B_checked = True
                         states.B_CTcountdown = states.B_checkedtime
-                elif rects['egg'].collidepoint(loc[0], loc[1]): states.egg = True
+                elif rects['egg'].collidepoint(loc[0], loc[1]): egg_screen()
                     
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
@@ -598,10 +616,6 @@ def main():
                 pass
 
         elif states.night_lost: 
-
-            # TODO - Implement jumpscare. This will probably end up being done in game_screen but I'm putting this comment
-            #        here so that it will be more visible
-
             states = States(current_night, True)
             lose_screen(states)
             load_screen(states)
