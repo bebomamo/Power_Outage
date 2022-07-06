@@ -178,7 +178,7 @@ class States:
         if music_swap is None: music_swap = True
         self.music_swap = music_swap
 
-        #fear control
+        # ------Fear states------
         if fear is None: fear = 1
         self.fear = fear
 
@@ -194,11 +194,14 @@ class States:
 
 # simple button class that allows for different images to be displayed depending on whether the mouse is over the button
 class Button():
-    def __init__(self, default_image: str, hover_image: str, pos: tuple, win: pygame.Surface):
+    pressed = False # Class variable that is set to True if any Button is currently being pressed, and false otherwise
+
+    def __init__(self, default_image: str, hover_image: str, click_audio: str, pos: tuple, win: pygame.Surface):
         self.pos_x, self.pos_y = pos
         self.win = win
         self.default_image = pygame.image.load(os.path.join('assets', default_image)).convert_alpha()
         self.hover_image = pygame.image.load(os.path.join('assets', hover_image)).convert_alpha()
+        self.click_audio = pygame.mixer.Sound(os.path.join('assets', click_audio))
         self.image = self.default_image
         self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
     
@@ -207,11 +210,18 @@ class Button():
         if self.rect.collidepoint(loc[0],loc[1]): return True
         return False
 
-    def draw(self):
+    def process(self):
         if self.is_mouse_over():
             self.image = self.hover_image
             self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
             self.win.blit(self.image, (self.pos_x, self.pos_y))
+
+            if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                if not Button.pressed:
+                    self.click_audio.play()
+                    Button.pressed = True
+            else: Button.pressed = False
+
         else:
             self.image = self.default_image
             self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y) 

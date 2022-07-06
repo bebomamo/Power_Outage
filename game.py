@@ -133,9 +133,9 @@ JUMPSCARE_S = mixer.Sound(os.path.join('assets', 'JumpscareOne.wav'))
 
 # function that controls the game's home screen
 def home_screen(states: States):
-    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', (125, 203), WIN)
-    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
+    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', 'button_pressed.mp3', (125, 203), WIN)
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
 
     advance = False # set to True when the player is ready to move onto the next screen
 
@@ -146,7 +146,7 @@ def home_screen(states: States):
 
         WIN.blit(HOME, (0,0))
 
-        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]: button.draw()
+        for button in [START_BUTTON, RESTART_BUTTON, QUIT_BUTTON]: button.process()
 
         pygame.display.update()
 
@@ -194,10 +194,10 @@ def load_screen(states: States):
 
 # function that controls the game's win screen
 def win_screen(states: States):
-    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move onto the next screen
     save_menu = False # set to True when the save menu is to be displayed
@@ -208,13 +208,13 @@ def win_screen(states: States):
         loc = pygame.mouse.get_pos()
 
         WIN.blit(NIGHT_WIN, (0,0))
-        NEXT_NIGHT_BUTTON.draw()
-        QUIT_BUTTON.draw()
+        NEXT_NIGHT_BUTTON.process()
+        QUIT_BUTTON.process()
 
         if save_menu:
             WIN.blit(SAVE_MENU, (325, 125))
-            SAVE_BUTTON_YES.draw()
-            SAVE_BUTTON_NO.draw()
+            SAVE_BUTTON_YES.process()
+            SAVE_BUTTON_NO.process()
         
         pygame.display.update()
 
@@ -236,10 +236,10 @@ def win_screen(states: States):
 
 # function that controls the game's lose screen
 def lose_screen(states: States):
-    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', (405, 250), WIN)
+    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move onto the next screen
     save_menu = False # set to True when the save menu is to be displayed
@@ -250,13 +250,13 @@ def lose_screen(states: States):
         loc = pygame.mouse.get_pos()
 
         WIN.blit(NIGHT_LOSE, (0,0))
-        RESTART_BUTTON.draw()
-        QUIT_BUTTON.draw()
+        RESTART_BUTTON.process()
+        QUIT_BUTTON.process()
 
         if save_menu:
             WIN.blit(SAVE_MENU, (325, 125))
-            SAVE_BUTTON_YES.draw()
-            SAVE_BUTTON_NO.draw()
+            SAVE_BUTTON_YES.process()
+            SAVE_BUTTON_NO.process()
         
         pygame.display.update()
 
@@ -477,11 +477,8 @@ def draw_image(states: States, buttons: dict):
     if states.paused:
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
         WIN.blit(PAUSE_MENU, (325, 125))
-        # buttons['RESUME_BUTTON'].draw()
-        # buttons['SETTINGS_BUTTON_PAUSED'].draw()
-        # buttons['QUIT_BUTTON_PAUSED'].draw()
 
-    for button in buttons: buttons[button].draw()
+    for button in buttons: buttons[button].process()
 
     if states.night_lost:
         if states.lose_timer > 10: WIN.blit(JUMPSCARE, (0,0))
@@ -500,23 +497,23 @@ def is_night_over(states: States):
 # Function that determines what Buttons are to be displayed based on all current game states
 def button_manager(states: States, buttons: dict, rects: dict):
     if states.view == 'Fireplace':
-        buttons['FP_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', (17,32), WIN)
-        buttons['FP_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', (831,32), WIN)
-        buttons['FP_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', (113,435), WIN)
+        buttons['FP_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (17,32), WIN)
+        buttons['FP_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (831,32), WIN)
+        buttons['FP_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,435), WIN)
     
     if states.view == 'Door':
-        buttons['DO_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', (787,28), WIN)
+        buttons['DO_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (787,28), WIN)
 
     if states.view == 'Window':
-        buttons['WI_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', (11,29), WIN)
+        buttons['WI_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (11,29), WIN)
 
     if states.view == 'Bunker':
-        buttons['BU_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', (113,422), WIN)
+        buttons['BU_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,422), WIN)
 
     if states.paused:
-        buttons['RESUME_BUTTON'] = Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', (405, 203), WIN)
-        buttons['SETTINGS_BUTTON_PAUSED'] = Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', (405, 245), WIN)
-        buttons['QUIT_BUTTON_PAUSED'] = Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', (405, 293), WIN)
+        buttons['RESUME_BUTTON'] = Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
+        buttons['SETTINGS_BUTTON_PAUSED'] = Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', 'button_pressed.mp3', (405, 245), WIN)
+        buttons['QUIT_BUTTON_PAUSED'] = Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', 'button_pressed.mp3', (405, 293), WIN)
 
     # add every Button's rectangle to the rects dictionary
     for button in buttons: rects[button] = buttons[button].rect
