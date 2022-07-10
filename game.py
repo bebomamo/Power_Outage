@@ -33,6 +33,9 @@ NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resi
 NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'PO_lose_screen_beta.png')).convert()
 NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
 
+FINAL_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_final_win_screen_beta.png')).convert()
+FINAL_WIN = pygame.transform.scale(FINAL_WIN_IMAGE, (WIDTH, HEIGHT))
+
 JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert_alpha()
 JUMPSCARE = pygame.transform.scale(JUMPSCARE_IMAGE, (WIDTH, HEIGHT))
 
@@ -137,7 +140,7 @@ def home_screen(states: States):
     RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
 
-    advance = False # set to True when the player is ready to move onto the next screen
+    advance = False # set to True when the player is ready to move on to the next screen
 
     while not advance:
         clock.tick(FPS)
@@ -199,7 +202,7 @@ def win_screen(states: States):
     SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
     SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
-    advance = False # set to True when the player is ready to move onto the next screen
+    advance = False # set to True when the player is ready to move on to the next screen
     save_menu = False # set to True when the save menu is to be displayed
 
     while not advance:
@@ -241,7 +244,7 @@ def lose_screen(states: States):
     SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
     SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
-    advance = False # set to True when the player is ready to move onto the next screen
+    advance = False # set to True when the player is ready to move on to the next screen
     save_menu = False # set to True when the save menu is to be displayed
 
     while not advance:
@@ -275,6 +278,27 @@ def lose_screen(states: States):
                     if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
                         pygame.quit()
                         sys.exit()
+
+def final_win_screen():
+    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
+
+    advance = False # set to True when the player is ready to move on to the next screen
+
+    while not advance:
+        clock.tick(FPS)
+
+        loc = pygame.mouse.get_pos()
+
+        WIN.blit(FINAL_WIN, (0,0))
+        QUIT_BUTTON.process()
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    set_night(1)
+                    pygame.quit()
+                    sys.exit()
 
 # Function that controls the game's easter egg screen
 def egg_screen():
@@ -530,7 +554,7 @@ def game_screen(states: States):
     right_clicking = False
 
     states.playing = True # game is now being played
-    advance = False # set to True when the player is ready to move onto the next screen
+    advance = False # set to True when the player is ready to move on to the next screen
 
     beepcheck = False
     jumpscarecheck = False
@@ -631,19 +655,23 @@ def main():
         if states.night_won: 
             current_night += 1
             states = States(current_night, True)
+
+            if current_night == 8: 
+                # player has beaten the game
+                break
+
             win_screen(states)
             load_screen(states)
             game_screen(states)
 
-            if current_night == 8:
-                # player has beaten the game and must be sent to a special screen
-                pass
 
         elif states.night_lost: 
             states = States(current_night, True)
             lose_screen(states)
             load_screen(states)
             game_screen(states)
+    
+    final_win_screen()
             
 if __name__ == "__main__":
     main()
