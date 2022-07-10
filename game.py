@@ -518,28 +518,28 @@ def is_night_over(states: States):
     # player wins
     if states.num_seconds > 600: states.night_won = True
 
-# Function that determines what Buttons are to be displayed based on all current game states
-def button_manager(states: States, buttons: dict, rects: dict):
+# Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
+def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
     if states.view == 'Fireplace':
-        buttons['FP_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (17,32), WIN)
-        buttons['FP_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (831,32), WIN)
-        buttons['FP_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,435), WIN)
+        buttons['FP_LEFT'] = all_buttons['FP_LEFT']
+        buttons['FP_RIGHT'] = all_buttons['FP_RIGHT']
+        buttons['FP_DOWN'] = all_buttons['FP_DOWN']
     
     if states.view == 'Door':
-        buttons['DO_RIGHT'] = Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (787,28), WIN)
+        buttons['DO_RIGHT'] = all_buttons['DO_RIGHT']
 
     if states.view == 'Window':
-        buttons['WI_LEFT'] = Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (11,29), WIN)
+        buttons['WI_LEFT'] = all_buttons['WI_LEFT']
 
     if states.view == 'Bunker':
-        buttons['BU_DOWN'] = Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,422), WIN)
+        buttons['BU_DOWN'] = all_buttons['BU_DOWN']
 
     if states.paused:
-        buttons['RESUME_BUTTON'] = Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
-        buttons['SETTINGS_BUTTON_PAUSED'] = Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', 'button_pressed.mp3', (405, 245), WIN)
-        buttons['QUIT_BUTTON_PAUSED'] = Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', 'button_pressed.mp3', (405, 293), WIN)
+        buttons['RESUME_BUTTON'] = all_buttons['RESUME_BUTTON']
+        buttons['SETTINGS_BUTTON_PAUSED'] = all_buttons['SETTINGS_BUTTON_PAUSED']
+        buttons['QUIT_BUTTON_PAUSED'] = all_buttons['QUIT_BUTTON_PAUSED']
 
-    # add every Button's rectangle to the rects dictionary
+    # add every Button's rectangle to the rects dictionary so that they can be used by handle_clicks
     for button in buttons: rects[button] = buttons[button].rect
         
 
@@ -556,13 +556,27 @@ def game_screen(states: States):
     states.playing = True # game is now being played
     advance = False # set to True when the player is ready to move on to the next screen
 
+    # jumpscare stuff
     beepcheck = False
     jumpscarecheck = False
+
+    # Dictionary containing all of the Buttons that are used in any frame of the game
+    all_buttons = {
+        'FP_LEFT': Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (17,32), WIN),
+        'FP_RIGHT': Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (831,32), WIN),
+        'FP_DOWN': Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,435), WIN),
+        'DO_RIGHT': Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (787,28), WIN),
+        'WI_LEFT': Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (11,29), WIN),
+        'BU_DOWN': Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,422), WIN),
+        'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN),
+        'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', 'button_pressed.mp3', (405, 245), WIN),
+        'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', 'button_pressed.mp3', (405, 293), WIN)
+    }
 
     while not advance:
         clock.tick(FPS)
 
-        # Dictionary containing all of the Button objects to be used in the game
+        # Dictionary containing all of the Button objects to be used in this frame of the game
         buttons = {}
 
         # Dictionary containing all of the Rect objects to be used in the game
@@ -576,7 +590,8 @@ def game_screen(states: States):
         }
 
         loc = pygame.mouse.get_pos()
-        button_manager(states, buttons, rects)
+        
+        update_buttons(states, buttons, all_buttons, rects)
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
         update_music(states)
