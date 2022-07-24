@@ -8,11 +8,10 @@ from pygame import QUIT, mixer
 
 # constants
 WHITE = (255, 255, 255)
-RED = (255, 0 , 0)
-GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 SEC = 1000 # 1000 milliseconds
 FPS = 60
+
 
 pygame.init() # start pygame
 pygame.mixer.init() #start mixer
@@ -23,6 +22,7 @@ WIDTH, HEIGHT = 900, 500 #subject to change
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 WIN.fill(WHITE)
 pygame.display.set_caption("Power Outage")
+
 
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
@@ -45,53 +45,53 @@ PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png'))
 
 SAVE_MENU = pygame.image.load(os.path.join('assets', 'PO_save_menu_beta.png')).convert_alpha()
 
-NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night1.PNG')).convert()
+NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night1load.jpg')).convert()
 NIGHT1_LOAD = pygame.transform.scale(NIGHT1_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT2_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night2.PNG')).convert()
+NIGHT2_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night2load.jpg')).convert()
 NIGHT2_LOAD = pygame.transform.scale(NIGHT2_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT3_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night3.PNG')).convert()
+NIGHT3_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night3load.jpg')).convert()
 NIGHT3_LOAD = pygame.transform.scale(NIGHT3_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT4_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night4.PNG')).convert()
+NIGHT4_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night4load.jpg')).convert()
 NIGHT4_LOAD = pygame.transform.scale(NIGHT4_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT5_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night5.PNG')).convert()
+NIGHT5_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night5load.jpg')).convert()
 NIGHT5_LOAD = pygame.transform.scale(NIGHT5_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT6_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night6.PNG')).convert()
+NIGHT6_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night6load.jpg')).convert()
 NIGHT6_LOAD = pygame.transform.scale(NIGHT6_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT7_LOAD_IMAGE = pygame.image.load(os.path.join('assets','PO_night7.PNG')).convert()
+NIGHT7_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night7load.jpg')).convert()
 NIGHT7_LOAD = pygame.transform.scale(NIGHT7_LOAD_IMAGE, (WIDTH, HEIGHT))
 
-FIREPLACE_UNLIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_open_beta.PNG')).convert() #adding image
+FIREPLACE_UNLIT_OPEN_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_closed.jpg')).convert() #adding image
 FIREPLACE_UNLIT_OPEN = pygame.transform.scale(FIREPLACE_UNLIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_UNLIT_CLOSED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_unlit_closed_beta.PNG')).convert() #adding image
+FIREPLACE_UNLIT_CLOSED_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_extinguish.jpg')).convert() #adding image
 FIREPLACE_UNLIT_CLOSED = pygame.transform.scale(FIREPLACE_UNLIT_CLOSED_IMAGE, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_LIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fireplace_lit_open_beta.PNG')).convert() #adding image
+FIREPLACE_LIT_OPEN_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_on.jpg')).convert() #adding image
 FIREPLACE_LIT_OPEN = pygame.transform.scale(FIREPLACE_LIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
 
-BUNKER_IMAGE = pygame.image.load(os.path.join('assets', 'PO_bunker_beta.PNG')).convert() #adding image
+BUNKER_IMAGE = pygame.image.load(os.path.join('new_assets', 'bunker.jpg')).convert() #adding image
 BUNKER = pygame.transform.scale(BUNKER_IMAGE, (WIDTH, HEIGHT)) #image resizing
-BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('assets', 'PO_bunker_held_beta.PNG')).convert() #adding image
+BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('new_assets', 'bunkerheld.jpg')).convert() #adding image
 BUNKER_HELD = pygame.transform.scale(BUNKER_HELD_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 DOOR_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
 DOOR = pygame.transform.scale(DOOR_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked1_beta.PNG')).convert() #adding image
+DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorlocked.jpg')).convert() #adding image
 DOOR_LOCKED1 = pygame.transform.scale(DOOR_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked2_beta.PNG')).convert() #adding image
+DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase2.jpg')).convert() #adding image
 DOOR_LOCKED2 = pygame.transform.scale(DOOR_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked3_beta.PNG')).convert() #adding image
+DOOR_LOCKED3_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase3.jpg')).convert() #adding image
 DOOR_LOCKED3 = pygame.transform.scale(DOOR_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED4_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_locked4_beta.PNG')).convert() #adding image
+DOOR_LOCKED4_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase4.jpg')).convert() #adding image
 DOOR_LOCKED4 = pygame.transform.scale(DOOR_LOCKED4_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_unlocked_beta.PNG')).convert() #adding image
+DOOR_UNLOCKED_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorunlocked.jpg')).convert() #adding image
 DOOR_UNLOCKED = pygame.transform.scale(DOOR_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-WINDOW_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked1_beta.PNG')).convert() #adding image
+WINDOW_LOCKED1_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowlocked.jpg')).convert() #adding image
 WINDOW_LOCKED1 = pygame.transform.scale(WINDOW_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked2_beta.PNG')).convert() #adding image
+WINDOW_LOCKED2_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowphase2.jpg')).convert() #adding image
 WINDOW_LOCKED2 = pygame.transform.scale(WINDOW_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_locked3_beta.PNG')).convert() #adding image
+WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowphase4.jpg')).convert() #adding image
 WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'PO_window_unlocked_beta.PNG')).convert() #adding image
+WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowopen.jpg')).convert() #adding image
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Fear bar section initialization
@@ -302,43 +302,6 @@ def final_win_screen():
                     pygame.quit()
                     sys.exit()
 
-# Function that controls the game's cutscene/dialogue screens
-def cutscene(states: dict):
-    dialogue = []
-
-    if states.night == 1: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 2: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 3: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 4: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 5: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 6: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 7: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-
-    position = (80, 120) # position on screen where text is to be displayed
-
-    while dialogue:
-        WIN.fill(WHITE)
-
-        if dialogue[0][:2] == 'C>': display_text(dialogue[0][3:], BLUE, position)
-        elif dialogue[0][:2] == 'D>': display_text(dialogue[0][3:], GREEN,  position)
-        elif dialogue[0][:2] == 'M>': display_text(dialogue[0][3:], RED, position)
-
-        pygame.display.update()
-
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: dialogue.pop(0)
-            
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-# Function that displays the inputted message in the desired location on the screen
-def display_text(message: str, color: str, loc: tuple):
-    font = pygame.font.SysFont(None, 80)
-    text = font.render(message, True, color)
-    WIN.blit(text, loc)
-
 # Function that controls the game's easter egg screen
 def egg_screen():
     sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
@@ -414,6 +377,8 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                 elif rects['WI_LOCK'].collidepoint(loc[0], loc[1]):
                     if states.window_phase == 2: states.window_phase = 1
                     elif states.window_phase == 3: states.window_phase = 2
+                    elif states.window_phase == 4: #unlocked
+                        print('you\'re fucked, buddy')
                 
             elif states.view == "Door":
                 if rects['DOOR'].collidepoint(loc[0], loc[1]): states.view = 'Door-lock'
@@ -616,18 +581,22 @@ def game_screen(states: States):
         # Dictionary containing all of the Button objects to be used in this frame of the game
         buttons = {}
 
+        #(76, 32) - (485, 233) new window hitbox
+        #(394, 230) - (555, 290) new log hitbox
+        #(226, 61) - (273, 245) new damper pull hitbox
+
         # Dictionary containing all of the Rect objects to be used in the game
         rects = {
-            'LOG': pygame.Rect((343, 157), (92, 18)),
-            'DAMPER': pygame.Rect((325, 125), (10, 24)),
-            'WI_LOCK': pygame.Rect((489, 207), (68, 22)),
+            'LOG': pygame.Rect((394, 230), (161, 60)),
+            'DAMPER': pygame.Rect((226, 61), (47, 184)),
+            'WI_LOCK': pygame.Rect((76, 32), (409, 200)),
             'DOOR': pygame.Rect((166, 28), (352, 454)),
             'BUNKER': pygame.Rect((112,34), (642, 312)),
             'egg': pygame.Rect((390,290), (10,10))
         }
 
         loc = pygame.mouse.get_pos()
-
+        
         update_buttons(states, buttons, all_buttons, rects)
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
@@ -635,6 +604,7 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update display after all game states have been updated
 
+        print(loc)
         if states.night_won: advance = True
 
         if states.night_lost: 
@@ -701,7 +671,6 @@ def main():
     home_screen(states)
     current_night = states.night
     load_screen(states)
-    cutscene(states)
 
     while states.keep_playing:
         game_screen(states)
@@ -715,7 +684,6 @@ def main():
 
             win_screen(states)
             load_screen(states)
-            cutscene(states)
             game_screen(states)
 
 
@@ -723,7 +691,6 @@ def main():
             states = States(current_night, True)
             lose_screen(states)
             load_screen(states)
-            cutscene(states)
             game_screen(states)
     
     final_win_screen()
