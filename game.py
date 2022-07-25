@@ -9,10 +9,11 @@ from pygame import QUIT, mixer
 
 # constants
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (34, 139, 34)
 BLUE = (0, 0, 255)
 SEC = 1000 # 1000 milliseconds
 FPS = 60
-
 
 pygame.init() # start pygame
 pygame.mixer.init() #start mixer
@@ -649,7 +650,7 @@ def is_night_over(states: States):
         states.night_lost = True
 
     # player wins
-    if states.num_seconds > 5: states.night_won = True
+    if states.num_seconds > 600: states.night_won = True
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
