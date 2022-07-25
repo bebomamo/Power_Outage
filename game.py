@@ -1,4 +1,5 @@
 from ast import Num
+from math import nextafter
 from sre_constants import JUMP
 from tkinter import N
 import pygame, os, sys
@@ -138,11 +139,21 @@ JUMPSCARE_S = mixer.Sound(os.path.join('assets', 'JumpscareOne.wav'))
 
 # function that controls the game's home screen
 def home_screen(states: States):
+    tenth_sec = pygame.USEREVENT + 0
+    pygame.time.set_timer(tenth_sec, 100)
+
     START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', 'button_pressed.mp3', (125, 203), WIN)
     RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
+    pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
+    advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
+
+    # set to True when the corresponding Button is pressed
+    start = False
+    restart = False
+    quit = False
 
     while not advance:
         clock.tick(FPS)
@@ -155,22 +166,37 @@ def home_screen(states: States):
 
         pygame.display.update()
 
+        if pre_advance: 
+            if advance_timer > 2: # 20 ms delay before screen advances
+                if start:
+                    states.keep_playing = True
+                    advance = True
+                if restart:
+                    states.night = 1 # start at night 1 no matter what
+                    states.keep_playing = True
+                    advance = True
+                if quit:
+                    pygame.quit()
+                    sys.exit()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
+            if event.type == tenth_sec:
+                if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if START_BUTTON.rect.collidepoint(loc[0],loc[1]): 
-                    states.keep_playing = True # begin game sequence
-                    advance = True
+                    pre_advance = True
+                    start = True
                 if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                    states.night = 1 # start at night 1 no matter what 
-                    states.keep_playing = True
-                    advance = True
+                    pre_advance = True
+                    start = True
                 if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                    pygame.quit()
-                    sys.exit()
+                    pre_advance = True
+                    quit = True
 
 # function that controls the game's loading screens
 def load_screen(states: States):
@@ -199,13 +225,24 @@ def load_screen(states: States):
 
 # function that controls the game's win screen
 def win_screen(states: States):
+    tenth_sec = pygame.USEREVENT + 0
+    pygame.time.set_timer(tenth_sec, 100)
+
     NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
     SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
     SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move on to the next screen
+    pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
+    advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
+
     save_menu = False # set to True when the save menu is to be displayed
+
+    # set to True when the corresponding Button is pressed
+    next_night = False
+    save_yes = False
+    save_no = False
 
     while not advance:
         clock.tick(FPS)
@@ -220,34 +257,59 @@ def win_screen(states: States):
             WIN.blit(SAVE_MENU, (325, 125))
             SAVE_BUTTON_YES.process()
             SAVE_BUTTON_NO.process()
+
+        if pre_advance:
+            if advance_timer > 2:
+                if next_night: advance = True
+                if save_yes:
+                    set_night(states.night) # write night to night.txt (it will already have been incremented when this is called)
+                    pygame.quit()
+                    sys.exit()
+                if save_no:
+                    pygame.quit()
+                    sys.exit()
         
         pygame.display.update()
 
         for event in pygame.event.get():
+            if event.type == tenth_sec: 
+                if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not save_menu:
                     if NEXT_NIGHT_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                        advance = True
+                        pre_advance = True
+                        next_night = True
                     if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                         save_menu = True
                 if save_menu:
                     if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
-                        set_night(states.night) # write night to night.txt (it will already have been incremented when this is called)
-                        pygame.quit()
-                        sys.exit()
+                        pre_advance = True
+                        save_yes = True
                     if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
-                        pygame.quit()
-                        sys.exit()
+                        pre_advance = True
+                        save_no = True
 
 # function that controls the game's lose screen
 def lose_screen(states: States):
+    tenth_sec = pygame.USEREVENT + 0
+    pygame.time.set_timer(tenth_sec, 100)
+
     RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
     SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
     SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move on to the next screen
+    pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
+    advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
+
     save_menu = False # set to True when the save menu is to be displayed
+
+    # set to True when the corresponding Button is pressed
+    restart = False
+    save_yes = False
+    save_no = False
 
     while not advance:
         clock.tick(FPS)
@@ -263,28 +325,50 @@ def lose_screen(states: States):
             SAVE_BUTTON_YES.process()
             SAVE_BUTTON_NO.process()
         
+        if pre_advance:
+            if advance_timer > 2:
+                if restart: advance = True
+                if save_yes:
+                    set_night(states.night) # write night to night.txt (it will already have been incremented when this is called)
+                    pygame.quit()
+                    sys.exit()
+                if save_no:
+                    pygame.quit()
+                    sys.exit()
+
         pygame.display.update()
 
         for event in pygame.event.get():
+            if event.type == tenth_sec: 
+                if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if not save_menu:
                     if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
-                        advance = True
+                        pre_advance = True
+                        restart = True
                     if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                         save_menu = True
                 if save_menu:
                     if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
-                        set_night(states.night) # write failed night to night.txt (night will not have been incremented when this is called)
-                        pygame.quit()
-                        sys.exit()
+                        pre_advance = True
+                        save_yes = True
                     if SAVE_BUTTON_NO.rect.collidepoint(loc[0],loc[1]):
-                        pygame.quit()
-                        sys.exit()
+                        pre_advance = True
+                        save_no = True
 
 def final_win_screen():
+    tenth_sec = pygame.USEREVENT + 0
+    pygame.time.set_timer(tenth_sec, 100)
+
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
+    pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
+    advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
+
+    # set to True when the corresponding Button is pressed
+    quit = False
 
     while not advance:
         clock.tick(FPS)
@@ -293,14 +377,24 @@ def final_win_screen():
 
         WIN.blit(FINAL_WIN, (0,0))
         QUIT_BUTTON.process()
-        pygame.display.update()
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+        if pre_advance:
+            if advance_timer > 2:
+                if quit:
                     set_night(1)
                     pygame.quit()
                     sys.exit()
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == tenth_sec: 
+                if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                    pre_advance = True
+                    quit = True
 
 # Function that controls the game's cutscene/dialogue screens
 def cutscene(states: dict):
@@ -555,7 +649,7 @@ def is_night_over(states: States):
         states.night_lost = True
 
     # player wins
-    if states.num_seconds > 600: states.night_won = True
+    if states.num_seconds > 5: states.night_won = True
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
