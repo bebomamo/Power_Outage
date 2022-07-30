@@ -673,6 +673,8 @@ def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict
         buttons['SETTINGS_BUTTON_PAUSED'] = all_buttons['SETTINGS_BUTTON_PAUSED']
         buttons['QUIT_BUTTON_PAUSED'] = all_buttons['QUIT_BUTTON_PAUSED']
 
+    if states.night_lost: Button.audible = False # make Buttons silent when player is about to be jumpscared
+
     # add every Button's rectangle to the rects dictionary so that they can be used by handle_clicks
     for button in buttons: rects[button] = buttons[button].rect
         
@@ -736,7 +738,6 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update display after all game states have been updated
 
-        print(loc)
         if states.night_won: advance = True
 
         if states.night_lost: 
@@ -807,6 +808,8 @@ def main():
 
     while states.keep_playing:
         game_screen(states)
+        Button.audible = True # make clicksounds audible again so that they'll be heard in win/lose screens
+
         if states.night_won: 
             current_night += 1
             states = States(current_night, True)
@@ -819,7 +822,6 @@ def main():
             load_screen(states)
             cutscene(states)
             game_screen(states)
-
 
         elif states.night_lost: 
             states = States(current_night, True)

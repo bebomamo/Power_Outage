@@ -194,6 +194,7 @@ class States:
 
 # simple button class that allows for different images to be displayed depending on whether the mouse is over the button
 class Button():
+    audible = True # Class variable that is set to False when the player is about to be jumpscared so that clicksounds will not be heard
     pressed = False # Class variable that is set to True if any Button is currently being pressed, and false otherwise
 
     def __init__(self, default_image: str, hover_image: str, click_audio: str, pos: tuple, win: pygame.Surface):
@@ -216,11 +217,12 @@ class Button():
             self.rect = self.image.get_rect(x=self.pos_x, y=self.pos_y)
             self.win.blit(self.image, (self.pos_x, self.pos_y))
 
-            if pygame.mouse.get_pressed(num_buttons=3)[0]:
-                if not Button.pressed:
-                    self.click_audio.play()
-                    Button.pressed = True
-            else: Button.pressed = False
+            if Button.audible:
+                if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    if not Button.pressed:
+                        self.click_audio.play()
+                        Button.pressed = True
+                else: Button.pressed = False
 
         else:
             self.image = self.default_image
