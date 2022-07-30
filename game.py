@@ -646,11 +646,11 @@ def draw_image(states: States, buttons: dict):
 # function that determines whether the player has won or lost the current night
 def is_night_over(states: States):
     # player loses
-    if states.window_phase == 4 or states.door_phase == 5 or states.FP_countdown < 0 or states.B_countdown < 0 or states.fear >= 7:
+    if states.window_phase == 4 or states.door_phase == 5 or states.FP_countdown < 0 or states.B_countdown < 0 or states.fear >= 8:
         states.night_lost = True
 
     # player wins
-    if states.num_seconds > 600: states.night_won = True
+    if states.num_seconds > 5: states.night_won = True
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
