@@ -397,60 +397,60 @@ def final_win_screen():
                     pre_advance = True
                     quit = True
 
-# Function that controls the game's cutscene/dialogue screens
-def cutscene(states: dict):
-    dialogue = []
+# # Function that controls the game's cutscene/dialogue screens
+# def cutscene(states: dict):
+#     dialogue = []
 
-    if states.night == 1: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 2: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 3: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 4: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 5: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 6: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
-    elif states.night == 7: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     if states.night == 1: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 2: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 3: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 4: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 5: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 6: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
+#     elif states.night == 7: dialogue = ['C> Child speaking', 'D> Dad speaking', 'M> Mom speaking', 'C> Child speaking again']
 
-    position = (80, 120) # position on screen where text is to be displayed
+#     position = (80, 120) # position on screen where text is to be displayed
 
-    while dialogue:
-        WIN.fill(WHITE)
+#     while dialogue:
+#         WIN.fill(WHITE)
 
-        if dialogue[0][:2] == 'C>': display_text(dialogue[0][3:], BLUE, position)
-        elif dialogue[0][:2] == 'D>': display_text(dialogue[0][3:], GREEN,  position)
-        elif dialogue[0][:2] == 'M>': display_text(dialogue[0][3:], RED, position)
+#         if dialogue[0][:2] == 'C>': display_text(dialogue[0][3:], BLUE, position)
+#         elif dialogue[0][:2] == 'D>': display_text(dialogue[0][3:], GREEN,  position)
+#         elif dialogue[0][:2] == 'M>': display_text(dialogue[0][3:], RED, position)
 
-        pygame.display.update()
+#         pygame.display.update()
 
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE: dialogue.pop(0)
+#         for event in pygame.event.get():
+#             if event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_SPACE: dialogue.pop(0)
             
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
 
-# Function that displays the inputted message in the desired location on the screen
-def display_text(message: str, color: str, loc: tuple):
-    font = pygame.font.SysFont(None, 80)
-    text = font.render(message, True, color)
-    WIN.blit(text, loc)
+# # Function that displays the inputted message in the desired location on the screen
+# def display_text(message: str, color: str, loc: tuple):
+#     font = pygame.font.SysFont(None, 80)
+#     text = font.render(message, True, color)
+#     WIN.blit(text, loc)
 
 # Function that controls the game's easter egg screen
-def egg_screen():
-    sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
-    pygame.time.set_timer(sec_timer, 1000)
+# def egg_screen():
+#     sec_timer = pygame.USEREVENT + 0 # event that appears on the event queue once per second, used for timing
+#     pygame.time.set_timer(sec_timer, 1000)
 
-    advance = False
-    num_seconds = 0 # number of seconds that have passed since this screen was entered
+#     advance = False
+#     num_seconds = 0 # number of seconds that have passed since this screen was entered
 
-    while not advance:
+#     while not advance:
         
-        # code for video should go here
+#         # code for video should go here
 
-        if num_seconds > 5: advance = True
+#         if num_seconds > 5: advance = True
 
-        for event in pygame.event.get():
-            if event.type == sec_timer:
-                num_seconds += 1
+#         for event in pygame.event.get():
+#             if event.type == sec_timer:
+#                 num_seconds += 1
 
 #function that updates constant background noise
 def update_music(states: States):
@@ -499,9 +499,9 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     if not states.B_firstattack:
                         states.B_checked = True
                         states.B_CTcountdown = states.B_checkedtime
-                elif rects['egg'].collidepoint(loc[0], loc[1]): 
-                    # egg_screen()
-                    pass
+                # elif rects['egg'].collidepoint(loc[0], loc[1]): 
+                #     # egg_screen()
+                #     pass
                     
             elif states.view == "Window":
                 if rects['WI_LEFT'].collidepoint(loc[0], loc[1]): #this section needs control logic based on what view the fireplace screen should be
@@ -509,8 +509,7 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                 elif rects['WI_LOCK'].collidepoint(loc[0], loc[1]):
                     if states.window_phase == 2: states.window_phase = 1
                     elif states.window_phase == 3: states.window_phase = 2
-                    elif states.window_phase == 4: #unlocked
-                        print('you\'re fucked, buddy')
+                    elif states.window_phase == 4: pass #unlocked
                 
             elif states.view == "Door":
                 if rects['DOOR'].collidepoint(loc[0], loc[1]): states.view = 'Door-lock'
@@ -650,7 +649,7 @@ def is_night_over(states: States):
         states.night_lost = True
 
     # player wins
-    if states.num_seconds > 5: states.night_won = True
+    if states.num_seconds > 600: states.night_won = True
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
@@ -726,7 +725,7 @@ def game_screen(states: States):
             'WI_LOCK': pygame.Rect((76, 32), (409, 200)),
             'DOOR': pygame.Rect((166, 28), (352, 454)),
             'BUNKER': pygame.Rect((112,34), (642, 312)),
-            'egg': pygame.Rect((390,290), (10,10))
+            # 'egg': pygame.Rect((390,290), (10,10))
         }
 
         loc = pygame.mouse.get_pos()
@@ -804,7 +803,7 @@ def main():
     home_screen(states)
     current_night = states.night
     load_screen(states)
-    cutscene(states)
+    # cutscene(states)
 
     while states.keep_playing:
         game_screen(states)
@@ -820,14 +819,14 @@ def main():
 
             win_screen(states)
             load_screen(states)
-            cutscene(states)
+            # cutscene(states)
             game_screen(states)
 
         elif states.night_lost: 
             states = States(current_night, True)
             lose_screen(states)
             load_screen(states)
-            cutscene(states)
+            # cutscene(states)
             game_screen(states)
     
     final_win_screen()
