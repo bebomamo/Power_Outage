@@ -28,7 +28,7 @@ pygame.display.set_caption("Power Outage")
 
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
-HOME_IMAGE = pygame.image.load(os.path.join('assets', 'homescreen.png')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
+HOME_IMAGE = pygame.image.load(os.path.join('assets', 'homescreen.png')).convert() #adding image 
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'yousurvivedscreen.png')).convert()
@@ -74,8 +74,6 @@ BUNKER = pygame.transform.scale(BUNKER_IMAGE, (WIDTH, HEIGHT)) #image resizing
 BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('assets', 'bunkerheld.jpg')).convert() #adding image
 BUNKER_HELD = pygame.transform.scale(BUNKER_HELD_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-DOOR_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
-DOOR = pygame.transform.scale(DOOR_IMAGE, (WIDTH, HEIGHT)) #image resizing
 DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'doorlocked.jpg')).convert() #adding image
 DOOR_LOCKED1 = pygame.transform.scale(DOOR_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
 DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'doorphase2.jpg')).convert() #adding image
@@ -362,7 +360,7 @@ def final_win_screen():
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 407), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
@@ -618,9 +616,6 @@ def draw_image(states: States, buttons: dict):
         elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
         elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
         elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
-        
-    elif states.view == 'Door-lock': 
-        WIN.blit(DOOR, (0,0)) #display Frontdoor image
         
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
