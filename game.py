@@ -28,19 +28,19 @@ pygame.display.set_caption("Power Outage")
 
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
-HOME_IMAGE = pygame.image.load(os.path.join('assets', 'PO_home_alpha.PNG')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
+HOME_IMAGE = pygame.image.load(os.path.join('assets', 'homescreen.png')).convert() #adding image ****this line will be changed, PO_night1.PNG will actually be night_select()****
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_win_screen_beta.png')).convert()
+NIGHT_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'yousurvivedscreen.png')).convert()
 NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'PO_lose_screen_beta.png')).convert()
+NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'youlostscreen.png')).convert()
 NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
 
 FINAL_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_final_win_screen_beta.png')).convert()
 FINAL_WIN = pygame.transform.scale(FINAL_WIN_IMAGE, (WIDTH, HEIGHT))
 
-JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'dummy.jpg')).convert_alpha()
+JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'IMG_0328.png')).convert_alpha()
 JUMPSCARE = pygame.transform.scale(JUMPSCARE_IMAGE, (WIDTH, HEIGHT))
 
 PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
@@ -143,9 +143,9 @@ def home_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    START_BUTTON = Button('brownstart.PNG', 'redstart.PNG', 'button_pressed.mp3', (125, 203), WIN)
-    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
+    START_BUTTON = Button('startbutton.png', 'startbuttonhover.png', 'button_pressed.mp3', (160, 170), WIN)
+    RESTART_BUTTON = Button('retartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (160, 250), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (160, 350), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
@@ -229,10 +229,10 @@ def win_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    NEXT_NIGHT_BUTTON = Button('PO_next_night_button_red_black_beta.png', 'PO_next_night_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
+    NEXT_NIGHT_BUTTON = Button('nextnightbutton.png', 'nextnightbuttonhover.png', 'button_pressed.mp3', (125, 305), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 407), WIN)
+    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
@@ -296,10 +296,10 @@ def lose_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
-    QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('PO_save_button_yes_beta.png', 'PO_save_button_yes_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('PO_save_button_no_beta.png', 'PO_save_button_no_hover_beta.png', 'button_pressed.mp3', (405, 250), WIN)
+    RESTART_BUTTON = Button('retartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (125, 200), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 350), WIN)
+    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (405, 203), WIN)
+    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (405, 250), WIN)
     
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
