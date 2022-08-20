@@ -28,6 +28,9 @@ pygame.display.set_caption("Power Outage")
 
 # Objects and backgrounds
 # home_night = night_select() # - commented out for now
+BLANK_IMAGE = pygame.image.load(os.path.join('assets', 'blankscreen.jpg')).convert()
+BLANK_SCREEN = pygame.transform.scale(BLANK_IMAGE, (WIDTH, HEIGHT))
+
 HOME_IMAGE = pygame.image.load(os.path.join('assets', 'homescreen.png')).convert() #adding image 
 HOME = pygame.transform.scale(HOME_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
@@ -73,7 +76,6 @@ BUNKER_IMAGE = pygame.image.load(os.path.join('assets', 'bunker.jpg')).convert()
 BUNKER = pygame.transform.scale(BUNKER_IMAGE, (WIDTH, HEIGHT)) #image resizing
 BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('assets', 'bunkerheld.jpg')).convert() #adding image
 BUNKER_HELD = pygame.transform.scale(BUNKER_HELD_IMAGE, (WIDTH, HEIGHT)) #image resizing
-
 DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'doorlocked.jpg')).convert() #adding image
 DOOR_LOCKED1 = pygame.transform.scale(DOOR_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
 DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'doorphase2.jpg')).convert() #adding image
@@ -141,9 +143,9 @@ def home_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    START_BUTTON = Button('startbutton.png', 'startbuttonhover.png', 'button_pressed.mp3', (160, 170), WIN)
-    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (160, 250), WIN)
-    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (160, 350), WIN)
+    START_BUTTON = Button('startbutton.png', 'startbuttonhover.png', 'button_pressed.mp3', (275, 197), WIN)
+    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (275, 297), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (275, 397), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
@@ -192,6 +194,7 @@ def home_screen(states: States):
                     start = True
                 if RESTART_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     pre_advance = True
+                    restart = True
                     start = True
                 if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
                     pre_advance = True
@@ -227,11 +230,14 @@ def win_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    NEXT_NIGHT_BUTTON = Button('nextnightbutton.png', 'nextnightbuttonhover.png', 'button_pressed.mp3', (125, 305), WIN)
-    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 407), WIN)
-    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (405, 250), WIN)
+    NEXT_NIGHT_BUTTON = Button('nextnightbutton.png', 'nextnightbuttonhover.png', 'button_pressed.mp3', (275, 250), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (275, 360), WIN)
+    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (275, 250), WIN)
+    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (275, 360), WIN)
     
+    quit_pressed = False # set to True when the player has pressed the quit button
+    quit_timer = 0 # counts the time after the quit button has been pressed (in 10s of ms)
+
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
     advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
@@ -253,7 +259,8 @@ def win_screen(states: States):
         QUIT_BUTTON.process()
 
         if save_menu:
-            WIN.blit(SAVE_MENU, (325, 125))
+            WIN.blit(BLANK_SCREEN, (0, 0))
+            WIN.blit(SAVE_MENU, (245, 30))
             SAVE_BUTTON_YES.process()
             SAVE_BUTTON_NO.process()
 
@@ -272,6 +279,7 @@ def win_screen(states: States):
 
         for event in pygame.event.get():
             if event.type == tenth_sec: 
+                if quit_pressed: quit_timer += 1 # increment quit timer if quit button has been pressed
                 if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -280,8 +288,9 @@ def win_screen(states: States):
                         pre_advance = True
                         next_night = True
                     if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        quit_pressed = True
                         save_menu = True
-                if save_menu:
+                if save_menu and quit_timer > 2:
                     if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
                         pre_advance = True
                         save_yes = True
@@ -294,11 +303,14 @@ def lose_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (125, 200), WIN)
-    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 350), WIN)
-    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (405, 203), WIN)
-    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (405, 250), WIN)
+    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (275, 250), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (275, 360), WIN)
+    SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (275, 250), WIN)
+    SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (275, 360), WIN)
     
+    quit_pressed = False # set to True when the player has pressed the quit button
+    quit_timer = 0 # counts the amount of time after the player pressed the quit button (in 10s of ms)
+
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
     advance_timer = 0 # counts the duration of the pre-advance phase (in 10s of ms) 
@@ -320,7 +332,8 @@ def lose_screen(states: States):
         QUIT_BUTTON.process()
 
         if save_menu:
-            WIN.blit(SAVE_MENU, (325, 125))
+            WIN.blit(BLANK_SCREEN, (0,0))
+            WIN.blit(SAVE_MENU, (245, 30))
             SAVE_BUTTON_YES.process()
             SAVE_BUTTON_NO.process()
         
@@ -339,6 +352,7 @@ def lose_screen(states: States):
 
         for event in pygame.event.get():
             if event.type == tenth_sec: 
+                if quit_pressed: quit_timer += 1 # increment quit timer if the player has pressed the quit button
                 if pre_advance: advance_timer += 1 # increment advance timer if in pre-advance phase
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -347,8 +361,9 @@ def lose_screen(states: States):
                         pre_advance = True
                         restart = True
                     if QUIT_BUTTON.rect.collidepoint(loc[0],loc[1]):
+                        quit_pressed = True
                         save_menu = True
-                if save_menu:
+                if save_menu and quit_timer > 2:
                     if SAVE_BUTTON_YES.rect.collidepoint(loc[0],loc[1]):
                         pre_advance = True
                         save_yes = True
@@ -360,7 +375,7 @@ def final_win_screen():
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 407), WIN)
+    QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (275, 310), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
     pre_advance = False # set to True a short time period before the player is ready to advance so that Button clicks can be heard
@@ -625,8 +640,9 @@ def draw_image(states: States, buttons: dict):
     WIN.blit(fear(states.fear), (80,10))
 
     if states.paused:
+        WIN.blit(BLANK_SCREEN, (0,0))
         # note: this part needs to be at the bottom so that the pause menu will overlay everything else
-        WIN.blit(PAUSE_MENU, (325, 125))
+        WIN.blit(PAUSE_MENU, (245, 30))
 
     for button in buttons: buttons[button].process()
 
@@ -646,19 +662,20 @@ def is_night_over(states: States):
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
-    if states.view == 'Fireplace':
-        buttons['FP_LEFT'] = all_buttons['FP_LEFT']
-        buttons['FP_RIGHT'] = all_buttons['FP_RIGHT']
-        buttons['FP_DOWN'] = all_buttons['FP_DOWN']
-    
-    if states.view == 'Door':
-        buttons['DO_RIGHT'] = all_buttons['DO_RIGHT']
+    if not states.paused:
+        if states.view == 'Fireplace':
+            buttons['FP_LEFT'] = all_buttons['FP_LEFT']
+            buttons['FP_RIGHT'] = all_buttons['FP_RIGHT']
+            buttons['FP_DOWN'] = all_buttons['FP_DOWN']
+        
+        if states.view == 'Door':
+            buttons['DO_RIGHT'] = all_buttons['DO_RIGHT']
 
-    if states.view == 'Window':
-        buttons['WI_LEFT'] = all_buttons['WI_LEFT']
+        if states.view == 'Window':
+            buttons['WI_LEFT'] = all_buttons['WI_LEFT']
 
-    if states.view == 'Bunker':
-        buttons['BU_DOWN'] = all_buttons['BU_DOWN']
+        if states.view == 'Bunker':
+            buttons['BU_DOWN'] = all_buttons['BU_DOWN']
 
     if states.paused:
         buttons['RESUME_BUTTON'] = all_buttons['RESUME_BUTTON']
@@ -689,14 +706,14 @@ def game_screen(states: States):
 
     # Dictionary containing all of the Buttons that are used in any frame of the game
     all_buttons = {
-        'FP_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (17,32), WIN),
-        'FP_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (831,32), WIN),
-        'FP_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (113,435), WIN),
-        'DO_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (787,28), WIN),
-        'WI_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (11,29), WIN),
-        'BU_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (113,422), WIN),
-        'RESUME_BUTTON': Button('resumebutton.png', 'resumebuttonhover.png', 'button_pressed.mp3', (405, 203), WIN),
-        'QUIT_BUTTON_PAUSED': Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (405, 293), WIN)
+        'FP_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (57,102), WIN),
+        'FP_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (743,102), WIN),
+        'FP_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (342,393), WIN),
+        'DO_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (743,102), WIN),
+        'WI_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (57,102), WIN),
+        'BU_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (342,393), WIN),
+        'RESUME_BUTTON': Button('resumebutton.png', 'resumebuttonhover.png', 'button_pressed.mp3', (275, 250), WIN),
+        'QUIT_BUTTON_PAUSED': Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (275, 360), WIN)
     }
 
     while not advance:
@@ -720,7 +737,7 @@ def game_screen(states: States):
         }
 
         loc = pygame.mouse.get_pos()
-        
+
         update_buttons(states, buttons, all_buttons, rects)
         handle_clicks(states, rects, clicking, right_clicking, loc)
         update_states(states)
