@@ -37,81 +37,81 @@ NIGHT_WIN = pygame.transform.scale(NIGHT_WIN_IMAGE, (WIDTH, HEIGHT)) #image resi
 NIGHT_LOSE_IMAGE = pygame.image.load(os.path.join('assets', 'youlostscreen.png')).convert()
 NIGHT_LOSE = pygame.transform.scale(NIGHT_LOSE_IMAGE, (WIDTH, HEIGHT))
 
-FINAL_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'PO_final_win_screen_beta.png')).convert()
+FINAL_WIN_IMAGE = pygame.image.load(os.path.join('assets', 'yousurvivedscreen.png')).convert()
 FINAL_WIN = pygame.transform.scale(FINAL_WIN_IMAGE, (WIDTH, HEIGHT))
 
 JUMPSCARE_IMAGE = pygame.image.load(os.path.join('assets', 'IMG_0328.png')).convert_alpha()
 JUMPSCARE = pygame.transform.scale(JUMPSCARE_IMAGE, (WIDTH, HEIGHT))
 
-PAUSE_MENU = pygame.image.load(os.path.join('assets', 'PO_pause_menu_beta.png')).convert_alpha()
+PAUSE_MENU = pygame.image.load(os.path.join('assets', 'pausemenu.png')).convert_alpha()
 
-SAVE_MENU = pygame.image.load(os.path.join('assets', 'PO_save_menu_beta.png')).convert_alpha()
+SAVE_MENU = pygame.image.load(os.path.join('assets', 'saveprogressmenu.png')).convert_alpha()
 
-NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night1load.jpg')).convert()
+NIGHT1_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night1load.jpg')).convert()
 NIGHT1_LOAD = pygame.transform.scale(NIGHT1_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT2_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night2load.jpg')).convert()
+NIGHT2_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night2load.jpg')).convert()
 NIGHT2_LOAD = pygame.transform.scale(NIGHT2_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT3_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night3load.jpg')).convert()
+NIGHT3_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night3load.jpg')).convert()
 NIGHT3_LOAD = pygame.transform.scale(NIGHT3_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT4_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night4load.jpg')).convert()
+NIGHT4_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night4load.jpg')).convert()
 NIGHT4_LOAD = pygame.transform.scale(NIGHT4_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT5_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night5load.jpg')).convert()
+NIGHT5_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night5load.jpg')).convert()
 NIGHT5_LOAD = pygame.transform.scale(NIGHT5_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT6_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night6load.jpg')).convert()
+NIGHT6_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night6load.jpg')).convert()
 NIGHT6_LOAD = pygame.transform.scale(NIGHT6_LOAD_IMAGE, (WIDTH, HEIGHT))
-NIGHT7_LOAD_IMAGE = pygame.image.load(os.path.join('new_assets', 'night7load.jpg')).convert()
+NIGHT7_LOAD_IMAGE = pygame.image.load(os.path.join('assets', 'night7load.jpg')).convert()
 NIGHT7_LOAD = pygame.transform.scale(NIGHT7_LOAD_IMAGE, (WIDTH, HEIGHT))
 
-FIREPLACE_UNLIT_OPEN_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_closed.jpg')).convert() #adding image
+FIREPLACE_UNLIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'fireplace_closed.jpg')).convert() #adding image
 FIREPLACE_UNLIT_OPEN = pygame.transform.scale(FIREPLACE_UNLIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_UNLIT_CLOSED_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_extinguish.jpg')).convert() #adding image
+FIREPLACE_UNLIT_CLOSED_IMAGE = pygame.image.load(os.path.join('assets', 'fireplace_extinguish.jpg')).convert() #adding image
 FIREPLACE_UNLIT_CLOSED = pygame.transform.scale(FIREPLACE_UNLIT_CLOSED_IMAGE, (WIDTH, HEIGHT)) #image resizing
-FIREPLACE_LIT_OPEN_IMAGE = pygame.image.load(os.path.join('new_assets', 'fireplace_on.jpg')).convert() #adding image
+FIREPLACE_LIT_OPEN_IMAGE = pygame.image.load(os.path.join('assets', 'fireplace_on.jpg')).convert() #adding image
 FIREPLACE_LIT_OPEN = pygame.transform.scale(FIREPLACE_LIT_OPEN_IMAGE, (WIDTH, HEIGHT)) #image resizing-----------------------------------------------------------
 
-BUNKER_IMAGE = pygame.image.load(os.path.join('new_assets', 'bunker.jpg')).convert() #adding image
+BUNKER_IMAGE = pygame.image.load(os.path.join('assets', 'bunker.jpg')).convert() #adding image
 BUNKER = pygame.transform.scale(BUNKER_IMAGE, (WIDTH, HEIGHT)) #image resizing
-BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('new_assets', 'bunkerheld.jpg')).convert() #adding image
+BUNKER_HELD_IMAGE = pygame.image.load(os.path.join('assets', 'bunkerheld.jpg')).convert() #adding image
 BUNKER_HELD = pygame.transform.scale(BUNKER_HELD_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 DOOR_IMAGE = pygame.image.load(os.path.join('assets', 'PO_door_beta.PNG')).convert() #adding image
 DOOR = pygame.transform.scale(DOOR_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorlocked.jpg')).convert() #adding image
+DOOR_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'doorlocked.jpg')).convert() #adding image
 DOOR_LOCKED1 = pygame.transform.scale(DOOR_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase2.jpg')).convert() #adding image
+DOOR_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'doorphase2.jpg')).convert() #adding image
 DOOR_LOCKED2 = pygame.transform.scale(DOOR_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED3_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase3.jpg')).convert() #adding image
+DOOR_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'doorphase3.jpg')).convert() #adding image
 DOOR_LOCKED3 = pygame.transform.scale(DOOR_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_LOCKED4_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorphase4.jpg')).convert() #adding image
+DOOR_LOCKED4_IMAGE = pygame.image.load(os.path.join('assets', 'doorphase4.jpg')).convert() #adding image
 DOOR_LOCKED4 = pygame.transform.scale(DOOR_LOCKED4_IMAGE, (WIDTH, HEIGHT)) #image resizing
-DOOR_UNLOCKED_IMAGE = pygame.image.load(os.path.join('new_assets', 'doorunlocked.jpg')).convert() #adding image
+DOOR_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'doorunlocked.jpg')).convert() #adding image
 DOOR_UNLOCKED = pygame.transform.scale(DOOR_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
-WINDOW_LOCKED1_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowlocked.jpg')).convert() #adding image
+WINDOW_LOCKED1_IMAGE = pygame.image.load(os.path.join('assets', 'windowlocked.jpg')).convert() #adding image
 WINDOW_LOCKED1 = pygame.transform.scale(WINDOW_LOCKED1_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_LOCKED2_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowphase2.jpg')).convert() #adding image
+WINDOW_LOCKED2_IMAGE = pygame.image.load(os.path.join('assets', 'windowphase2.jpg')).convert() #adding image
 WINDOW_LOCKED2 = pygame.transform.scale(WINDOW_LOCKED2_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowphase4.jpg')).convert() #adding image
+WINDOW_LOCKED3_IMAGE = pygame.image.load(os.path.join('assets', 'windowphase4.jpg')).convert() #adding image
 WINDOW_LOCKED3 = pygame.transform.scale(WINDOW_LOCKED3_IMAGE, (WIDTH, HEIGHT)) #image resizing
-WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowopen.jpg')).convert() #adding image
+WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('assets', 'windowopen.jpg')).convert() #adding image
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Fear bar section initialization
-FEARBAR1_IMAGE = pygame.image.load(os.path.join('new_assets', 'fear1.jpg')).convert() #initializing all fear bar images
+FEARBAR1_IMAGE = pygame.image.load(os.path.join('assets', 'fear1.png')).convert_alpha() #initializing all fear bar images
 FEARBAR1 = pygame.transform.scale(FEARBAR1_IMAGE, (200, 50)) # image resizing 
-FEARBAR2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p2.PNG')).convert()
+FEARBAR2_IMAGE = pygame.image.load(os.path.join('assets', 'fear2.png')).convert_alpha()
 FEARBAR2 = pygame.transform.scale(FEARBAR2_IMAGE, (200, 50))
-FEARBAR3_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p3.PNG')).convert()
+FEARBAR3_IMAGE = pygame.image.load(os.path.join('assets', 'fear3.png')).convert_alpha()
 FEARBAR3 = pygame.transform.scale(FEARBAR3_IMAGE, (200, 50))
-FEARBAR4_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p4.PNG')).convert()
+FEARBAR4_IMAGE = pygame.image.load(os.path.join('assets', 'fear4.png')).convert_alpha()
 FEARBAR4 = pygame.transform.scale(FEARBAR4_IMAGE, (200, 50))
-FEARBAR5_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p5.PNG')).convert()
+FEARBAR5_IMAGE = pygame.image.load(os.path.join('assets', 'fear5.png')).convert_alpha()
 FEARBAR5 = pygame.transform.scale(FEARBAR5_IMAGE, (200, 50))
-FEARBAR6_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p6.PNG')).convert()
+FEARBAR6_IMAGE = pygame.image.load(os.path.join('assets', 'fear6.png')).convert_alpha()
 FEARBAR6 = pygame.transform.scale(FEARBAR6_IMAGE, (200, 50))
-FEARBAR7_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p7.PNG')).convert()
+FEARBAR7_IMAGE = pygame.image.load(os.path.join('assets', 'fear7.png')).convert_alpha()
 FEARBAR7 = pygame.transform.scale(FEARBAR7_IMAGE, (200, 50))
-FEARBAR8_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p8.PNG')).convert()
+FEARBAR8_IMAGE = pygame.image.load(os.path.join('assets', 'fear8.png')).convert_alpha()
 FEARBAR8 = pygame.transform.scale(FEARBAR8_IMAGE, (200, 50))
 
 #Audio asset initialization
@@ -144,7 +144,7 @@ def home_screen(states: States):
     pygame.time.set_timer(tenth_sec, 100)
 
     START_BUTTON = Button('startbutton.png', 'startbuttonhover.png', 'button_pressed.mp3', (160, 170), WIN)
-    RESTART_BUTTON = Button('retartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (160, 250), WIN)
+    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (160, 250), WIN)
     QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (160, 350), WIN)
 
     advance = False # set to True when the player is ready to move on to the next screen
@@ -296,7 +296,7 @@ def lose_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    RESTART_BUTTON = Button('retartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (125, 200), WIN)
+    RESTART_BUTTON = Button('restartbutton.png', 'restartbuttonhover.png', 'button_pressed.mp3', (125, 200), WIN)
     QUIT_BUTTON = Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (125, 350), WIN)
     SAVE_BUTTON_YES = Button('yesbutton.png', 'yesbuttonhover.png', 'button_pressed.mp3', (405, 203), WIN)
     SAVE_BUTTON_NO = Button('nobutton.png', 'nobuttonhover.png', 'button_pressed.mp3', (405, 250), WIN)
@@ -667,7 +667,6 @@ def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict
 
     if states.paused:
         buttons['RESUME_BUTTON'] = all_buttons['RESUME_BUTTON']
-        buttons['SETTINGS_BUTTON_PAUSED'] = all_buttons['SETTINGS_BUTTON_PAUSED']
         buttons['QUIT_BUTTON_PAUSED'] = all_buttons['QUIT_BUTTON_PAUSED']
 
     if states.night_lost: Button.audible = False # make Buttons silent when player is about to be jumpscared
@@ -695,15 +694,14 @@ def game_screen(states: States):
 
     # Dictionary containing all of the Buttons that are used in any frame of the game
     all_buttons = {
-        'FP_LEFT': Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (17,32), WIN),
-        'FP_RIGHT': Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (831,32), WIN),
-        'FP_DOWN': Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,435), WIN),
-        'DO_RIGHT': Button('PO_view_right_button_beta.png', 'PO_view_right_button_hover_beta.png', 'swoosh.mp3', (787,28), WIN),
-        'WI_LEFT': Button('PO_view_left_button_beta.png', 'PO_view_left_button_hover_beta.png', 'swoosh.mp3', (11,29), WIN),
-        'BU_DOWN': Button('PO_view_down_button_beta.png', 'PO_view_down_button_hover_beta.png', 'swoosh.mp3', (113,422), WIN),
-        'RESUME_BUTTON': Button('PO_resume_button_beta.png', 'PO_resume_button_hover_beta.png', 'button_pressed.mp3', (405, 203), WIN),
-        'SETTINGS_BUTTON_PAUSED': Button('PO_settings_button_beta.png', 'PO_settings_button_hover_beta.png', 'button_pressed.mp3', (405, 245), WIN),
-        'QUIT_BUTTON_PAUSED': Button('PO_pausequit_beta.png', 'PO_pausequit_hover_beta.png', 'button_pressed.mp3', (405, 293), WIN)
+        'FP_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (17,32), WIN),
+        'FP_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (831,32), WIN),
+        'FP_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (113,435), WIN),
+        'DO_RIGHT': Button('viewbuttonright.png', 'viewbuttonrighthover.png', 'swoosh.mp3', (787,28), WIN),
+        'WI_LEFT': Button('viewbuttonleft.png', 'viewbuttonlefthover.png', 'swoosh.mp3', (11,29), WIN),
+        'BU_DOWN': Button('viewbuttondown.png', 'viewbuttondownhover.png', 'swoosh.mp3', (113,422), WIN),
+        'RESUME_BUTTON': Button('resumebutton.png', 'resumebuttonhover.png', 'button_pressed.mp3', (405, 203), WIN),
+        'QUIT_BUTTON_PAUSED': Button('quitbutton.png', 'quitbuttonhover.png', 'button_pressed.mp3', (405, 293), WIN)
     }
 
     while not advance:
