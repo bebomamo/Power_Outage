@@ -97,7 +97,7 @@ WINDOW_UNLOCKED_IMAGE = pygame.image.load(os.path.join('new_assets', 'windowopen
 WINDOW_UNLOCKED = pygame.transform.scale(WINDOW_UNLOCKED_IMAGE, (WIDTH, HEIGHT)) #image resizing
 
 #Fear bar section initialization
-FEARBAR1_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p1.PNG')).convert() #initializing all fear bar images
+FEARBAR1_IMAGE = pygame.image.load(os.path.join('new_assets', 'fear1.jpg')).convert() #initializing all fear bar images
 FEARBAR1 = pygame.transform.scale(FEARBAR1_IMAGE, (200, 50)) # image resizing 
 FEARBAR2_IMAGE = pygame.image.load(os.path.join('assets', 'PO_fear_p2.PNG')).convert()
 FEARBAR2 = pygame.transform.scale(FEARBAR2_IMAGE, (200, 50))
@@ -143,7 +143,7 @@ def home_screen(states: States):
     tenth_sec = pygame.USEREVENT + 0
     pygame.time.set_timer(tenth_sec, 100)
 
-    START_BUTTON = Button('PO_start_button_red_black_beta.png', 'PO_start_button_green_black_beta.png', 'button_pressed.mp3', (125, 203), WIN)
+    START_BUTTON = Button('brownstart.PNG', 'redstart.PNG', 'button_pressed.mp3', (125, 203), WIN)
     RESTART_BUTTON = Button('PO_restart_button_red_black_beta.png', 'PO_restart_button_green_black_beta.png', 'button_pressed.mp3', (125, 305), WIN)
     QUIT_BUTTON = Button('PO_quit_button_red_black_beta.png', 'PO_quit_button_green_black_beta.png', 'button_pressed.mp3', (125, 407), WIN)
 
@@ -512,13 +512,11 @@ def handle_clicks(states: States, rects: dict, clicking: bool, right_clicking: b
                     elif states.window_phase == 4: pass #unlocked
                 
             elif states.view == "Door":
-                if rects['DOOR'].collidepoint(loc[0], loc[1]): states.view = 'Door-lock'
-                elif rects['DO_RIGHT'].collidepoint(loc[0], loc[1]):
+                if rects['DO_RIGHT'].collidepoint(loc[0], loc[1]):
                     states.view = "Fireplace" #Again needs control logic based on what the fireplace state is
-
-            elif states.view == "Door-lock":
-                if states.door_phase < 5: #can relock door fully with click unless fully unlocked
+                elif states.door_phase < 5: #can relock door fully with click unless fully unlocked
                     states.door_phase = 1
+                   
 
             elif states.view == "Bunker":
                 if rects['BUNKER'].collidepoint(loc[0], loc[1]):
@@ -615,14 +613,14 @@ def draw_image(states: States, buttons: dict):
         elif states.window_phase == 4: WIN.blit(WINDOW_UNLOCKED, (0,0)) #display window unlocked (phase = 4)
         
     elif states.view == "Door": 
-        WIN.blit(DOOR, (0,0)) #display Frontdoor image
-        
-    elif states.view == 'Door-lock': 
         if states.door_phase == 1:  WIN.blit(DOOR_LOCKED1, (0,0)) #display fully locked door phase (phase = 1)
         elif states.door_phase == 2: WIN.blit(DOOR_LOCKED2, (0,0)) #display second phase locked door (phase = 2)
         elif states.door_phase == 3: WIN.blit(DOOR_LOCKED3, (0,0)) #display third phase locked door (phase = 3)
         elif states.door_phase == 4: WIN.blit(DOOR_LOCKED4, (0,0)) #display Fourth phase locked door (phase = 4)
         elif states.door_phase == 5: WIN.blit(DOOR_UNLOCKED, (0,0)) #display unlocked door (phase = 5)
+        
+    elif states.view == 'Door-lock': 
+        WIN.blit(DOOR, (0,0)) #display Frontdoor image
         
     elif states.view == "Bunker":
         if not states.holding: WIN.blit(BUNKER, (0,0)) #display Bunker image
