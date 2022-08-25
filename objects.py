@@ -12,7 +12,7 @@ def get_jiggletime(night):
 
 # Function that returns the climbdown time for the fireplace
 def get_climbdown(night):
-    if night == 1: return 600 #ten minutes (never attacks night 1)
+    if night == 1: return 300 #ten minutes (never attacks night 1)
     elif night == 2: return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
     elif night == 3: return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
     elif night == 4: return 182 + random.randrange(0,14,1) #attacked three times no matter what
@@ -35,8 +35,8 @@ def get_locktime(night):
 # The first attack can also be slowed by checking the bunker door which will be very useful in later nights, this logic will be implemented in game.py however
 # This function will simply give a base attack time that is similar to climbdown based again upon the input night
 def get_bunkerwalk(night):
-    if night == 1: return 601 #no attacking night 1
-    elif night == 2: return 601 #no attacking night 2
+    if night == 1: return 301 #no attacking night 1
+    elif night == 2: return 301 #no attacking night 2
     elif night == 3: return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
     elif night == 4: return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
     elif night == 5: return 182 + random.randrange(0,14,1) #attacked three times no matter what

@@ -658,7 +658,7 @@ def is_night_over(states: States):
         states.night_lost = True
 
     # player wins
-    if states.num_seconds > 600: states.night_won = True
+    if states.num_seconds > 300: states.night_won = True
 
 # Function that determines which Buttons out of all possible Buttons are to be displayed in the current frame
 def update_buttons(states: States, buttons: dict, all_buttons: dict, rects: dict):
