@@ -1,6 +1,7 @@
 import random, pygame, os
 
 # Function which calculates a valid jiggletime based on the inputted night
+# NOTE: the comments may no longer be fully accurate because the original round length was 10 minutes
 def get_jiggletime(night):
     if night == 1: return 90 + random.randrange(0,30,1) #attacked once but only once
     elif night == 2: return 70 + random.randrange(0,30,1) #attacked once or twice but more likely once
@@ -12,7 +13,7 @@ def get_jiggletime(night):
 
 # Function that returns the climbdown time for the fireplace
 def get_climbdown(night):
-    if night == 1: return 300 #ten minutes (never attacks night 1)
+    if night == 1: return 300 #five minutes (never attacks night 1)
     elif night == 2: return 267 + random.randrange(0,60,1) #50/50 attacked once or twice
     elif night == 3: return 187 + random.randrange(0,40,1) #attacked twice and sometimes 3 times
     elif night == 4: return 182 + random.randrange(0,14,1) #attacked three times no matter what
