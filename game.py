@@ -410,6 +410,9 @@ def final_win_screen():
                     pre_advance = True
                     quit = True
 
+# NOTE: The following sections of code are commented out because they are not currenly in use, but may be brought
+#       back and fleshed-out at a later point.
+#
 # # Function that controls the game's cutscene/dialogue screens
 # def cutscene(states: dict):
 #     dialogue = []
@@ -745,6 +748,8 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update display after all game states have been updated
 
+        print(states.climbdown_time)
+
         if states.night_won: advance = True
 
         if states.night_lost: 
@@ -810,6 +815,8 @@ def main():
 
     home_screen(states)
     current_night = states.night
+    states.reset_timers() # reset states so that if the player chooses to restart the state timers and current night will be synced
+
     load_screen(states)
     # cutscene(states)
 

@@ -138,6 +138,11 @@ class States:
 
         self.FP_countdown = FP_time
 
+        if fire_time is None: fire_time = 2
+        self.fire_time = fire_time
+
+        self.fire_countdown = fire_time
+
         # ------Door states------
         if door_phase is None: door_phase = 1
         self.door_phase = door_phase
@@ -188,10 +193,28 @@ class States:
 
         self.fear_countdown = fear_time  
 
-        if fire_time is None: fire_time = 2
-        self.fire_time = fire_time
+    # Function that resets all time-related states. This is so that if the player chooses to restart the game
+    # they will be given the appropriate night 1 difficulty, instead of that for whichever night was written to night.txt.
+    def reset_timers(self):
+        # reset jiggle time
+        self.jiggle_time = get_jiggletime(self.night)
+        self.jiggle_countdown = self.jiggle_time
 
-        self.fire_countdown = fire_time
+        # reset climbdown time
+        self.climbdown_time = get_climbdown(self.night)
+        self.climbdown_countdown = self.climbdown_time
+
+        # reset lock time
+        self.lock_time = get_locktime(self.night)
+        self.lock_countdown = self.lock_time
+
+        # reset bunker time
+        self.bunkerwalk_time = get_bunkerwalk(self.night)
+        self.bunkerwalk_countdown = self.bunkerwalk_time
+
+        # reset fear time
+        self.fear_time = get_fear(self.night)
+        self.fear_countdown = self.fear_time
 
 # simple button class that allows for different images to be displayed depending on whether the mouse is over the button
 class Button():
