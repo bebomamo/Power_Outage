@@ -748,8 +748,6 @@ def game_screen(states: States):
         is_night_over(states)
         draw_image(states, buttons) # update display after all game states have been updated
 
-        print(states.climbdown_time)
-
         if states.night_won: advance = True
 
         if states.night_lost: 
