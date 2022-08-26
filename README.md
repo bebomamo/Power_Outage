@@ -25,5 +25,6 @@ Python version 3.10.4
 PIP version 22.0.4  
 Pygame version 2.1.2  
 
+Game by [Ben Malone](https://github.com/bebomamo) and [Jack Jameson](https://github.com/jack-jameson)  
+Art by [Oberon Waters](https://linktr.ee/woahberon)  
 Button sounds from [zapsplat.com](https://www.zapsplat.com/)  
-Art by [Oberon Waters](https://linktr.ee/woahberon) 
